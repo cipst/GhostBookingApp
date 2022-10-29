@@ -40,6 +40,7 @@ dependencies:
   lottie: ^1.4.3
   page_transition: ^2.0.9
   get: ^4.6.5
+  ionicons: ^0.2.1
 
 dev_dependencies:
   flutter_test:

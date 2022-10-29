@@ -13,7 +13,7 @@ class SplashPage extends StatelessWidget {
     return AnimatedSplashScreen(
       splash: Lottie.asset("assets/SplashScreen.json"),
       splashIconSize: 235,
-      nextScreen: const Root(),
+      nextScreen: Root(),
       pageTransitionType: PageTransitionType.fade,
       animationDuration: const Duration(milliseconds: 700),
       backgroundColor: Styles.bgColor,

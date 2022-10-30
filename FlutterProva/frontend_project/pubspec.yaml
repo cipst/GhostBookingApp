@@ -41,6 +41,13 @@ dependencies:
   page_transition: ^2.0.9
   get: ^4.6.5
   ionicons: ^0.2.1
+  gap: ^2.0.0
+  flutter_launcher_icons: ^0.10.0
+  carousel_slider: ^4.1.1
+
+flutter_icons:
+  image_path: "assets/book.png"
+  android: true
 
 dev_dependencies:
   flutter_test:

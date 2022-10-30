@@ -20,7 +20,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Project Frontend',
       theme: ThemeData(
-        primaryColor: Styles.primaryColor,
+        // primaryColor: Styles.primaryColor,
+        colorScheme: ThemeData().colorScheme.copyWith(
+              primary: Styles.blueColor,
+              secondary: Styles.orangeColor,
+            ),
       ),
       // home: const SplashPage(),
       home: Root(),
@@ -35,9 +39,9 @@ class Root extends StatelessWidget {
   final currentPage = 0.obs;
   final pages = [
     const HomePage(),
-    const Text("2"),
-    const Text("3"),
-    const Text("4"),
+    const HomePage(),
+    const HomePage(),
+    const HomePage(),
   ].obs;
 
   changePage(int newPage) {
@@ -72,12 +76,14 @@ class Root extends StatelessWidget {
                 child: Stack(
                   children: [
                     CustomPaint(
-                      size: Size(AppLayout.getSize(context).width, navigationHeight.value),
+                      size: Size(AppLayout.getSize(context).width,
+                          navigationHeight.value),
                       painter: CustomPainterBottomBar(),
                     ),
                     GestureDetector(
                       onVerticalDragUpdate: (DragUpdateDetails details) {
-                        double positionY = AppLayout.getSize(context).height - details.globalPosition.dy;
+                        double positionY = AppLayout.getSize(context).height -
+                            details.globalPosition.dy;
 
                         // limits at 80 height minimum
                         if (positionY < 80) {
@@ -225,5 +231,3 @@ class Root extends StatelessWidget {
     );
   }
 }
-
-

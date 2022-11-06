@@ -7,8 +7,9 @@ class TeacherPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(teacher),
+    return Scaffold(
+      appBar: AppBar(),
+      body: Text(teacher),
     );
   }
 }

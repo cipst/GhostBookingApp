@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:frontend_project/screens/home_screen.dart';
 import 'package:frontend_project/screens/splash_screen.dart';
@@ -38,10 +40,10 @@ class Root extends StatelessWidget {
   final navigationHeight = (80.0).obs;
   final currentPage = 0.obs;
   final pages = [
-    const HomePage(),
-    const HomePage(),
-    const HomePage(),
-    const HomePage(),
+    HomePage(),
+    HomePage(),
+    HomePage(),
+    HomePage(),
   ].obs;
 
   changePage(int newPage) {
@@ -60,8 +62,12 @@ class Root extends StatelessWidget {
           Positioned(
             top: 0,
             left: 0,
-            child: Obx(
-              () => pages[currentPage.value],
+            child: SizedBox(
+              width: AppLayout.getSize(context).width,
+              height: AppLayout.getSize(context).height,
+              child: Obx(
+                () => pages[currentPage.value],
+              ),
             ),
           ),
 
@@ -104,8 +110,8 @@ class Root extends StatelessWidget {
                               navigationHeight.value = maxHeight;
                             }
                           },
-                          child: Container(
-                            padding: const EdgeInsets.only(bottom: 5),
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 4),
                             child: navigationHeight.value > (maxHeight / 2)
                                 ? const Icon(Ionicons.chevron_down)
                                 : const Icon(Ionicons.chevron_up),

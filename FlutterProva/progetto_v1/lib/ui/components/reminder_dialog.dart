@@ -13,16 +13,24 @@ class ReminderDialog extends StatefulWidget {
 
 class _ReminderDialogState extends State<ReminderDialog> {
 
-  int _minutesBefore = 5;
-
+  int _minutesEarly = 5;
+  String? _errorText;
 
   _changeMinutes(String newValue){
-    if(newValue.isEmpty) return;
-    setState(() {
-      _minutesBefore = int.parse(newValue);
-    });
+    debugPrint("VALUE: $newValue");
 
-    widget.controller.text = newValue;
+    if(newValue.isEmpty) {
+      setState(() {
+        _errorText = "Enter a valid number";
+      });
+      return;
+    }
+
+    int v = int.parse(newValue);
+
+    setState(() {
+      _minutesEarly = v;
+    });
   }
 
   @override
@@ -32,7 +40,6 @@ class _ReminderDialogState extends State<ReminderDialog> {
       children: [
         SizedBox(
           width: 50,
-          height: 50,
           child: TextField(
             controller: widget.controller,
             textAlign: TextAlign.center,
@@ -46,7 +53,15 @@ class _ReminderDialogState extends State<ReminderDialog> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                    color: Styles.blueColor
+                  color: Styles.blueColor,
+                  width: 2,
+                ),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Styles.errorColor,
+                  width: 2,
                 ),
                 borderRadius: BorderRadius.circular(10),
               ),
@@ -55,12 +70,13 @@ class _ReminderDialogState extends State<ReminderDialog> {
             onSubmitted: _changeMinutes,
             keyboardType: const TextInputType.numberWithOptions(decimal: false),
             inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly
+              FilteringTextInputFormatter.digitsOnly,
             ],
           ),
         ),
+
         const Gap(8),
-        _minutesBefore > 1 ? const Text("minutes before") : const Text("minute before"),
+        _minutesEarly > 1 ? const Text("minutes early") : const Text("minute early"),
       ],
     );
   }

@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:progetto_v1/utils/app_layout.dart';
+import 'package:progetto_v1/utils/app_style.dart';
 
 class CustomDialog extends StatelessWidget {
   final Icon type;
@@ -53,11 +54,11 @@ class CustomDialog extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     type.paddingOnly(bottom: 4),
-                    Text(title, style: TextStyle(fontSize: 22,fontWeight: FontWeight.w600),),
+                    Text(title, style: Styles.headLineStyle.copyWith(color: Styles.successColor),),
                   ],
                 ),
                 const Gap(15),
-                Text(description, style: TextStyle(fontSize: 14),textAlign: TextAlign.center,),
+                Text(description, style: Styles.textStyle, textAlign: TextAlign.center,),
                 const Gap(22),
                 Align(
                   alignment: Alignment.bottomRight,

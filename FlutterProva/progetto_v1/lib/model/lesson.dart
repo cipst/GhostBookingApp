@@ -30,7 +30,12 @@ class Lesson {
     Lesson(
         Course.list[Random().nextInt(Course.list.length)],
         Teacher.list[Random().nextInt(Teacher.list.length)],
-        DateTime.parse("2022-11-21 19:00:00"),
+        DateTime.parse("2022-11-21 20:00:00"),
+    ),
+    Lesson(
+        Course.list[Random().nextInt(Course.list.length)],
+        Teacher.list[Random().nextInt(Teacher.list.length)],
+        DateTime.parse("2022-11-21 21:00:00"),
     ),
     Lesson(
         Course.list[Random().nextInt(Course.list.length)],

@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
@@ -28,9 +29,9 @@ class CardUpcomingLesson extends StatefulWidget {
 }
 
 class _CardUpcomingLessonState extends State<CardUpcomingLesson> {
+  int _minutesEarly = 1;
   bool _notification = false;
   final double _cardWidth = 0.9;
-  final TextEditingController _textController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -58,27 +59,96 @@ class _CardUpcomingLessonState extends State<CardUpcomingLesson> {
                       onTap: () {
                         Get.defaultDialog(
                           title: "Reminder",
-                          content: ReminderDialog(controller: _textController),
+                          content: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // StatefulBuilder(
+                              //     builder: (context, setState) {
+                              SizedBox(
+                                width: 50,
+                                height: 100,
+                                child: CarouselSlider.builder(
+                                  itemCount: 60,
+                                  itemBuilder: (context, index, realIndex) {
+                                    return Text((index+1).toString(), textAlign: TextAlign.center,);
+                                  },
+                                  options: CarouselOptions(
+                                    initialPage: 6,
+                                    viewportFraction: 0.3,
+                                    scrollDirection: Axis.vertical,
+                                    enlargeCenterPage: true,
+                                    onPageChanged: (index, reason) {
+                                      setState(() {
+                                        _minutesEarly = (index + 1);
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+
+                              // return DropdownButton(
+                              //   items: [5,10,15,20,30].map((int v) {
+                              //     return DropdownMenuItem(
+                              //       value: v,
+                              //       child: Text(v.toString()),
+                              //     );
+                              //   }).toList(),
+                              //   onChanged: (value) {
+                              //     debugPrint(value.toString());
+                              //     setState(() {
+                              //       _minutesEarly = value!;
+                              //     });
+                              //   },
+                              //   value: _minutesEarly,
+                              //   icon: const Icon(Ionicons.chevron_down),
+                              //   iconSize: 18,
+                              // );
+                              //     }
+                              // ),
+                              const Gap(6),
+                              const Text("minutes early"),
+                            ],
+                          ),
+                          // content: ReminderDialog(controller: _textController),
                           actions: [
                             ElevatedButton(
                               onPressed: () {
-                                // TODO --> TO FIX: NOT WORKING
-                                debugPrint("clicked");
-                                int m = int.parse(_textController.text);
-                                debugPrint("minutes: $m");
-                                if(m>0) {
-                                  Get.back(); //close dialog
-                                  setState(() {
-                                    _notification = !_notification;
-                                  });
-                                  NotificationService()
-                                      .scheduledNotification(
-                                      dateTime: widget.dateTime.subtract(Duration(minutes: m)),
-                                      description: "${widget.teacher.name} | "
-                                          "${widget.course.name} | "
-                                          "${DateFormat.Hm().format(widget.dateTime)}"
+                                DateTime date = widget.dateTime.subtract(Duration(minutes: _minutesEarly));
+
+                                // check if the reminder can be set _minutesEarly minutes early
+                                if(DateTime.now().isAfter(date)){
+                                  // show error
+                                  Get.defaultDialog(
+                                      title: "Operation failed",
+                                      titleStyle: Styles.headLineStyle.copyWith(color: Styles.errorColor),
+                                      middleText: "Oops...\nLooks like you are trying to travel to the past",
+                                      middleTextStyle: Styles.textStyle,
+                                      backgroundColor: Colors.white,
+                                      actions: [
+                                        ElevatedButton(
+                                          onPressed: () => Get.back(),
+                                          style: ButtonStyle(
+                                            elevation: const MaterialStatePropertyAll(5),
+                                            side: MaterialStatePropertyAll(BorderSide(color: Styles.errorColor, width: 2)),
+                                            backgroundColor: const MaterialStatePropertyAll(Colors.white),
+                                            foregroundColor: MaterialStatePropertyAll(Styles.errorColor),
+                                          ),
+                                          child: const Text("Close"),
+                                        )
+                                      ]
                                   );
+                                  return;
                                 }
+
+                                setState(() {
+                                  _notification = !_notification;
+                                });
+
+                                NotificationService()
+                                    .scheduledNotification(
+                                    dateTime: widget.dateTime.subtract(Duration(minutes: _minutesEarly)),
+                                    description: "${widget.teacher.name} | ${widget.course.name} | ${DateFormat.Hm().format(widget.dateTime)}"
+                                );
                               },
                               child: const Text("Set"),
                             ),

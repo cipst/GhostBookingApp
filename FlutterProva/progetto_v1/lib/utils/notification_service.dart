@@ -66,33 +66,49 @@ class NotificationService {
   void scheduledNotification({required DateTime dateTime, required String description}) async {
     final Duration duration = dateTime.difference(DateTime.now());
 
-    Get.dialog(
-      CustomDialog(
-        title: "Reminder setted",
-        description: "Reminder succesfully setted to ${DateFormat.MMMMd().format(dateTime)} at ${DateFormat.Hm().format(dateTime)}",
-        type: const Icon(Ionicons.checkmark_circle_outline),
-        btnText: "Close",
-      ),
-    );
-
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-        0,
-        "Incoming lesson",
-        description,
-        tz.TZDateTime.now(tz.local).add(duration),
-        const NotificationDetails(
-          android: AndroidNotificationDetails(
-            'channel id',
-            'channel name',
-            channelDescription: 'channel description',
-            importance: Importance.high,
-            priority: Priority.high,
-            icon: "book",
+    try {
+      await flutterLocalNotificationsPlugin.zonedSchedule(
+          0,
+          "Incoming lesson",
+          description,
+          tz.TZDateTime.now(tz.local).add(duration),
+          const NotificationDetails(
+            android: AndroidNotificationDetails(
+              'channel id',
+              'channel name',
+              channelDescription: 'channel description',
+              importance: Importance.high,
+              priority: Priority.high,
+              icon: "book",
+            ),
           ),
+          androidAllowWhileIdle: true,
+          uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime);
+
+      Get.dialog(
+        CustomDialog(
+          title: "Reminder setted",
+          description: "Reminder succesfully setted to ${DateFormat.MMMMd().format(dateTime)} at ${DateFormat.Hm().format(dateTime)}",
+          type: Icon(Ionicons.checkmark_circle_outline, color: Styles.successColor,),
+          btnText: "Close",
         ),
-        androidAllowWhileIdle: true,
-        uiLocalNotificationDateInterpretation:
-        UILocalNotificationDateInterpretation.absoluteTime);
+      );
+    } on ArgumentError catch(e){
+      String title;
+      String description;
+      switch(e.name){
+        case "scheduledDate":
+          title = "Back in the past";
+          description = "Oops...\nIt looks like you are trying to travel to the past";
+          break;
+
+        default:
+          title = "Error";
+          description = e.message;
+      }
+
+    }
 
   }
 }

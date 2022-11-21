@@ -88,10 +88,20 @@ class NotificationService {
 
       Get.dialog(
         CustomDialog(
+          ButtonStyle(
+            elevation: const MaterialStatePropertyAll(5),
+            backgroundColor: MaterialStatePropertyAll(Styles.successColor),
+            // foregroundColor: MaterialStatePropertyAll(Styles.errorColor),
+          ),
           title: "Reminder setted",
           description: "Reminder succesfully setted to ${DateFormat.MMMMd().format(dateTime)} at ${DateFormat.Hm().format(dateTime)}",
-          type: Icon(Ionicons.checkmark_circle_outline, color: Styles.successColor,),
-          btnText: "Close",
+          icon: Icon(Ionicons.checkmark_circle_outline, color: Styles.successColor,),
+          btnText: Text("Close", style: Styles.textStyle),
+          svg: SvgPicture.asset(
+            "assets/illustrations/green/clock.svg",
+            width: 200,
+            height: 200,
+          ),
         ),
       );
     } on ArgumentError catch(e){

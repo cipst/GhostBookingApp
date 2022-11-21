@@ -6,14 +6,17 @@ import 'package:progetto_v1/utils/app_layout.dart';
 import 'package:progetto_v1/utils/app_style.dart';
 
 class CustomDialog extends StatelessWidget {
-  final Icon type;
+  final SvgPicture svg;
+  final Icon icon;
   final String title;
   final String description;
-  final String btnText;
+  final Text btnText;
+  final ButtonStyle? btnStyle;
 
-  const CustomDialog({
+  const CustomDialog(this.btnStyle, {
     Key? key,
-    required this.type,
+    required this.svg,
+    required this.icon,
     required this.title,
     required this.description,
     required this.btnText
@@ -53,7 +56,7 @@ class CustomDialog extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    type.paddingOnly(bottom: 4),
+                    icon.paddingOnly(bottom: 4),
                     Text(title, style: Styles.headLineStyle.copyWith(color: Styles.successColor),),
                   ],
                 ),
@@ -63,10 +66,12 @@ class CustomDialog extends StatelessWidget {
                 Align(
                   alignment: Alignment.bottomRight,
                   child: ElevatedButton(
-                      onPressed: (){
-                        Get.back();
-                      },
-                      child: Text(btnText, style: TextStyle(fontSize: 18),)),
+                    onPressed: (){
+                      Get.back();
+                    },
+                    style: btnStyle,
+                    child: btnText,
+                  ),
                 ),
               ],
             ),
@@ -77,12 +82,7 @@ class CustomDialog extends StatelessWidget {
             child: CircleAvatar(
               backgroundColor: Colors.transparent,
               radius: 45,
-              child: SvgPicture.asset(
-                "assets/illustrations/clock.svg",
-                semanticsLabel: "Reminder",
-                width: 200,
-                height: 200,
-              ),
+              child: svg,
             ),
           ),
         ],

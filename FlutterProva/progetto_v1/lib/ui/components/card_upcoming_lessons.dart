@@ -1,12 +1,14 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:progetto_v1/model/course.dart';
 import 'package:progetto_v1/model/teacher.dart';
+import 'package:progetto_v1/ui/components/custom_dialog.dart';
 import 'package:progetto_v1/utils/app_layout.dart';
 import 'package:progetto_v1/utils/app_style.dart';
 import 'package:progetto_v1/utils/notification_service.dart';
@@ -200,24 +202,38 @@ class _CardUpcomingLessonState extends State<CardUpcomingLesson> {
         // check if the reminder can be set _minutesEarly minutes early
         if(DateTime.now().isAfter(date)){
           // show error
-          Get.defaultDialog(
-              title: "Operation failed",
-              titleStyle: Styles.headLineStyle.copyWith(color: Styles.errorColor),
-              middleText: "Oops...\nLooks like you are trying to travel to the past",
-              middleTextStyle: Styles.textStyle,
-              backgroundColor: Colors.white,
-              actions: [
-                ElevatedButton(
-                  onPressed: () => Get.back(),
-                  style: ButtonStyle(
-                    elevation: const MaterialStatePropertyAll(5),
-                    side: MaterialStatePropertyAll(BorderSide(color: Styles.errorColor, width: 2)),
-                    backgroundColor: const MaterialStatePropertyAll(Colors.white),
-                    foregroundColor: MaterialStatePropertyAll(Styles.errorColor),
-                  ),
-                  child: const Text("Close"),
-                )
-              ]
+          // Get.defaultDialog(
+          //     title: "Operation failed",
+          //     titleStyle: Styles.headLineStyle.copyWith(color: Styles.errorColor),
+          //     middleText: "Oops...\nLooks like you are trying to travel to the past",
+          //     middleTextStyle: Styles.textStyle,
+          //     backgroundColor: Colors.white,
+          //     actions: [
+          //       ElevatedButton(
+          //         onPressed: () => Get.back(),
+          //         style: ,
+          //         child: const Text("Close"),
+          //       )
+          //     ]
+          // );
+          Get.dialog(
+              CustomDialog(
+                ButtonStyle(
+                  elevation: const MaterialStatePropertyAll(5),
+                  side: MaterialStatePropertyAll(BorderSide(color: Styles.errorColor, width: 2)),
+                  backgroundColor: const MaterialStatePropertyAll(Colors.white),
+                  foregroundColor: MaterialStatePropertyAll(Styles.errorColor),
+                ),
+                icon: Icon(Ionicons.alert, color: Styles.errorColor,),
+                title: "Operation failed",
+                description: "Oops...\nLooks like you are trying to travel to the past",
+                btnText: Text("Close", style: Styles.textStyle.copyWith(color: Styles.errorColor)),
+                svg: SvgPicture.asset(
+                  "assets/illustrations/pink/time_machine.svg",
+                  width: 200,
+                  height: 200,
+                ),
+              )
           );
           return;
         }

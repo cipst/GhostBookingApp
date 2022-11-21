@@ -7,7 +7,6 @@ import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:progetto_v1/model/course.dart';
 import 'package:progetto_v1/model/teacher.dart';
-import 'package:progetto_v1/ui/components/reminder_dialog.dart';
 import 'package:progetto_v1/utils/app_layout.dart';
 import 'package:progetto_v1/utils/app_style.dart';
 import 'package:progetto_v1/utils/notification_service.dart';
@@ -50,179 +49,190 @@ class _CardUpcomingLessonState extends State<CardUpcomingLesson> {
           margin: const EdgeInsets.symmetric(vertical: 10),
           child: Stack(
               children: [
-                Positioned(
-                    top: 10,
-                    right: 10,
-                    width: 40,
-                    height: 40,
-                    child: GestureDetector(
-                      onTap: () {
-                        Get.defaultDialog(
-                          title: "Reminder",
-                          content: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              // StatefulBuilder(
-                              //     builder: (context, setState) {
-                              SizedBox(
-                                width: 50,
-                                height: 100,
-                                child: CarouselSlider.builder(
-                                  itemCount: 60,
-                                  itemBuilder: (context, index, realIndex) {
-                                    return Text((index+1).toString(), textAlign: TextAlign.center,);
-                                  },
-                                  options: CarouselOptions(
-                                    initialPage: 6,
-                                    viewportFraction: 0.3,
-                                    scrollDirection: Axis.vertical,
-                                    enlargeCenterPage: true,
-                                    onPageChanged: (index, reason) {
-                                      setState(() {
-                                        _minutesEarly = (index + 1);
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ),
-
-                              // return DropdownButton(
-                              //   items: [5,10,15,20,30].map((int v) {
-                              //     return DropdownMenuItem(
-                              //       value: v,
-                              //       child: Text(v.toString()),
-                              //     );
-                              //   }).toList(),
-                              //   onChanged: (value) {
-                              //     debugPrint(value.toString());
-                              //     setState(() {
-                              //       _minutesEarly = value!;
-                              //     });
-                              //   },
-                              //   value: _minutesEarly,
-                              //   icon: const Icon(Ionicons.chevron_down),
-                              //   iconSize: 18,
-                              // );
-                              //     }
-                              // ),
-                              const Gap(6),
-                              const Text("minutes early"),
-                            ],
-                          ),
-                          // content: ReminderDialog(controller: _textController),
-                          actions: [
-                            ElevatedButton(
-                              onPressed: () {
-                                DateTime date = widget.dateTime.subtract(Duration(minutes: _minutesEarly));
-
-                                // check if the reminder can be set _minutesEarly minutes early
-                                if(DateTime.now().isAfter(date)){
-                                  // show error
-                                  Get.defaultDialog(
-                                      title: "Operation failed",
-                                      titleStyle: Styles.headLineStyle.copyWith(color: Styles.errorColor),
-                                      middleText: "Oops...\nLooks like you are trying to travel to the past",
-                                      middleTextStyle: Styles.textStyle,
-                                      backgroundColor: Colors.white,
-                                      actions: [
-                                        ElevatedButton(
-                                          onPressed: () => Get.back(),
-                                          style: ButtonStyle(
-                                            elevation: const MaterialStatePropertyAll(5),
-                                            side: MaterialStatePropertyAll(BorderSide(color: Styles.errorColor, width: 2)),
-                                            backgroundColor: const MaterialStatePropertyAll(Colors.white),
-                                            foregroundColor: MaterialStatePropertyAll(Styles.errorColor),
-                                          ),
-                                          child: const Text("Close"),
-                                        )
-                                      ]
-                                  );
-                                  return;
-                                }
-
-                                setState(() {
-                                  _notification = !_notification;
-                                });
-
-                                NotificationService()
-                                    .scheduledNotification(
-                                    dateTime: widget.dateTime.subtract(Duration(minutes: _minutesEarly)),
-                                    description: "${widget.teacher.name} | ${widget.course.name} | ${DateFormat.Hm().format(widget.dateTime)}"
-                                );
-                              },
-                              child: const Text("Set"),
-                            ),
-                          ],
-
-                        );
-                      },
-                      child: _notificationButton(),
-                    )
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Container(
-                        width: 80,
-                        height: 80,
-                        margin: const EdgeInsets.only(right: 12),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          image: DecorationImage(
-                            image: NetworkImage(widget.teacher.image!),
-                          ),
-                        ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.teacher.name!,
-                            style: Styles.headLineStyle2.copyWith(color: Colors.black),
-                          ),
-                          const Gap(6),
-                          Text(
-                            widget.course.name,
-                            style: Styles.textStyle,
-                          ),
-                          const Gap(8),
-                          Row(
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  const Icon(
-                                    Icons.calendar_month_outlined,
-                                    size: 15,
-                                  ),
-                                  const Gap(4),
-                                  Text(DateFormat.MMMd().format(widget.dateTime))
-                                ],
-                              ),
-                              const Gap(20),
-                              Row(
-                                children: [
-                                  const Icon(
-                                    Icons.access_time_outlined,
-                                    size: 15,
-                                  ),
-                                  const Gap(4),
-                                  Text(DateFormat.Hm().format(widget.dateTime))
-                                ],
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+                _notificationBox(),
+                _lessonInfos(),
               ]
           ),
         ),
       ),
+    );
+  }
+
+  Padding _lessonInfos() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Container(
+            width: 80,
+            height: 80,
+            margin: const EdgeInsets.only(right: 12),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              image: DecorationImage(
+                image: NetworkImage(widget.teacher.image!),
+              ),
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.teacher.name!,
+                style: Styles.headLineStyle2.copyWith(color: Colors.black),
+              ),
+              const Gap(6),
+              Text(
+                widget.course.name,
+                style: Styles.textStyle,
+              ),
+              const Gap(8),
+              Row(
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.calendar_month_outlined,
+                        size: 15,
+                      ),
+                      const Gap(4),
+                      Text(DateFormat.MMMd().format(widget.dateTime))
+                    ],
+                  ),
+                  const Gap(20),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.access_time_outlined,
+                        size: 15,
+                      ),
+                      const Gap(4),
+                      Text(DateFormat.Hm().format(widget.dateTime))
+                    ],
+                  ),
+                ],
+              )
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Positioned _notificationBox() {
+    return Positioned(
+        top: 10,
+        right: 10,
+        width: 40,
+        height: 40,
+        child: GestureDetector(
+          onTap: () {
+            Get.defaultDialog(
+              title: "Reminder",
+              content: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // StatefulBuilder(
+                  //     builder: (context, setState) {
+                  SizedBox(
+                    width: 50,
+                    height: 100,
+                    child: CarouselSlider.builder(
+                      itemCount: 60,
+                      itemBuilder: (context, index, realIndex) {
+                        return Text((index+1).toString(), textAlign: TextAlign.center,);
+                      },
+                      options: CarouselOptions(
+                        initialPage: 6,
+                        viewportFraction: 0.3,
+                        scrollDirection: Axis.vertical,
+                        enlargeCenterPage: true,
+                        onPageChanged: (index, reason) {
+                          setState(() {
+                            _minutesEarly = (index + 1);
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+
+                  // return DropdownButton(
+                  //   items: [5,10,15,20,30].map((int v) {
+                  //     return DropdownMenuItem(
+                  //       value: v,
+                  //       child: Text(v.toString()),
+                  //     );
+                  //   }).toList(),
+                  //   onChanged: (value) {
+                  //     debugPrint(value.toString());
+                  //     setState(() {
+                  //       _minutesEarly = value!;
+                  //     });
+                  //   },
+                  //   value: _minutesEarly,
+                  //   icon: const Icon(Ionicons.chevron_down),
+                  //   iconSize: 18,
+                  // );
+                  //     }
+                  // ),
+                  const Gap(6),
+                  const Text("minutes early"),
+                ],
+              ),
+              actions: [
+                _buttonSetReminder(),
+              ],
+
+            );
+          },
+          child: _notificationButton(),
+        )
+    );
+  }
+
+  ElevatedButton _buttonSetReminder() {
+    return ElevatedButton(
+      onPressed: () {
+        DateTime date = widget.dateTime.subtract(Duration(minutes: _minutesEarly));
+
+        // check if the reminder can be set _minutesEarly minutes early
+        if(DateTime.now().isAfter(date)){
+          // show error
+          Get.defaultDialog(
+              title: "Operation failed",
+              titleStyle: Styles.headLineStyle.copyWith(color: Styles.errorColor),
+              middleText: "Oops...\nLooks like you are trying to travel to the past",
+              middleTextStyle: Styles.textStyle,
+              backgroundColor: Colors.white,
+              actions: [
+                ElevatedButton(
+                  onPressed: () => Get.back(),
+                  style: ButtonStyle(
+                    elevation: const MaterialStatePropertyAll(5),
+                    side: MaterialStatePropertyAll(BorderSide(color: Styles.errorColor, width: 2)),
+                    backgroundColor: const MaterialStatePropertyAll(Colors.white),
+                    foregroundColor: MaterialStatePropertyAll(Styles.errorColor),
+                  ),
+                  child: const Text("Close"),
+                )
+              ]
+          );
+          return;
+        }
+
+        setState(() {
+          _notification = !_notification;
+        });
+
+        NotificationService()
+            .scheduledNotification(
+            dateTime: widget.dateTime.subtract(Duration(minutes: _minutesEarly)),
+            description: "${widget.teacher.name} | ${widget.course.name} | ${DateFormat.Hm().format(widget.dateTime)}"
+        );
+      },
+      child: const Text("Set"),
     );
   }
 
@@ -237,6 +247,6 @@ class _CardUpcomingLessonState extends State<CardUpcomingLesson> {
   );
 
   void Function() _onTap(){
-    return () => null;
+    return () => debugPrint("Clicked: ${widget.teacher.name}");
   }
 }

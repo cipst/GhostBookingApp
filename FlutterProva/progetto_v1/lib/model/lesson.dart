@@ -15,6 +15,26 @@ class Lesson {
     Lesson(
         Course.list[Random().nextInt(Course.list.length)],
         Teacher.list[Random().nextInt(Teacher.list.length)],
+        DateTime.now().add(const Duration(hours: 1)),
+    ),
+    Lesson(
+        Course.list[Random().nextInt(Course.list.length)],
+        Teacher.list[Random().nextInt(Teacher.list.length)],
+        DateTime.now().add(const Duration(hours: 2)),
+    ),
+    Lesson(
+        Course.list[Random().nextInt(Course.list.length)],
+        Teacher.list[Random().nextInt(Teacher.list.length)],
+        DateTime.now().add(const Duration(hours: 3)),
+    ),
+    Lesson(
+        Course.list[Random().nextInt(Course.list.length)],
+        Teacher.list[Random().nextInt(Teacher.list.length)],
+        DateTime.now().add(const Duration(hours: 4)),
+    ),
+    Lesson(
+        Course.list[Random().nextInt(Course.list.length)],
+        Teacher.list[Random().nextInt(Teacher.list.length)],
         DateTime.parse("2022-11-21 16:00:00"),
     ),
     Lesson(
@@ -22,57 +42,6 @@ class Lesson {
         Teacher.list[Random().nextInt(Teacher.list.length)],
         DateTime.parse("2022-11-21 17:00:00"),
     ),
-    Lesson(
-        Course.list[Random().nextInt(Course.list.length)],
-        Teacher.list[Random().nextInt(Teacher.list.length)],
-        DateTime.parse("2022-11-21 18:00:00"),
-    ),
-    Lesson(
-        Course.list[Random().nextInt(Course.list.length)],
-        Teacher.list[Random().nextInt(Teacher.list.length)],
-        DateTime.parse("2022-11-21 20:00:00"),
-    ),
-    Lesson(
-        Course.list[Random().nextInt(Course.list.length)],
-        Teacher.list[Random().nextInt(Teacher.list.length)],
-        DateTime.parse("2022-11-21 21:00:00"),
-    ),
-    Lesson(
-        Course.list[Random().nextInt(Course.list.length)],
-        Teacher.list[Random().nextInt(Teacher.list.length)],
-        DateTime.parse("2022-11-22 12:00:00"),
-    ),
-    Lesson(
-        Course.list[Random().nextInt(Course.list.length)],
-        Teacher.list[Random().nextInt(Teacher.list.length)],
-        DateTime.parse("2022-11-22 13:00:00"),
-    ),
-    Lesson(
-        Course.list[Random().nextInt(Course.list.length)],
-        Teacher.list[Random().nextInt(Teacher.list.length)],
-        DateTime.parse("2022-11-22 14:00:00"),
-    ),
-    Lesson(
-        Course.list[Random().nextInt(Course.list.length)],
-        Teacher.list[Random().nextInt(Teacher.list.length)],
-        DateTime.parse("2022-11-22 15:00:00"),
-    ),
-    Lesson(
-        Course.list[Random().nextInt(Course.list.length)],
-        Teacher.list[Random().nextInt(Teacher.list.length)],
-        DateTime.parse("2022-11-22 21:00:00"),
-    ),
-    Lesson(
-        Course.list[Random().nextInt(Course.list.length)],
-        Teacher.list[Random().nextInt(Teacher.list.length)],
-        DateTime.parse("2022-11-22 22:00:00"),
-    ),
-    Lesson(
-      Course.list[Random().nextInt(Course.list.length)],
-      Teacher.list[Random().nextInt(Teacher.list.length)],
-      DateTime.parse("2022-11-20 23:00:00"),
-    ),
-
   ];
 
   Course get course => _course;

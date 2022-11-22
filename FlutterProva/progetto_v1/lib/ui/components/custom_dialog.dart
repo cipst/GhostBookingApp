@@ -6,20 +6,27 @@ import 'package:progetto_v1/utils/app_layout.dart';
 import 'package:progetto_v1/utils/app_style.dart';
 
 class CustomDialog extends StatelessWidget {
-  final SvgPicture svg;
+  final String? svgPath;
+  final double svgWidth;
+  final double svgHeight;
   final Icon icon;
   final String title;
+  final Color? titleColor;
   final String description;
   final Text btnText;
   final ButtonStyle? btnStyle;
 
-  const CustomDialog(this.btnStyle, {
+  const CustomDialog({
     Key? key,
-    required this.svg,
+    this.svgPath,
+    this.svgWidth = 80,
+    this.svgHeight = 80,
     required this.icon,
     required this.title,
+    this.titleColor,
     required this.description,
-    required this.btnText
+    required this.btnText,
+    this.btnStyle,
   }) : super(key: key);
 
   @override
@@ -56,8 +63,10 @@ class CustomDialog extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    Text(title,
+                      style: Styles.headLineStyle.copyWith(color: titleColor),
+                    ),
                     icon.paddingOnly(bottom: 4),
-                    Text(title, style: Styles.headLineStyle.copyWith(color: Styles.successColor),),
                   ],
                 ),
                 const Gap(15),
@@ -76,15 +85,21 @@ class CustomDialog extends StatelessWidget {
               ],
             ),
           ),
-          Positioned(
-            left: 1,
-            right: 1,
-            child: CircleAvatar(
-              backgroundColor: Colors.transparent,
-              radius: 45,
-              child: svg,
+          if(svgPath != null)
+            Positioned(
+              top: -20,
+              left: 1,
+              right: 1,
+              child: CircleAvatar(
+                backgroundColor: Colors.transparent,
+                radius: 60,
+                child: SvgPicture.asset(
+                  svgPath!,
+                  width: svgWidth,
+                  height: svgHeight,
+                ),
+              ),
             ),
-          ),
         ],
       ),
     );

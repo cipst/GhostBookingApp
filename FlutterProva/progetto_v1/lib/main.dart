@@ -21,13 +21,21 @@ class Main extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'Progetto V1',
+      title: 'Ghost Booking',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ThemeData().colorScheme.copyWith(
           primary: Styles.blueColor,
           secondary: Styles.orangeColor,
         ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            )
+          )
+        )
       ),
       home: const Root(),
     );

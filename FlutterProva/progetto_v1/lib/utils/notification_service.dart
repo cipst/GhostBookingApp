@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:progetto_v1/main.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:progetto_v1/ui/components/custom_dialog.dart';
-import 'package:progetto_v1/utils/app_layout.dart';
 import 'package:progetto_v1/utils/app_style.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 class NotificationService {
+  static int n = 0;
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   Future<void> init() async {
@@ -55,7 +54,7 @@ class NotificationService {
 
     const NotificationDetails platformChannelSpecifics = NotificationDetails(android: androidPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin.show(
-      0,
+      n++,
       title,
       body,
       platformChannelSpecifics,
@@ -66,59 +65,43 @@ class NotificationService {
   void scheduledNotification({required DateTime dateTime, required String description}) async {
     final Duration duration = dateTime.difference(DateTime.now());
 
-    try {
-      await flutterLocalNotificationsPlugin.zonedSchedule(
-          0,
-          "Incoming lesson",
-          description,
-          tz.TZDateTime.now(tz.local).add(duration),
-          const NotificationDetails(
-            android: AndroidNotificationDetails(
-              'channel id',
-              'channel name',
-              channelDescription: 'channel description',
-              importance: Importance.high,
-              priority: Priority.high,
-              icon: "book",
-            ),
-          ),
-          androidAllowWhileIdle: true,
-          uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime);
-
-      Get.dialog(
-        CustomDialog(
-          ButtonStyle(
-            elevation: const MaterialStatePropertyAll(5),
-            backgroundColor: MaterialStatePropertyAll(Styles.successColor),
-            // foregroundColor: MaterialStatePropertyAll(Styles.errorColor),
-          ),
-          title: "Reminder setted",
-          description: "Reminder succesfully setted to ${DateFormat.MMMMd().format(dateTime)} at ${DateFormat.Hm().format(dateTime)}",
-          icon: Icon(Ionicons.checkmark_circle_outline, color: Styles.successColor,),
-          btnText: Text("Close", style: Styles.textStyle),
-          svg: SvgPicture.asset(
-            "assets/illustrations/green/clock.svg",
-            width: 200,
-            height: 200,
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+        n++,
+        "Incoming lesson",
+        description,
+        tz.TZDateTime.now(tz.local).add(duration),
+        const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'channel id',
+            'channel name',
+            channelDescription: 'channel description',
+            importance: Importance.high,
+            priority: Priority.high,
+            icon: "book",
           ),
         ),
-      );
-    } on ArgumentError catch(e){
-      String title;
-      String description;
-      switch(e.name){
-        case "scheduledDate":
-          title = "Back in the past";
-          description = "Oops...\nIt looks like you are trying to travel to the past";
-          break;
+        androidAllowWhileIdle: true,
+        uiLocalNotificationDateInterpretation:
+        UILocalNotificationDateInterpretation.absoluteTime);
 
-        default:
-          title = "Error";
-          description = e.message;
-      }
+    Get.dialog(
+      CustomDialog(
+        title: "Reminder setted",
+        titleColor: Styles.successColor,
+        description: "Reminder succesfully setted to ${DateFormat.MMMMd().format(dateTime)} at ${DateFormat.Hm().format(dateTime)}",
+        icon: Icon(Ionicons.checkmark, color: Styles.successColor,),
+        btnText: Text("Close", style: Styles.textStyle.copyWith(color: Colors.white)),
+        btnStyle: Styles.successButtonStyle,
+        svgPath:"assets/illustrations/green/clock.svg",
+      ),
+    );
+  }
 
-    }
+  int getId(){
+    return n>0 ? n-1 : n;
+  }
 
+  void cancelNotification({required int id}) async {
+    await flutterLocalNotificationsPlugin.cancel(id);
   }
 }

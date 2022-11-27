@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:progetto_v1/controller/navigation_controller.dart';
+import 'package:progetto_v1/ui/pages/catalog_page.dart';
 import 'package:progetto_v1/ui/pages/home_page.dart';
 import 'package:progetto_v1/ui/pages/search_page.dart';
 import 'package:progetto_v1/utils/app_layout.dart';
@@ -24,19 +27,16 @@ class Main extends StatelessWidget {
       title: 'Ghost Booking',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ThemeData().colorScheme.copyWith(
-          primary: Styles.blueColor,
-          secondary: Styles.orangeColor,
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            )
-          )
-        )
-      ),
+          colorScheme: ThemeData().colorScheme.copyWith(
+                primary: Styles.blueColor,
+                secondary: Styles.orangeColor,
+              ),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  )))),
       home: const Root(),
     );
   }
@@ -50,24 +50,12 @@ class Root extends StatefulWidget {
 }
 
 class _RootState extends State<Root> {
+  final navigationController = Get.put(NavigationController());
 
-  int _currentPage = 0;
-  double _navigationHeight = 80.0;
-  final List<Widget> _pages = [
-    const HomePage(),
-    const SearchPage(),
-    const Text("HISTORY"),
-    const Text("USER"),
-  ];
+  double _navigationHeight = AppLayout.initNavigationBarHeight;
 
-  void _changePage(int newPage){
+  void _updateNavigationHeight(double newHeight) {
     setState(() {
-      _currentPage = newPage;
-    });
-  }
-
-  void _updateNavigationHeight(double newHeight){
-    setState((){
       _navigationHeight = newHeight;
     });
   }
@@ -87,7 +75,7 @@ class _RootState extends State<Root> {
             child: SizedBox(
               width: AppLayout.getSize(context).width,
               height: AppLayout.getSize(context).height,
-              child: _pages[_currentPage],
+              child: Obx(() => navigationController.currentPage),
             ),
           ),
 
@@ -101,8 +89,8 @@ class _RootState extends State<Root> {
               child: Stack(
                 children: [
                   CustomPaint(
-                    size: Size(AppLayout.getSize(context).width,
-                        _navigationHeight),
+                    size: Size(
+                        AppLayout.getSize(context).width, _navigationHeight),
                     painter: CustomPainterBottomBar(),
                   ),
                   GestureDetector(
@@ -141,102 +129,137 @@ class _RootState extends State<Root> {
                   SizedBox(
                     width: AppLayout.getSize(context).width,
                     height: 80,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        //HOME
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                    child: Obx(() => Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            IconButton(
-                              hoverColor: Colors.transparent,
-                              splashColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              icon: _currentPage == 0
-                                  ? Icon(
-                                Ionicons.home,
-                                color: Styles.orangeColor,
-                              )
-                                  : Icon(
-                                Ionicons.home_outline,
-                                color: Colors.grey.shade400,
-                              ),
-                              onPressed: () => _changePage(0),
+                            //HOME
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                IconButton(
+                                  hoverColor: Colors.transparent,
+                                  splashColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  icon: navigationController
+                                          .checkIndex(Pages.home)
+                                      ? Icon(
+                                          Ionicons.home,
+                                          color: Styles.orangeColor,
+                                        )
+                                      : Icon(
+                                          Ionicons.home_outline,
+                                          color: Colors.grey.shade400,
+                                        ),
+                                  onPressed: () => navigationController
+                                      .currentIndex = Pages.home,
+                                ),
+                                if (navigationController.checkIndex(Pages.home))
+                                  Text(
+                                    "Home",
+                                    style: Styles.headLineStyle4
+                                        .copyWith(color: Styles.orangeColor),
+                                  )
+                              ],
+                            ),
+
+                            //SEARCH
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                IconButton(
+                                  hoverColor: Colors.transparent,
+                                  splashColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  icon: navigationController
+                                          .checkIndex(Pages.search)
+                                      ? Icon(
+                                          Ionicons.search,
+                                          color: Styles.orangeColor,
+                                        )
+                                      : Icon(
+                                          Ionicons.search_outline,
+                                          color: Colors.grey.shade400,
+                                        ),
+                                  onPressed: () => navigationController
+                                      .currentIndex = Pages.search,
+                                ),
+                                if (navigationController
+                                    .checkIndex(Pages.search))
+                                  Text(
+                                    "Search",
+                                    style: Styles.headLineStyle4
+                                        .copyWith(color: Styles.orangeColor),
+                                  )
+                              ],
+                            ),
+
+                            Container(
+                              width: AppLayout.getSize(context).width * 0.20,
+                            ),
+
+                            // CATALOG
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                IconButton(
+                                  hoverColor: Colors.transparent,
+                                  splashColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  icon: navigationController
+                                          .checkIndex(Pages.catalog)
+                                      ? Icon(
+                                          Ionicons.receipt,
+                                          color: Styles.orangeColor,
+                                        )
+                                      : Icon(
+                                          Ionicons.receipt_outline,
+                                          color: Colors.grey.shade400,
+                                        ),
+                                  onPressed: () => navigationController
+                                      .currentIndex = Pages.catalog,
+                                ),
+                                if (navigationController
+                                    .checkIndex(Pages.catalog))
+                                  Text(
+                                    "Catalog",
+                                    style: Styles.headLineStyle4
+                                        .copyWith(color: Styles.orangeColor),
+                                  )
+                              ],
+                            ),
+
+                            // PROFILE
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                IconButton(
+                                  hoverColor: Colors.transparent,
+                                  splashColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  icon: navigationController
+                                          .checkIndex(Pages.profile)
+                                      ? Icon(
+                                          Ionicons.person,
+                                          color: Styles.orangeColor,
+                                        )
+                                      : Icon(
+                                          Ionicons.person_outline,
+                                          color: Colors.grey.shade400,
+                                        ),
+                                  onPressed: () => navigationController
+                                      .currentIndex = Pages.profile,
+                                ),
+                                if (navigationController
+                                    .checkIndex(Pages.profile))
+                                  Text(
+                                    "Profile",
+                                    style: Styles.headLineStyle4
+                                        .copyWith(color: Styles.orangeColor),
+                                  )
+                              ],
                             ),
                           ],
-                        ),
-
-                        //SEARCH
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              hoverColor: Colors.transparent,
-                              splashColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              icon: _currentPage == 1
-                                  ? Icon(
-                                Ionicons.search,
-                                color: Styles.orangeColor,
-                              )
-                                  : Icon(
-                                Ionicons.search_outline,
-                                color: Colors.grey.shade400,
-                              ),
-                              onPressed: () => _changePage(1),
-                            ),
-                          ],
-                        ),
-
-                        Container(
-                          width: AppLayout.getSize(context).width * 0.20,
-                        ),
-
-                        // HISTORY
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              hoverColor: Colors.transparent,
-                              splashColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              icon: _currentPage == 2
-                                  ? Icon(
-                                Ionicons.receipt,
-                                color: Styles.orangeColor,
-                              )
-                                  : Icon(
-                                Ionicons.receipt_outline,
-                                color: Colors.grey.shade400,
-                              ),
-                              onPressed: () => _changePage(2),
-                            ),
-                          ],
-                        ),
-
-                        // PROFILE
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              hoverColor: Colors.transparent,
-                              splashColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              icon: _currentPage == 3
-                                  ? Icon(
-                                Ionicons.person,
-                                color: Styles.orangeColor,
-                              )
-                                  : Icon(
-                                Ionicons.person_outline,
-                                color: Colors.grey.shade400,
-                              ),
-                              onPressed: () => _changePage(3),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                        )),
                   )
                 ],
               ),
@@ -247,4 +270,3 @@ class _RootState extends State<Root> {
     );
   }
 }
-

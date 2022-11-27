@@ -86,9 +86,9 @@ class NotificationService {
 
     Get.dialog(
       CustomDialog(
-        title: "Reminder setted",
+        title: "Reminder set",
         titleColor: Styles.successColor,
-        description: "Reminder succesfully setted to ${DateFormat.MMMMd().format(dateTime)} at ${DateFormat.Hm().format(dateTime)}",
+        description: "Reminder succesfully set to ${DateFormat.MMMMd().format(dateTime)} at ${DateFormat.Hm().format(dateTime)}",
         icon: Icon(Ionicons.checkmark, color: Styles.successColor,),
         btnText: Text("Close", style: Styles.textStyle.copyWith(color: Colors.white)),
         btnStyle: Styles.successButtonStyle,

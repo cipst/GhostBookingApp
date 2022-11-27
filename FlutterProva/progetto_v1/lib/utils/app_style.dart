@@ -7,6 +7,7 @@ class Styles {
   static Color blueColor = const Color(0xFF526799);
   static Color successColor = const Color(0xFF00D23C);
   static Color errorColor = const Color(0xFFEE296B);
+  static Color greyColor = const Color(0xFF818181);
 
   static TextStyle textStyle = TextStyle(
     fontSize: 16,

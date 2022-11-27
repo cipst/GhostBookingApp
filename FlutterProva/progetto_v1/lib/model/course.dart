@@ -15,4 +15,9 @@ class Course {
   ];
 
   String get name => _name;
+
+  @override
+  String toString() {
+    return "Course: $name";
+  }
 }

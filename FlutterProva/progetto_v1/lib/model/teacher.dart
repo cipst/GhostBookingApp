@@ -18,5 +18,8 @@ class Teacher {
 
   String? get image => _image;
 
-
+  @override
+  String toString() {
+    return "Teacher: $name";
+  }
 }

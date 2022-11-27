@@ -1,10 +1,14 @@
 // import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:progetto_v1/controller/navigation_controller.dart';
+import 'package:progetto_v1/model/appointment.dart';
 import 'package:progetto_v1/model/lesson.dart';
 import 'package:progetto_v1/model/teacher.dart';
-import 'package:progetto_v1/ui/components/card_upcoming_lessons.dart';
+import 'package:progetto_v1/ui/components/card_today_lesson.dart';
 import 'package:progetto_v1/ui/components/empty_data.dart';
+import 'package:progetto_v1/ui/pages/catalog_page.dart';
+import 'package:progetto_v1/ui/pages/search_page.dart';
 // import 'package:progetto_v1/ui/pages/teacher_screen.dart';
 import 'package:progetto_v1/utils/app_layout.dart';
 import 'package:progetto_v1/utils/app_style.dart';
@@ -21,6 +25,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final navigationController = Get.put(NavigationController());
 
   @override
   Widget build(BuildContext context) {
@@ -47,45 +52,65 @@ class _HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  "Today Lessons",
+                  "Today's Lessons",
                   style: Styles.headLineStyle,
                 ),
-                GestureDetector(
-                  onTap: () => debugPrint("See All..."),
-                  child: Row(
-                    children: [
-                      Text(
-                        "See All",
-                        style: Styles.textStyle
-                            .copyWith(color: Styles.orangeColor),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 2),
-                        child: Icon(
-                          Ionicons.chevron_forward,
-                          size: 12,
-                          color: Styles.orangeColor,
+                Lesson.list.isEmpty
+                    ? GestureDetector(
+                        onTap: () =>
+                            navigationController.currentIndex = Pages.search,
+                        child: Row(
+                          children: [
+                            Text(
+                              "Add",
+                              style: Styles.textStyle
+                                  .copyWith(color: Styles.orangeColor),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 2),
+                              child: Icon(
+                                Ionicons.add,
+                                size: 12,
+                                color: Styles.orangeColor,
+                              ),
+                            ),
+                          ],
+                        ))
+                    : GestureDetector(
+                        onTap: () =>
+                            navigationController.currentIndex = Pages.catalog,
+                        child: Row(
+                          children: [
+                            Text(
+                              "See All",
+                              style: Styles.textStyle
+                                  .copyWith(color: Styles.orangeColor),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 2),
+                              child: Icon(
+                                Ionicons.chevron_forward,
+                                size: 12,
+                                color: Styles.orangeColor,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
-                )
+                      )
               ],
             ),
           ),
-          Lesson.list.isEmpty ?
-          const EmptyData(text: "No data")
-              :
-          Column(
-            mainAxisSize: MainAxisSize.max,
-            children: List.generate(Lesson.list.length, (index) =>
-              CardUpcomingLesson(
-                  course: Lesson.list[index].course,
-                  teacher: Lesson.list[index].teacher,
-                  dateTime: Lesson.list[index].dateTime,
-              )
-            ),
-          ),
+          Lesson.list.isEmpty
+              ? const EmptyData(text: "You have no appointment today")
+              : Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: List.generate(
+                      Lesson.list.length,
+                      (index) => CardTodayLesson(
+                            Appointment(Lesson.list[index],
+                                DateTime.now().add(Duration(hours: index))),
+                          )),
+                ),
         ],
       ),
     );
@@ -140,10 +165,10 @@ class _HomePageState extends State<HomePage> {
             width: 60,
             height: 60,
             decoration: BoxDecoration(
-              color: Colors.white,
+              // color: Colors.white,
               borderRadius: BorderRadius.circular(15),
               image: const DecorationImage(
-                scale: 11,
+                scale: 1,
                 image: AssetImage("assets/book.png"),
               ),
             ),

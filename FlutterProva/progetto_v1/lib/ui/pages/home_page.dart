@@ -1,18 +1,10 @@
-// import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:progetto_v1/controller/navigation_controller.dart';
-import 'package:progetto_v1/model/appointment.dart';
+import 'package:progetto_v1/model/booking.dart';
 import 'package:progetto_v1/model/lesson.dart';
-import 'package:progetto_v1/model/teacher.dart';
 import 'package:progetto_v1/ui/components/card_today_lesson.dart';
 import 'package:progetto_v1/ui/components/empty_data.dart';
-import 'package:progetto_v1/ui/pages/catalog_page.dart';
-import 'package:progetto_v1/ui/pages/search_page.dart';
-// import 'package:progetto_v1/ui/pages/teacher_screen.dart';
-import 'package:progetto_v1/utils/app_layout.dart';
 import 'package:progetto_v1/utils/app_style.dart';
-// import 'package:progetto_v1/utils/card_upcoming_lessons.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
@@ -55,62 +47,66 @@ class _HomePageState extends State<HomePage> {
                   "Today's Lessons",
                   style: Styles.headLineStyle,
                 ),
-                Lesson.list.isEmpty
-                    ? GestureDetector(
-                        onTap: () =>
-                            navigationController.currentIndex = Pages.search,
-                        child: Row(
-                          children: [
-                            Text(
-                              "Add",
-                              style: Styles.textStyle
-                                  .copyWith(color: Styles.orangeColor),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 2),
-                              child: Icon(
-                                Ionicons.add,
-                                size: 12,
-                                color: Styles.orangeColor,
-                              ),
-                            ),
-                          ],
-                        ))
-                    : GestureDetector(
-                        onTap: () =>
-                            navigationController.currentIndex = Pages.catalog,
-                        child: Row(
-                          children: [
-                            Text(
-                              "See All",
-                              style: Styles.textStyle
-                                  .copyWith(color: Styles.orangeColor),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 2),
-                              child: Icon(
-                                Ionicons.chevron_forward,
-                                size: 12,
-                                color: Styles.orangeColor,
-                              ),
-                            ),
-                          ],
+                // Lesson.list.isEmpty
+                //     ?
+                GestureDetector(
+                    onTap: () =>
+                        navigationController.currentIndex = Pages.search,
+                    child: Row(
+                      children: [
+                        Text(
+                          "Add",
+                          style: Styles.textStyle
+                              .copyWith(color: Styles.orangeColor),
                         ),
-                      )
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 2),
+                          child: Icon(
+                            Ionicons.add,
+                            size: 12,
+                            color: Styles.orangeColor,
+                          ),
+                        ),
+                      ],
+                    ))
+                // : GestureDetector(
+                //     onTap: () =>
+                //         navigationController.currentIndex = Pages.catalog,
+                //     child: Row(
+                //       children: [
+                //         Text(
+                //           "See All",
+                //           style: Styles.textStyle
+                //               .copyWith(color: Styles.orangeColor),
+                //         ),
+                //         Padding(
+                //           padding: const EdgeInsets.only(bottom: 2),
+                //           child: Icon(
+                //             Ionicons.chevron_forward,
+                //             size: 12,
+                //             color: Styles.orangeColor,
+                //           ),
+                //         ),
+                //       ],
+                //     ),
+                //   )
               ],
             ),
           ),
-          Lesson.list.isEmpty
-              ? const EmptyData(text: "You have no appointment today")
-              : Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: List.generate(
-                      Lesson.list.length,
-                      (index) => CardTodayLesson(
-                            Appointment(Lesson.list[index],
-                                DateTime.now().add(Duration(hours: index))),
-                          )),
-                ),
+          // Lesson.list.isEmpty
+          // ?
+          const EmptyData(text: "You have no appointment today")
+          // : Column(
+          //     mainAxisSize: MainAxisSize.max,
+          //     children: List.generate(
+          //         Lesson.list.length,
+          //         (index) => CardTodayLesson(
+          //               Appointment(
+          //                 Lesson.list[index],
+          //                 DateTime.now().add(Duration(hours: index)),
+          //               ),
+          //             )),
+          //   ),
         ],
       ),
     );

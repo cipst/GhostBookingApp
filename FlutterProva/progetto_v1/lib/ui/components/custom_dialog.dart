@@ -34,27 +34,18 @@ class CustomDialog extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
-      elevation: 0,
+      elevation: 20,
       backgroundColor: Colors.transparent,
       child: Stack(
         children: <Widget>[
           Container(
             padding: const EdgeInsets.only(
-                left: 20,
-                top: 45+20,
-                right: 20,
-                bottom: 20
-            ),
-            margin: const EdgeInsets.only(top: 45),
+                left: 20, top: 45 + 20, right: 20, bottom: 20),
+            margin: const EdgeInsets.only(top: 45, bottom: 10),
             decoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: const [
-                  BoxShadow(color: Colors.black,offset: Offset(0,10),
-                      blurRadius: 10
-                  ),
-                ]
+              shape: BoxShape.rectangle,
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -62,19 +53,24 @@ class CustomDialog extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(title,
+                    Text(
+                      title,
                       style: Styles.headLineStyle.copyWith(color: titleColor),
                     ),
                     icon.paddingOnly(bottom: 4),
                   ],
                 ),
                 const Gap(15),
-                Text(description, style: Styles.textStyle, textAlign: TextAlign.center,),
+                Text(
+                  description,
+                  style: Styles.textStyle,
+                  textAlign: TextAlign.center,
+                ),
                 const Gap(22),
                 Align(
                   alignment: Alignment.bottomRight,
                   child: ElevatedButton(
-                    onPressed: (){
+                    onPressed: () {
                       Get.back();
                     },
                     style: btnStyle,
@@ -84,7 +80,7 @@ class CustomDialog extends StatelessWidget {
               ],
             ),
           ),
-          if(svgPath != null)
+          if (svgPath != null)
             Positioned(
               top: -20,
               left: 1,

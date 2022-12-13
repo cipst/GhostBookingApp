@@ -45,6 +45,8 @@ dependencies:
   date_picker_timeline:
   path:
   path_provider:
+# for database
+  sqflite:
 # for date time
   intl:
 # for notifications

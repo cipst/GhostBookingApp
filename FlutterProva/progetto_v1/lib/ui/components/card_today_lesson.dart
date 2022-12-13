@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:progetto_v1/controller/navigation_controller.dart';
-import 'package:progetto_v1/model/appointment.dart';
+import 'package:progetto_v1/model/booking.dart';
 import 'package:progetto_v1/ui/components/custom_dialog.dart';
 import 'package:progetto_v1/ui/components/reminder_dialog.dart';
 import 'package:progetto_v1/utils/app_layout.dart';
@@ -14,7 +14,7 @@ import 'package:progetto_v1/utils/app_style.dart';
 import 'package:progetto_v1/utils/notification_service.dart';
 
 class CardTodayLesson extends StatefulWidget {
-  final Appointment appointment;
+  final Booking appointment;
 
   const CardTodayLesson(this.appointment, {super.key});
 
@@ -67,7 +67,7 @@ class _CardTodayLessonState extends State<CardTodayLesson> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               image: DecorationImage(
-                image: NetworkImage(widget.appointment.lesson.teacher.image!),
+                image: NetworkImage(widget.appointment.lesson!.teacher!.image!),
               ),
             ),
           ),
@@ -75,12 +75,12 @@ class _CardTodayLessonState extends State<CardTodayLesson> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                widget.appointment.lesson.teacher.name!,
+                widget.appointment.lesson!.teacher!.name!,
                 style: Styles.headLineStyle2.copyWith(color: Colors.black),
               ),
               const Gap(6),
               Text(
-                widget.appointment.lesson.course.name,
+                widget.appointment.lesson!.course!.name!,
                 style: Styles.textStyle,
               ),
               const Gap(8),
@@ -95,7 +95,7 @@ class _CardTodayLessonState extends State<CardTodayLesson> {
                       ),
                       const Gap(4),
                       Text(
-                          DateFormat.MMMd().format(widget.appointment.dateTime))
+                          DateFormat.MMMd().format(widget.appointment.lesson.dateTime!))
                     ],
                   ),
                   const Gap(20),
@@ -106,7 +106,7 @@ class _CardTodayLessonState extends State<CardTodayLesson> {
                         size: 15,
                       ),
                       const Gap(4),
-                      Text(DateFormat.Hm().format(widget.appointment.dateTime))
+                      Text(DateFormat.Hm().format(widget.appointment.lesson.dateTime!))
                     ],
                   ),
                 ],
@@ -260,7 +260,6 @@ class _CardTodayLessonState extends State<CardTodayLesson> {
       ReminderDialog(
         controller: _controller,
         appointment: widget.appointment,
-        dateTime: widget.appointment.dateTime,
       ),
     );
   }
@@ -270,7 +269,7 @@ class _CardTodayLessonState extends State<CardTodayLesson> {
         title: "Cancel reminder?",
         titleStyle: Styles.headLineStyle,
         middleText:
-            // "Reminder set at ${DateFormat.Hm().format(widget.appointment.dateTime.subtract(Duration(minutes: _minutesEarly)))}\n"
+            // "Reminder set at ${DateFormat.Hm().format(widget.appointment.dateTime!.subtract(Duration(minutes: _minutesEarly)))}\n"
             "\nAre you sure you want to remove the reminder?",
         middleTextStyle: Styles.textStyle,
         actions: [
@@ -319,11 +318,11 @@ class _CardTodayLessonState extends State<CardTodayLesson> {
                       borderRadius: BorderRadius.circular(15),
                       image: DecorationImage(
                           image: NetworkImage(
-                              widget.appointment.lesson.teacher.image!))),
+                              widget.appointment.lesson!.teacher!.image!))),
                 ),
               ),
               const Gap(15),
-              Text(widget.appointment.lesson.teacher.name!,
+              Text(widget.appointment.lesson!.teacher!.name!,
                   style: Styles.titleStyle),
               const Gap(30),
               Text(
@@ -343,7 +342,7 @@ class _CardTodayLessonState extends State<CardTodayLesson> {
                     ),
                     const Gap(10),
                     Text(
-                      widget.appointment.lesson.course.name,
+                      widget.appointment.lesson!.course!.name!,
                       style: Styles.headLineStyle2.copyWith(
                         color: Colors.black,
                       ),
@@ -359,7 +358,7 @@ class _CardTodayLessonState extends State<CardTodayLesson> {
                     const Icon(Ionicons.calendar_outline),
                     const Gap(10),
                     Text(
-                      DateFormat.MMMMd().format(widget.appointment.dateTime),
+                      DateFormat.MMMMd().format(widget.appointment.lesson.dateTime!),
                       style: Styles.headLineStyle2.copyWith(
                         color: Colors.black,
                       ),
@@ -375,7 +374,7 @@ class _CardTodayLessonState extends State<CardTodayLesson> {
                     const Icon(Ionicons.time_outline),
                     const Gap(10),
                     Text(
-                      DateFormat.Hm().format(widget.appointment.dateTime),
+                      DateFormat.Hm().format(widget.appointment.lesson.dateTime!),
                       style: Styles.headLineStyle2.copyWith(
                         color: Colors.black,
                       ),
@@ -431,7 +430,7 @@ class _CardTodayLessonState extends State<CardTodayLesson> {
           _navigationController.currentIndex = Pages.catalog;
           Get.back();
         },
-        // Get.snackbar("Show in catalog", widget.appointment.lesson.teacher.name!),
+        // Get.snackbar("Show in catalog", widget.appointment.lesson!.teacher!.name!),
         style: Styles.blueButtonStyleOutline,
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -453,7 +452,7 @@ class _CardTodayLessonState extends State<CardTodayLesson> {
         onPressed: () {
           Get.back();
           Get.snackbar(
-              "Cancel lesson", widget.appointment.lesson.teacher.name!);
+              "Cancel lesson", widget.appointment.lesson!.teacher!.name!);
         },
         style: Styles.errorButtonStyle,
         child: Row(

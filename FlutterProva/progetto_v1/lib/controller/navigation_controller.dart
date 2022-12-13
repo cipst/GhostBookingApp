@@ -11,7 +11,10 @@ class NavigationController extends GetxController {
   var _currentIndex = Pages.home.obs;
   final List<Widget> pages = [
     const HomePage(),
-    const SearchPage(),
+    // const SearchPage(),
+    const Center(
+      child: Text("SEARCH"),
+    ),
     const CatalogPage(),
     const ProfilePage(),
   ];
@@ -21,7 +24,7 @@ class NavigationController extends GetxController {
 
   Widget get currentPage => pages[currentIndex.index];
 
-  bool checkIndex(Pages index){
+  bool checkIndex(Pages index) {
     return currentIndex == index;
   }
 }

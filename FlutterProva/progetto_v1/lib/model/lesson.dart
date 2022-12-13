@@ -1,54 +1,59 @@
-import 'dart:math';
-
 import 'package:progetto_v1/model/course.dart';
 import 'package:progetto_v1/model/teacher.dart';
 
 class Lesson {
+  int? id;
+  final Course course;
+  final Teacher teacher;
+  final DateTime dateTime;
 
-  Course _course;
-  Teacher _teacher;
-  // DateTime _dateTime;
+  Lesson({
+    this.id,
+    required this.course,
+    required this.teacher,
+    required this.dateTime,
+  });
 
-  Lesson(this._course, this._teacher);
+  // static final list = [
+  //   Lesson(
+  //     Course.list[Random().nextInt(Course.list.length)],
+  //     Teacher.list[Random().nextInt(Teacher.list.length)],
+  //   ),
+  //   Lesson(
+  //     Course.list[Random().nextInt(Course.list.length)],
+  //     Teacher.list[Random().nextInt(Teacher.list.length)],
+  //   ),
+  //   Lesson(
+  //     Course.list[Random().nextInt(Course.list.length)],
+  //     Teacher.list[Random().nextInt(Teacher.list.length)],
+  //   ),
+  //   Lesson(
+  //     Course.list[Random().nextInt(Course.list.length)],
+  //     Teacher.list[Random().nextInt(Teacher.list.length)],
+  //   ),
+  //   Lesson(
+  //     Course.list[Random().nextInt(Course.list.length)],
+  //     Teacher.list[Random().nextInt(Teacher.list.length)],
+  //   ),
+  //   Lesson(
+  //     Course.list[Random().nextInt(Course.list.length)],
+  //     Teacher.list[Random().nextInt(Teacher.list.length)],
+  //   ),
+  // ];
 
-  static final list = [
-    Lesson(
-        Course.list[Random().nextInt(Course.list.length)],
-        Teacher.list[Random().nextInt(Teacher.list.length)],
-        // DateTime.now().add(const Duration(hours: 1)),
-    ),
-    Lesson(
-        Course.list[Random().nextInt(Course.list.length)],
-        Teacher.list[Random().nextInt(Teacher.list.length)],
-        // DateTime.now().add(const Duration(hours: 2)),
-    ),
-    Lesson(
-        Course.list[Random().nextInt(Course.list.length)],
-        Teacher.list[Random().nextInt(Teacher.list.length)],
-        // DateTime.now().add(const Duration(hours: 3)),
-    ),
-    Lesson(
-        Course.list[Random().nextInt(Course.list.length)],
-        Teacher.list[Random().nextInt(Teacher.list.length)],
-        // DateTime.now().add(const Duration(hours: 4)),
-    ),
-    Lesson(
-        Course.list[Random().nextInt(Course.list.length)],
-        Teacher.list[Random().nextInt(Teacher.list.length)],
-        // DateTime.parse("2022-11-21 16:00:00"),
-    ),
-    Lesson(
-        Course.list[Random().nextInt(Course.list.length)],
-        Teacher.list[Random().nextInt(Teacher.list.length)],
-        // DateTime.parse("2022-11-21 17:00:00"),
-    ),
-  ];
+  factory Lesson.fromJson(Map<String, dynamic> json) => Lesson(
+        id: json["id"],
+        course: json["course"],
+        teacher: json["teacher"],
+        dateTime: json["dateTime"],
+      );
 
-  Course get course => _course;
-
-  Teacher get teacher => _teacher;
-
-  // DateTime get dateTime => _dateTime;
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "course": course,
+        "teacher": teacher,
+        "dateTime": dateTime,
+      };
 
   @override
   String toString() {

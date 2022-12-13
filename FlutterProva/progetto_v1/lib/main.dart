@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:progetto_v1/controller/navigation_controller.dart';
-import 'package:progetto_v1/ui/pages/catalog_page.dart';
-import 'package:progetto_v1/ui/pages/home_page.dart';
-import 'package:progetto_v1/ui/pages/search_page.dart';
+import 'package:progetto_v1/db/db_helper.dart';
 import 'package:progetto_v1/utils/app_layout.dart';
 import 'package:progetto_v1/utils/app_style.dart';
 import 'package:progetto_v1/ui/components/custom_bottom_bar.dart';

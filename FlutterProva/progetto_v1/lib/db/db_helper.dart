@@ -149,4 +149,10 @@ class DBHelper {
     debugPrint("Closing Database...");
   }
 
+  Future drop() async {
+    final db = await instance.database;
+    db.execute("DETACH DATABASE booking;");
+    debugPrint("DROPPING Database...");
+  }
+
 }

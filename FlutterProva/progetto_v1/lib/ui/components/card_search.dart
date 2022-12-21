@@ -4,12 +4,13 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:progetto_v1/model/booking.dart';
+import 'package:progetto_v1/model/lesson.dart';
 import 'package:progetto_v1/utils/app_style.dart';
 
 class CardSearch extends StatefulWidget {
-  final Booking appointment;
+  final Lesson lesson;
 
-  const CardSearch(this.appointment, {super.key});
+  const CardSearch(this.lesson, {super.key});
 
   @override
   State<CardSearch> createState() => _CardSearchState();
@@ -47,7 +48,7 @@ class _CardSearchState extends State<CardSearch> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               image: DecorationImage(
-                image: NetworkImage(widget.appointment.lesson!.teacher!.image!),
+                image: NetworkImage(widget.lesson.teacher.image),
               ),
             ),
           ),
@@ -55,12 +56,12 @@ class _CardSearchState extends State<CardSearch> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                widget.appointment.lesson!.teacher!.name!,
+                widget.lesson.teacher.name,
                 style: Styles.headLineStyle2.copyWith(color: Colors.black),
               ),
               const Gap(6),
               Text(
-                widget.appointment.lesson!.course!.name!,
+                widget.lesson.course.name,
                 style: Styles.textStyle,
               ),
               const Gap(8),
@@ -71,7 +72,7 @@ class _CardSearchState extends State<CardSearch> {
                     size: 15,
                   ),
                   const Gap(4),
-                  Text(DateFormat.Hm().format(widget.appointment.lesson.dateTime!))
+                  Text(DateFormat.Hm().format(widget.lesson.dateTime))
                 ],
               )
             ],
@@ -115,11 +116,11 @@ class _CardSearchState extends State<CardSearch> {
                       borderRadius: BorderRadius.circular(15),
                       image: DecorationImage(
                           image: NetworkImage(
-                              widget.appointment.lesson!.teacher!.image!))),
+                              widget.lesson.teacher.image))),
                 ),
               ),
               const Gap(15),
-              Text(widget.appointment.lesson!.teacher!.name!,
+              Text(widget.lesson.teacher.name,
                   style: Styles.titleStyle),
               const Gap(30),
               Text(
@@ -139,7 +140,7 @@ class _CardSearchState extends State<CardSearch> {
                     ),
                     const Gap(10),
                     Text(
-                      widget.appointment.lesson!.course!.name!,
+                      widget.lesson.course.name,
                       style: Styles.headLineStyle2.copyWith(
                         color: Colors.black,
                       ),
@@ -155,7 +156,7 @@ class _CardSearchState extends State<CardSearch> {
                     const Icon(Ionicons.calendar_outline),
                     const Gap(10),
                     Text(
-                      DateFormat.MMMMd().format(widget.appointment.lesson.dateTime!),
+                      DateFormat.MMMMd().format(widget.lesson.dateTime),
                       style: Styles.headLineStyle2.copyWith(
                         color: Colors.black,
                       ),
@@ -171,7 +172,7 @@ class _CardSearchState extends State<CardSearch> {
                     const Icon(Ionicons.time_outline),
                     const Gap(10),
                     Text(
-                      DateFormat.Hm().format(widget.appointment.lesson.dateTime!),
+                      DateFormat.Hm().format(widget.lesson.dateTime),
                       style: Styles.headLineStyle2.copyWith(
                         color: Colors.black,
                       ),
@@ -185,7 +186,7 @@ class _CardSearchState extends State<CardSearch> {
               ElevatedButton(
                 onPressed: () {
                   Get.snackbar(
-                      "RESERVATION", widget.appointment.lesson!.teacher!.name!);
+                      "RESERVATION", widget.lesson.teacher.name);
                   _dialogConfirmedReservation;
                 },
                 style: Styles.successButtonStyle,

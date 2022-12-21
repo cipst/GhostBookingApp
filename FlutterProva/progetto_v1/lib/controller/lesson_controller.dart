@@ -8,7 +8,9 @@ class LessonController extends GetxController {
 
   void getAllLessons() async {
     try {
-      List<Lesson> lessonsList = await LessonHelper.getAllLessons();
+      List<Lesson>? lessonsList = await LessonHelper.getAllLessons();
+      if(lessonsList == null) return;
+
       int i = 0;
       for (Lesson t in lessonsList) {
         _lessons[i] = t;

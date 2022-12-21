@@ -11,10 +11,10 @@ class NavigationController extends GetxController {
   var _currentIndex = Pages.home.obs;
   final List<Widget> pages = [
     const HomePage(),
-    // const SearchPage(),
-    const Center(
-      child: Text("SEARCH"),
-    ),
+    const SearchPage(),
+    // const Center(
+    //   child: Text("SEARCH"),
+    // ),
     const CatalogPage(),
     const ProfilePage(),
   ];

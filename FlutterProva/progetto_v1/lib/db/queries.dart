@@ -4,7 +4,8 @@ class Queries {
     `email` VARCHAR(50) PRIMARY KEY,
     `name` VARCHAR(50) NOT NULL,
     `image` VARCHAR(60), 
-    `password` VARCHAR(50) NOT NULL
+    `password` VARCHAR(50) NOT NULL,
+    `phone` VARCHAR(20) NOT NULL
   );
   ''';
 
@@ -34,6 +35,7 @@ class Queries {
   ''';
 
   // reminder is 16 char because --> yyyy-MM-dd HH:mm
+  // status: 0 -> active | 1 -> done | 2 -> canceled
   static const String createBookingTable = '''
   CREATE TABLE `Booking` (
     `id` INTEGER PRIMARY KEY AUTOINCREMENT,

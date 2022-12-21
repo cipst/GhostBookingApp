@@ -4,12 +4,12 @@ import 'package:progetto_v1/model/lesson.dart';
 class LessonHelper {
   static final DBHelper _instance = DBHelper.instance;
 
-  static Future<List<Lesson>> getAllLessons() async {
+  static Future<List<Lesson>?> getAllLessons() async {
     final db = await _instance.database;
 
     final List<Map<String, dynamic>> maps = await db.query("Lesson");
 
-    if (maps.isEmpty) throw Exception("Lesson table is empty");
+    if (maps.isEmpty) return null;
 
     List<Lesson> lessons = <Lesson>[];
     int i = 0;

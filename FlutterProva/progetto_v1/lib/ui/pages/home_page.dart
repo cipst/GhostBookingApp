@@ -95,7 +95,7 @@ class _HomePageState extends State<HomePage> {
           ),
           // Lesson.list.isEmpty
           // ?
-          const EmptyData(text: "You have no appointment today")
+          const EmptyData(text: "You have no lesson today")
           // : Column(
           //     mainAxisSize: MainAxisSize.max,
           //     children: List.generate(

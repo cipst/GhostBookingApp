@@ -45,12 +45,19 @@ class _CardSearchState extends State<CardSearch> {
             width: 80,
             height: 80,
             margin: const EdgeInsets.only(right: 12),
-            decoration: BoxDecoration(
+            decoration:
+            widget.lesson.teacher.image != null ?
+            BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               image: DecorationImage(
-                image: NetworkImage(widget.lesson.teacher.image),
+                image: NetworkImage(widget.lesson.teacher.image!),
               ),
-            ),
+            )
+                :
+            BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.red,
+            )
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,7 +123,9 @@ class _CardSearchState extends State<CardSearch> {
                       borderRadius: BorderRadius.circular(15),
                       image: DecorationImage(
                           image: NetworkImage(
-                              widget.lesson.teacher.image))),
+                              widget.lesson.teacher.image!),
+                      ),
+                  ),
                 ),
               ),
               const Gap(15),

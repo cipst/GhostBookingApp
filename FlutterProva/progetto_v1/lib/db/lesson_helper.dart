@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 import 'package:progetto_v1/db/db_helper.dart';
 import 'package:progetto_v1/model/lesson.dart';
 
@@ -7,14 +9,33 @@ class LessonHelper {
   static Future<List<Lesson>?> getAllLessons() async {
     final db = await _instance.database;
 
-    final List<Map<String, dynamic>> maps = await db.query("Lesson");
+    final List<Map<String, dynamic>> maps = await db.rawQuery("""
+      SELECT l.*, t.image FROM Lesson l JOIN Teacher t ON l.teacher = t.name
+    """);
 
     if (maps.isEmpty) return null;
 
     List<Lesson> lessons = <Lesson>[];
-    int i = 0;
     for (Map<String, dynamic> l in maps) {
-      lessons[i++] = Lesson.fromJson(l);
+      lessons.add(Lesson.fromJson(l));
+    }
+
+    return lessons;
+  }
+
+  static Future<List<Lesson>?> getLessons(DateTime dateTime) async {
+    final db = await _instance.database;
+
+    final List<Map<String, dynamic>> maps = await db.rawQuery("""
+      SELECT l.*, t.image FROM Lesson AS l JOIN Teacher AS t ON l.teacher = t.name
+        WHERE l.dateTime LIKE ?
+    """, ["${DateFormat.yMd().format(dateTime)}%"]);
+
+    if (maps.isEmpty) return null;
+
+    List<Lesson> lessons = <Lesson>[];
+    for (Map<String, dynamic> l in maps) {
+      lessons.add(Lesson.fromJson(l));
     }
 
     return lessons;

@@ -1,12 +1,11 @@
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:progetto_v1/db/lesson_helper.dart';
-import 'package:progetto_v1/model/booking.dart';
-import 'package:progetto_v1/model/lesson.dart';
-import 'package:progetto_v1/model/teacher.dart';
+import 'package:progetto_v1/controller/lesson_controller.dart';
 import 'package:progetto_v1/ui/components/card_search.dart';
+import 'package:progetto_v1/ui/components/empty_data.dart';
 import 'package:progetto_v1/utils/app_layout.dart';
 import 'package:progetto_v1/utils/app_style.dart';
 
@@ -21,25 +20,50 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   CatalogType _currentCatalog = CatalogType.date;
-  DateTime _selectedDate = DateTime.now();
-  List<Lesson>? lessons;
+  DateTime _selectedDate = DateTime(2023, 01, 09);
+  LessonController lessonController = Get.put(LessonController());
 
   @override
   void initState(){
-    _getLessons();
+    lessonController.getLessons(_selectedDate);
     super.initState();
   }
-
-  _getLessons() async{
-    lessons = await LessonHelper.getAllLessons();
-    debugPrint(lessons == null ? "LESSONS EMPTY" : "LESSONS NOT EMPTY");
-  }
-
 
   set currentCatalog(CatalogType newCatalog) {
     setState(() {
       _currentCatalog = newCatalog;
     });
+  }
+
+  _nextTab(){
+    switch(_currentCatalog){
+      case CatalogType.date:
+        currentCatalog = CatalogType.teacher;
+        break;
+
+      case CatalogType.teacher:
+        currentCatalog = CatalogType.subject;
+        break;
+
+      case CatalogType.subject:
+      default:
+        break;
+    }
+  }
+
+  _previousTab() {
+    switch(_currentCatalog){
+      case CatalogType.teacher:
+        currentCatalog = CatalogType.date;
+        break;
+      case CatalogType.subject:
+        currentCatalog = CatalogType.teacher;
+        break;
+
+      case CatalogType.date:
+      default:
+        break;
+    }
   }
 
   bool isCurrentCatalog(CatalogType checkCatalog) {
@@ -57,6 +81,11 @@ class _SearchPageState extends State<SearchPage> {
           snap: true,
           floating: true,
         ),
+        if(lessonController.errorText.value != "")
+          SliverToBoxAdapter(
+              child: Center(child: Obx(() => Text(lessonController.errorText.value)),
+              )
+          ),
         if (isCurrentCatalog(CatalogType.date))
           SliverAppBar(
             title: _datePicker(),
@@ -65,7 +94,9 @@ class _SearchPageState extends State<SearchPage> {
             backgroundColor: Styles.bgColor,
             pinned: true,
           ),
-        _catalogList(),
+        Obx(() =>
+            _catalogList(),
+        ),
         SliverToBoxAdapter(
           child: Gap(AppLayout.initNavigationBarHeight + 5),
         )
@@ -187,25 +218,22 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget _catalogList() {
     if (isCurrentCatalog(CatalogType.date)) {
+      if(lessonController.lessons.isEmpty) {
+        return const SliverToBoxAdapter(
+          child: Padding(
+            padding: EdgeInsets.only(top: 30),
+            child: EmptyData(text: "There are no lesson today"),
+          ),
+        );
+      }
+
       return SliverList(
         delegate: SliverChildBuilderDelegate(
-              (context, index) => CardSearch(lessons![index]),
-          childCount: lessons == null ? 0 : lessons!.length,
+              (context, index) => CardSearch(lessonController.lessons[index]),
+          childCount: lessonController.lessons.length,
         ),
-        // delegate: SliverChildBuilderDelegate(
-        //       (context, index) {
-        //
-        //     LessonHelper.getAllLessons().then((lessons){
-        //       for (var lesson in lessons) {
-        //         return CardSearch(
-        //             lesson
-        //         );
-        //       }
-        //     });
-        //   },
-        //   childCount: Lesson.list.length,
-        // ),
       );
+
     } else if (isCurrentCatalog(CatalogType.teacher)) {
       return const SliverToBoxAdapter(
         child: Center(child: Text("Teachers")),
@@ -226,13 +254,17 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget _datePicker() {
+
     return DatePicker(
-      DateTime(2022, 11, 28),
+      DateTime(2023, 01, 09),
       height: 100,
       width: 70,
       daysCount: 9,
-      inactiveDates: [DateTime(2022, 12, 3), DateTime(2022, 12, 4)],
-      initialSelectedDate: DateTime(2022, 11, 28),
+      inactiveDates: [
+        _selectedDate.add(Duration(days: DateTime.saturday - _selectedDate.weekday)),
+        _selectedDate.add(Duration(days: DateTime.sunday - _selectedDate.weekday))
+      ],
+      initialSelectedDate: _selectedDate,
       selectionColor: Styles.blueColor,
       dayTextStyle: Styles.headLineStyle2
           .copyWith(color: Colors.black, fontWeight: FontWeight.w500),
@@ -244,6 +276,7 @@ class _SearchPageState extends State<SearchPage> {
         setState(() {
           _selectedDate = selectedDate;
         });
+        lessonController.getLessons(_selectedDate);
       },
     );
   }

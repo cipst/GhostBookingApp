@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:progetto_v1/model/course.dart';
 import 'package:progetto_v1/model/teacher.dart';
 
@@ -14,46 +15,19 @@ class Lesson {
     required this.dateTime,
   });
 
-  // static final list = [
-  //   Lesson(
-  //     Course.list[Random().nextInt(Course.list.length)],
-  //     Teacher.list[Random().nextInt(Teacher.list.length)],
-  //   ),
-  //   Lesson(
-  //     Course.list[Random().nextInt(Course.list.length)],
-  //     Teacher.list[Random().nextInt(Teacher.list.length)],
-  //   ),
-  //   Lesson(
-  //     Course.list[Random().nextInt(Course.list.length)],
-  //     Teacher.list[Random().nextInt(Teacher.list.length)],
-  //   ),
-  //   Lesson(
-  //     Course.list[Random().nextInt(Course.list.length)],
-  //     Teacher.list[Random().nextInt(Teacher.list.length)],
-  //   ),
-  //   Lesson(
-  //     Course.list[Random().nextInt(Course.list.length)],
-  //     Teacher.list[Random().nextInt(Teacher.list.length)],
-  //   ),
-  //   Lesson(
-  //     Course.list[Random().nextInt(Course.list.length)],
-  //     Teacher.list[Random().nextInt(Teacher.list.length)],
-  //   ),
-  // ];
-
   factory Lesson.fromJson(Map<String, dynamic> json) => Lesson(
-        id: json["id"],
-        course: json["course"],
-        teacher: json["teacher"],
-        dateTime: json["dateTime"],
-      );
+    id: json["id"],
+    course: Course(name: json["course"]),
+    teacher: Teacher(name: json["teacher"], image: json["image"]),
+    dateTime: DateFormat("MM/dd/yyyy HH:mm").parse(json["dateTime"]),
+  );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "course": course,
-        "teacher": teacher,
-        "dateTime": dateTime,
-      };
+    "id": id,
+    "course": course.name,
+    "teacher": teacher.name,
+    "dateTime": "${DateFormat.yMd().format(dateTime)} ${DateFormat.Hm().format(dateTime)}",
+  };
 
   @override
   String toString() {

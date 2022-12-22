@@ -11,7 +11,10 @@ import 'package:progetto_v1/utils/notification_service.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await NotificationService().init();
-  await DBHelper.instance.database;
+  var db = await DBHelper.instance.database;
+
+  // await DBHelper.instance.createDB(db, 1);
+  // await DBHelper.instance.drop();
 
   runApp(const Main());
 }

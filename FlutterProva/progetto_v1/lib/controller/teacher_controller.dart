@@ -3,15 +3,18 @@ import 'package:progetto_v1/db/teacher_helper.dart';
 import 'package:progetto_v1/model/teacher.dart';
 
 class TeacherController extends GetxController {
-  Rx<String?> errorText = null.obs;
-  final List<Teacher> _teachers = <Teacher>[].obs;
+  final errorText = "".obs;
+  final List<Teacher> teachers = <Teacher>[].obs;
 
   void getAllTeachers() async {
     try {
-      List<Teacher> teachersList = await TeacherHelper.getAllTeachers();
-      int i = 0;
+      teachers.clear();
+
+      List<Teacher>? teachersList = await TeacherHelper.getAllTeachers();
+      if(teachersList == null) return;
+
       for (Teacher t in teachersList) {
-        _teachers[i] = t;
+        teachers.add(t);
       }
     } on Exception catch (e) {
       errorText.value = e.toString();

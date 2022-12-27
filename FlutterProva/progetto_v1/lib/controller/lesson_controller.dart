@@ -1,9 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:progetto_v1/db/lesson_helper.dart';
-import 'package:progetto_v1/model/course.dart';
 import 'package:progetto_v1/model/lesson.dart';
-import 'package:progetto_v1/model/teacher.dart';
 
 class LessonController extends GetxController {
   final errorText = "".obs;

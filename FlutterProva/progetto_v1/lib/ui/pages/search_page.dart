@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:progetto_v1/controller/course_controller.dart';
 import 'package:progetto_v1/controller/lesson_controller.dart';
+import 'package:progetto_v1/controller/teacher_controller.dart';
 import 'package:progetto_v1/ui/components/card_search.dart';
 import 'package:progetto_v1/ui/components/empty_data.dart';
 import 'package:progetto_v1/utils/app_layout.dart';
@@ -22,10 +24,15 @@ class _SearchPageState extends State<SearchPage> {
   CatalogType _currentCatalog = CatalogType.date;
   DateTime _selectedDate = DateTime(2023, 01, 09);
   LessonController lessonController = Get.put(LessonController());
+  TeacherController teacherController = Get.put(TeacherController());
+  CourseController courseController = Get.put(CourseController());
 
   @override
   void initState(){
     lessonController.getLessons(_selectedDate);
+    teacherController.getAllTeachers();
+    courseController.getAllCourses();
+
     super.initState();
   }
 
@@ -33,37 +40,6 @@ class _SearchPageState extends State<SearchPage> {
     setState(() {
       _currentCatalog = newCatalog;
     });
-  }
-
-  _nextTab(){
-    switch(_currentCatalog){
-      case CatalogType.date:
-        currentCatalog = CatalogType.teacher;
-        break;
-
-      case CatalogType.teacher:
-        currentCatalog = CatalogType.subject;
-        break;
-
-      case CatalogType.subject:
-      default:
-        break;
-    }
-  }
-
-  _previousTab() {
-    switch(_currentCatalog){
-      case CatalogType.teacher:
-        currentCatalog = CatalogType.date;
-        break;
-      case CatalogType.subject:
-        currentCatalog = CatalogType.teacher;
-        break;
-
-      case CatalogType.date:
-      default:
-        break;
-    }
   }
 
   bool isCurrentCatalog(CatalogType checkCatalog) {
@@ -106,6 +82,7 @@ class _SearchPageState extends State<SearchPage> {
     // const Gap(90),
   }
 
+  /// TabBar on top of the page to choose between Date/Teacher/Subject
   Container _catalogTabBar() {
     return Container(
       margin: const EdgeInsets.only(top: 12),
@@ -216,6 +193,7 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
+  /// Lists of item based on the current catalog section selected
   Widget _catalogList() {
     if (isCurrentCatalog(CatalogType.date)) {
       if(lessonController.lessons.isEmpty) {
@@ -233,36 +211,38 @@ class _SearchPageState extends State<SearchPage> {
           childCount: lessonController.lessons.length,
         ),
       );
-
     } else if (isCurrentCatalog(CatalogType.teacher)) {
-      return const SliverToBoxAdapter(
-        child: Center(child: Text("Teachers")),
-      );
-      // return SliverList(
-      //   delegate: SliverChildBuilderDelegate(
-      //         (context, index) {
-      //       return Center(child: Text(Teacher.list[index].name!));
-      //     },
-      //     childCount: Teacher.list.length,
-      //   ),
-      // );
+      return _generateList(teacherController.teachers);
     } else {
-      return const SliverToBoxAdapter(
-        child: Center(child: Text("Subject")),
-      );
+      return _generateList(courseController.courses);
     }
+  }
+
+  SliverList _generateList(var list){
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          return Center(
+            child: Text(list[index].name),
+          );
+        },
+        childCount: list.length,
+      )
+    );
   }
 
   Widget _datePicker() {
 
+    DateTime initDate = DateTime(2023, 01, 09);
+
     return DatePicker(
-      DateTime(2023, 01, 09),
+      initDate,
       height: 100,
       width: 70,
       daysCount: 9,
       inactiveDates: [
-        _selectedDate.add(Duration(days: DateTime.saturday - _selectedDate.weekday)),
-        _selectedDate.add(Duration(days: DateTime.sunday - _selectedDate.weekday))
+        initDate.add(Duration(days: DateTime.saturday - initDate.weekday)),
+        initDate.add(Duration(days: DateTime.sunday - initDate.weekday))
       ],
       initialSelectedDate: _selectedDate,
       selectionColor: Styles.blueColor,

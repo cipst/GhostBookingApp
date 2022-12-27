@@ -3,17 +3,6 @@ class Course {
 
   Course({required this.name});
 
-  // static final list = [
-  //   Course("Mathematics"),
-  //   Course("Science"),
-  //   Course("Art"),
-  //   Course("Music"),
-  //   Course("English"),
-  //   Course("Geometry"),
-  //   Course("Geography"),
-  //   Course("Literature")
-  // ];
-
   factory Course.fromJson(Map<String, dynamic> json) => Course(
         name: json["name"],
       );

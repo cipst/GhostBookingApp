@@ -3,10 +3,10 @@ import 'package:progetto_v1/db/booking_helper.dart';
 import 'package:progetto_v1/model/booking.dart';
 
 class BookingController extends GetxController {
-  Rx<String?> errorText = null.obs;
-  final List<Booking> _bookings = <Booking>[].obs;
+  final errorText = "".obs;
+  final List<Booking> bookings = <Booking>[].obs;
 
-  void clearError() => errorText.value = null;
+  void clearError() => errorText.value = "";
 
   Future<int> setBooking(Booking booking) async {
     return await BookingHelper.setBooking(booking);
@@ -16,9 +16,8 @@ class BookingController extends GetxController {
     try {
       clearError();
       List<Booking> bookingsList = await BookingHelper.getAllBookings();
-      int i = 0;
       for (Booking b in bookingsList) {
-        _bookings[i] = b;
+        bookings.add(b);
       }
     } on Exception catch (e) {
       errorText.value = e.toString();

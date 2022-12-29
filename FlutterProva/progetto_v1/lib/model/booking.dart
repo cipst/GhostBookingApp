@@ -20,21 +20,20 @@ class Booking {
   });
 
   factory Booking.fromJson(Map<String, dynamic> json) => Booking(
-        id: json["id"],
-        user: json["user"],
-        lesson: json["lesson"],
-        status: StatusType.values[json[
-            "status"]], // in db is saved an integer --> need to convert integer into
-        reminder: json["reminder"],
-      );
+    id: json["id"],
+    user: json["user"],
+    lesson: json["lesson"],
+    status: StatusType.values[json["status"]], // in db is saved an integer --> need to convert integer into StatusType
+    reminder: json["reminder"],
+  );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "user": user,
-        "lesson": lesson,
-        "reminder": reminder,
-        "status": status.index
-      };
+    "id": id,
+    "user": user,
+    "lesson": lesson,
+    "reminder": reminder,
+    "status": status.index
+  };
 
   @override
   String toString() {

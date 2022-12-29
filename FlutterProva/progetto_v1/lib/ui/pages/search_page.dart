@@ -1,7 +1,10 @@
+import 'dart:ffi';
+
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:progetto_v1/controller/course_controller.dart';
 import 'package:progetto_v1/controller/lesson_controller.dart';
@@ -23,6 +26,7 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   CatalogType _currentCatalog = CatalogType.date;
   DateTime _selectedDate = DateTime(2023, 01, 09);
+
   LessonController lessonController = Get.put(LessonController());
   TeacherController teacherController = Get.put(TeacherController());
   CourseController courseController = Get.put(CourseController());
@@ -48,6 +52,7 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
+
     return CustomScrollView(
       slivers: [
         SliverAppBar(
@@ -59,9 +64,23 @@ class _SearchPageState extends State<SearchPage> {
         ),
         if(lessonController.errorText.value != "")
           SliverToBoxAdapter(
-              child: Center(child: Obx(() => Text(lessonController.errorText.value)),
+              child: Center(
+                child: Obx(() => Text(lessonController.errorText.value)),
               )
           ),
+
+        // if(selectLessonController.list.any((element) => element == true))
+
+        SliverToBoxAdapter(
+          child: Center(
+            child:  Obx(() => Text("QUI ${lessonController.selectedLessons.containsValue(true)}")),
+          ),
+        ),
+
+        SliverToBoxAdapter(
+          child: Obx(() =>Text("QUI ${lessonController.selectedLessons}")),
+        ),
+
         if (isCurrentCatalog(CatalogType.date))
           SliverAppBar(
             title: _datePicker(),
@@ -70,9 +89,11 @@ class _SearchPageState extends State<SearchPage> {
             backgroundColor: Styles.bgColor,
             pinned: true,
           ),
+
         Obx(() =>
             _catalogList(),
         ),
+
         SliverToBoxAdapter(
           child: Gap(AppLayout.initNavigationBarHeight + 5),
         )
@@ -207,7 +228,14 @@ class _SearchPageState extends State<SearchPage> {
 
       return SliverList(
         delegate: SliverChildBuilderDelegate(
-              (context, index) => CardSearch(lessonController.lessons[index]),
+              (context, index) {
+            return CardSearch(
+                lessonController.lessons[index],
+                _selectedDate,
+                index,
+                lessonController
+            );
+          },
           childCount: lessonController.lessons.length,
         ),
       );
@@ -220,14 +248,14 @@ class _SearchPageState extends State<SearchPage> {
 
   SliverList _generateList(var list){
     return SliverList(
-      delegate: SliverChildBuilderDelegate(
-        (context, index) {
-          return Center(
-            child: Text(list[index].name),
-          );
-        },
-        childCount: list.length,
-      )
+        delegate: SliverChildBuilderDelegate(
+              (context, index) {
+            return Center(
+              child: Text(list[index].name),
+            );
+          },
+          childCount: list.length,
+        )
     );
   }
 
@@ -253,6 +281,10 @@ class _SearchPageState extends State<SearchPage> {
           .copyWith(color: Colors.black, fontWeight: FontWeight.normal),
       deactivatedColor: Styles.greyColor,
       onDateChange: (selectedDate) {
+        // String formattedTime = DateFormat.yMd().format(selectedDate);
+        // if(selectLessonController.map[formattedTime] == null) {
+        //   selectLessonController.map[formattedTime] = {};
+        // }
         setState(() {
           _selectedDate = selectedDate;
         });

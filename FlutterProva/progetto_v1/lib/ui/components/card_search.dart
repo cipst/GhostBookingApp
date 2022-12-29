@@ -3,25 +3,37 @@ import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:progetto_v1/model/booking.dart';
+import 'package:progetto_v1/controller/lesson_controller.dart';
 import 'package:progetto_v1/model/lesson.dart';
 import 'package:progetto_v1/utils/app_style.dart';
 
 class CardSearch extends StatefulWidget {
   final Lesson lesson;
+  final DateTime date;
+  final int index;
+  final LessonController lessonController;
 
-  const CardSearch(this.lesson, {super.key});
+  const CardSearch(
+      this.lesson,
+      this.date,
+      this.index,
+      this.lessonController,
+      {super.key});
 
   @override
   State<CardSearch> createState() => _CardSearchState();
 }
 
 class _CardSearchState extends State<CardSearch> {
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => _onTap(),
-      child: Container(
+      onLongPress: () {
+        widget.lessonController.selectedLessons[widget.lesson.id!] = !(widget.lessonController.selectedLessons[widget.lesson.id] ?? false);
+      },
+      child:Container(
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
@@ -42,22 +54,22 @@ class _CardSearchState extends State<CardSearch> {
         mainAxisSize: MainAxisSize.max,
         children: [
           Container(
-            width: 80,
-            height: 80,
-            margin: const EdgeInsets.only(right: 12),
-            decoration:
-            widget.lesson.teacher.image != null ?
-            BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              image: DecorationImage(
-                image: NetworkImage(widget.lesson.teacher.image!),
-              ),
-            )
-                :
-            BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Colors.red,
-            )
+              width: 80,
+              height: 80,
+              margin: const EdgeInsets.only(right: 12),
+              decoration:
+              widget.lesson.teacher.image != null ?
+              BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                image: DecorationImage(
+                  image: NetworkImage(widget.lesson.teacher.image!),
+                ),
+              )
+                  :
+              BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.red,
+              )
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,12 +107,35 @@ class _CardSearchState extends State<CardSearch> {
       right: 0,
       width: 100,
       height: 120,
-      child: Container(
-          decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-            topRight: Radius.circular(20), bottomRight: Radius.circular(20)),
-        color: Styles.blueColor,
-      )),
+      child: GestureDetector(
+        onTap: () {
+          widget.lessonController.selectedLessons[widget.lesson.id!] = !(widget.lessonController.selectedLessons[widget.lesson.id])!;
+        },
+        onLongPress: () {
+          widget.lessonController.selectedLessons[widget.lesson.id!] = !(widget.lessonController.selectedLessons[widget.lesson.id])!;
+        },
+        child: Container(
+          // decoration: BoxDecoration(
+          //   borderRadius: const BorderRadius.only(
+          //       topRight: Radius.circular(20), bottomRight: Radius.circular(20)),
+          //   color: Styles.blueColor,
+          // ),
+            child: Obx(() =>
+                Checkbox(
+                  onChanged: (bool? value) {
+                    debugPrint(value.toString());
+
+                    if(value != null) {
+                      widget.lessonController.selectedLessons[widget.lesson.id!] = value;
+                    }else{
+                      widget.lessonController.selectedLessons[widget.lesson.id!] = false;
+                    }
+                  },
+                  value: widget.lessonController.selectedLessons[widget.lesson.id!] ?? false,
+                ),
+            )
+        ),
+      ),
     );
   }
 
@@ -120,11 +155,11 @@ class _CardSearchState extends State<CardSearch> {
                 radius: 100,
                 child: Container(
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      image: DecorationImage(
-                          image: NetworkImage(
-                              widget.lesson.teacher.image!),
-                      ),
+                    borderRadius: BorderRadius.circular(15),
+                    image: DecorationImage(
+                      image: NetworkImage(
+                          widget.lesson.teacher.image!),
+                    ),
                   ),
                 ),
               ),
@@ -206,7 +241,7 @@ class _CardSearchState extends State<CardSearch> {
                     Text(
                       "Book",
                       style:
-                          Styles.headLineStyle3.copyWith(color: Colors.white),
+                      Styles.headLineStyle3.copyWith(color: Colors.white),
                     ),
                     const Padding(
                       padding: EdgeInsets.only(bottom: 1),

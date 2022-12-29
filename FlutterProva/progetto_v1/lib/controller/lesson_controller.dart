@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:progetto_v1/db/lesson_helper.dart';
 import 'package:progetto_v1/model/lesson.dart';
@@ -6,6 +6,7 @@ import 'package:progetto_v1/model/lesson.dart';
 class LessonController extends GetxController {
   final errorText = "".obs;
   final List<Lesson> lessons = <Lesson>[].obs;
+  final Map<int, bool> selectedLessons = <int, bool>{}.obs;
 
   void getAllLessons() async {
     try {

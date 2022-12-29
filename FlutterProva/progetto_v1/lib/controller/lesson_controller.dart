@@ -6,7 +6,7 @@ import 'package:progetto_v1/model/lesson.dart';
 class LessonController extends GetxController {
   final errorText = "".obs;
   final List<Lesson> lessons = <Lesson>[].obs;
-  final Map<int, bool> selectedLessons = <int, bool>{}.obs;
+  final Map<Lesson, bool> selectedLessons = <Lesson, bool>{}.obs;
 
   void getAllLessons() async {
     try {

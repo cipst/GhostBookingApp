@@ -29,6 +29,18 @@ class Lesson {
     "dateTime": "${DateFormat.yMd().format(dateTime)} ${DateFormat.Hm().format(dateTime)}",
   };
 
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Lesson &&
+          runtimeType == other.runtimeType &&
+          id == other.id;
+
+  @override
+  int get hashCode =>
+      id.hashCode ^ course.hashCode ^ teacher.hashCode ^ dateTime.hashCode;
+
   @override
   String toString() {
     return "Lesson{\n\t$teacher\n\t$course}";

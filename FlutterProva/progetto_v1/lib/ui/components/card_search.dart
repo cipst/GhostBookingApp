@@ -9,14 +9,10 @@ import 'package:progetto_v1/utils/app_style.dart';
 
 class CardSearch extends StatefulWidget {
   final Lesson lesson;
-  final DateTime date;
-  final int index;
   final LessonController lessonController;
 
   const CardSearch(
       this.lesson,
-      this.date,
-      this.index,
       this.lessonController,
       {super.key});
 
@@ -31,7 +27,7 @@ class _CardSearchState extends State<CardSearch> {
     return GestureDetector(
       onTap: () => _onTap(),
       onLongPress: () {
-        widget.lessonController.selectedLessons[widget.lesson.id!] = !(widget.lessonController.selectedLessons[widget.lesson.id] ?? false);
+        widget.lessonController.selectedLessons[widget.lesson] = !(widget.lessonController.selectedLessons[widget.lesson] ?? false);
       },
       child:Container(
         decoration: BoxDecoration(
@@ -109,31 +105,19 @@ class _CardSearchState extends State<CardSearch> {
       height: 120,
       child: GestureDetector(
         onTap: () {
-          widget.lessonController.selectedLessons[widget.lesson.id!] = !(widget.lessonController.selectedLessons[widget.lesson.id])!;
+          widget.lessonController.selectedLessons[widget.lesson] = !(widget.lessonController.selectedLessons[widget.lesson] ?? false);
         },
         onLongPress: () {
-          widget.lessonController.selectedLessons[widget.lesson.id!] = !(widget.lessonController.selectedLessons[widget.lesson.id])!;
+          widget.lessonController.selectedLessons[widget.lesson] = !(widget.lessonController.selectedLessons[widget.lesson] ?? false);
         },
-        child: Container(
-          // decoration: BoxDecoration(
-          //   borderRadius: const BorderRadius.only(
-          //       topRight: Radius.circular(20), bottomRight: Radius.circular(20)),
-          //   color: Styles.blueColor,
-          // ),
-            child: Obx(() =>
-                Checkbox(
-                  onChanged: (bool? value) {
-                    debugPrint(value.toString());
-
-                    if(value != null) {
-                      widget.lessonController.selectedLessons[widget.lesson.id!] = value;
-                    }else{
-                      widget.lessonController.selectedLessons[widget.lesson.id!] = false;
-                    }
-                  },
-                  value: widget.lessonController.selectedLessons[widget.lesson.id!] ?? false,
-                ),
-            )
+        child: Obx(() =>
+            Checkbox(
+              fillColor: MaterialStatePropertyAll(Styles.blueColor),
+              onChanged: (bool? value) {
+                widget.lessonController.selectedLessons[widget.lesson] = value ?? false;
+              },
+              value: widget.lessonController.selectedLessons.entries.where((e) => e.key.id == widget.lesson.id && e.value == true).isNotEmpty,
+            ),
         ),
       ),
     );

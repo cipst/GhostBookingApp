@@ -9,8 +9,10 @@ import 'package:ionicons/ionicons.dart';
 import 'package:progetto_v1/controller/course_controller.dart';
 import 'package:progetto_v1/controller/lesson_controller.dart';
 import 'package:progetto_v1/controller/teacher_controller.dart';
+import 'package:progetto_v1/model/lesson.dart';
 import 'package:progetto_v1/ui/components/card_search.dart';
 import 'package:progetto_v1/ui/components/empty_data.dart';
+import 'package:progetto_v1/ui/pages/summary_lessons_page.dart';
 import 'package:progetto_v1/utils/app_layout.dart';
 import 'package:progetto_v1/utils/app_style.dart';
 
@@ -33,6 +35,7 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   void initState(){
+    // lessonController.selectedLessons.clear();
     lessonController.getLessons(_selectedDate);
     teacherController.getAllTeachers();
     courseController.getAllCourses();
@@ -53,54 +56,101 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
 
-    return CustomScrollView(
-      slivers: [
-        SliverAppBar(
-          title: _catalogTabBar(),
-          backgroundColor: Styles.bgColor,
-          shadowColor: Colors.transparent,
-          snap: true,
-          floating: true,
-        ),
-        if(lessonController.errorText.value != "")
-          SliverToBoxAdapter(
-              child: Center(
-                child: Obx(() => Text(lessonController.errorText.value)),
+    return Stack(
+        children:[
+          CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                title: _catalogTabBar(),
+                backgroundColor: Styles.bgColor,
+                shadowColor: Colors.transparent,
+                snap: true,
+                floating: true,
+              ),
+              if(lessonController.errorText.value != "")
+                SliverToBoxAdapter(
+                    child: Center(
+                      child: Obx(() => Text(lessonController.errorText.value)),
+                    )
+                ),
+
+              if (isCurrentCatalog(CatalogType.date))
+                SliverAppBar(
+                  title: _datePicker(),
+                  centerTitle: true,
+                  toolbarHeight: 100,
+                  backgroundColor: Styles.bgColor,
+                  pinned: true,
+                ),
+
+              Obx(() =>
+                  _catalogList(),
+              ),
+
+              SliverToBoxAdapter(
+                child: Gap(AppLayout.initNavigationBarHeight + 35),
               )
+            ],
           ),
 
-        // if(selectLessonController.list.any((element) => element == true))
+          // FLOATING ACTION BUTTON WHEN AT LEAST ONE LESSON IS SELECTED
+          // ONLY ON DATE TAB BAR
+          if(isCurrentCatalog(CatalogType.date))
+            Obx((){
+              if(!lessonController.selectedLessons.containsValue(true)) return Container();
 
-        SliverToBoxAdapter(
-          child: Center(
-            child:  Obx(() => Text("QUI ${lessonController.selectedLessons.containsValue(true)}")),
-          ),
-        ),
+              return Positioned(
+                bottom: AppLayout.initNavigationBarHeight + 10,
+                child: SizedBox(
+                  width: AppLayout.getSize(context).width,
+                  child: Center(
+                    child: FittedBox(
+                      child: Stack(
+                        alignment: const Alignment(1.2, -1.5),
+                        children: [
+                          FloatingActionButton.extended(
+                            onPressed: _onPressed,
+                            label: Row(
+                              children: const [
+                                Icon(Ionicons.cart_outline),
+                                Gap(8),
+                                Text("Cart"),
+                              ],
+                            ),
+                          ),
 
-        SliverToBoxAdapter(
-          child: Obx(() =>Text("QUI ${lessonController.selectedLessons}")),
-        ),
-
-        if (isCurrentCatalog(CatalogType.date))
-          SliverAppBar(
-            title: _datePicker(),
-            centerTitle: true,
-            toolbarHeight: 100,
-            backgroundColor: Styles.bgColor,
-            pinned: true,
-          ),
-
-        Obx(() =>
-            _catalogList(),
-        ),
-
-        SliverToBoxAdapter(
-          child: Gap(AppLayout.initNavigationBarHeight + 5),
-        )
-      ],
+                          //BADGE
+                          Container(
+                            padding: const EdgeInsets.all(4),
+                            constraints: const BoxConstraints(minHeight: 24, minWidth: 24),
+                            decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                      spreadRadius: 1,
+                                      blurRadius: 5,
+                                      color: Colors.black.withAlpha(50))
+                                ],
+                                borderRadius: BorderRadius.circular(16),
+                                color: Styles.blueColor
+                            ),
+                            child: Center(
+                              child: Text("${lessonController.selectedLessons.values.where((b) => b == true).length}", style: const TextStyle(color: Colors.white)),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }),
+        ]
     );
 
-    // const Gap(90),
+  }
+
+  void _onPressed() {
+    Get.to(() => const SummaryLessons());
   }
 
   /// TabBar on top of the page to choose between Date/Teacher/Subject
@@ -229,13 +279,8 @@ class _SearchPageState extends State<SearchPage> {
       return SliverList(
         delegate: SliverChildBuilderDelegate(
               (context, index) {
-            return CardSearch(
-                lessonController.lessons[index],
-                _selectedDate,
-                index,
-                lessonController
-            );
-          },
+                return CardSearch(lessonController.lessons[index], lessonController);
+              },
           childCount: lessonController.lessons.length,
         ),
       );

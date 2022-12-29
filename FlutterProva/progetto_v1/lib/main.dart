@@ -30,9 +30,9 @@ class Main extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           colorScheme: ThemeData().colorScheme.copyWith(
-                primary: Styles.blueColor,
-                secondary: Styles.orangeColor,
-              ),
+            primary: Styles.blueColor,
+            secondary: Styles.orangeColor,
+          ),
           elevatedButtonTheme: ElevatedButtonThemeData(
               style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
@@ -95,173 +95,171 @@ class _RootState extends State<Root> {
                         AppLayout.getSize(context).width, _navigationHeight),
                     painter: CustomPainterBottomBar(),
                   ),
-                  GestureDetector(
-                    onVerticalDragUpdate: (DragUpdateDetails details) {
-                      double positionY = AppLayout.getSize(context).height -
-                          details.globalPosition.dy;
-
-                      // limits at 80 height minimum
-                      if (positionY < 80) {
-                        _updateNavigationHeight(80.0);
-                      } else if (positionY <= maxHeight) {
-                        _updateNavigationHeight(positionY);
-                      }
-                    },
-                    child: Center(
-                      heightFactor: 0.6,
-                      child: FloatingActionButton(
-                        backgroundColor: Styles.orangeColor,
-                        elevation: 0.1,
-                        onPressed: () {
-                          if (_navigationHeight > (maxHeight / 2)) {
-                            _updateNavigationHeight(80.0);
-                          } else {
-                            _updateNavigationHeight(maxHeight);
-                          }
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 4),
-                          child: _navigationHeight > (maxHeight / 2)
-                              ? const Icon(Ionicons.chevron_down)
-                              : const Icon(Ionicons.chevron_up),
-                        ),
-                      ),
-                    ),
-                  ),
+                  // GestureDetector(
+                  //   onVerticalDragUpdate: (DragUpdateDetails details) {
+                  //     double positionY = AppLayout.getSize(context).height -
+                  //         details.globalPosition.dy;
+                  //
+                  //     // limits at 80 height minimum
+                  //     if (positionY < 80) {
+                  //       _updateNavigationHeight(80.0);
+                  //     } else if (positionY <= maxHeight) {
+                  //       _updateNavigationHeight(positionY);
+                  //     }
+                  //   },
+                  //   child: Center(
+                  //     heightFactor: 0.6,
+                  //     child: FloatingActionButton(
+                  //       backgroundColor: Styles.orangeColor,
+                  //       elevation: 0.1,
+                  //       onPressed: () {
+                  //         if (_navigationHeight > (maxHeight / 2)) {
+                  //           _updateNavigationHeight(80.0);
+                  //         } else {
+                  //           _updateNavigationHeight(maxHeight);
+                  //         }
+                  //       },
+                  //       child: Padding(
+                  //         padding: const EdgeInsets.only(bottom: 4),
+                  //         child: _navigationHeight > (maxHeight / 2)
+                  //             ? const Icon(Ionicons.chevron_down)
+                  //             : const Icon(Ionicons.chevron_up),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                   SizedBox(
                     width: AppLayout.getSize(context).width,
-                    height: 80,
+                    height: AppLayout.initNavigationBarHeight,
                     child: Obx(() => Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        //HOME
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            //HOME
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                IconButton(
-                                  hoverColor: Colors.transparent,
-                                  splashColor: Colors.transparent,
-                                  highlightColor: Colors.transparent,
-                                  icon: navigationController
-                                          .checkIndex(Pages.home)
-                                      ? Icon(
-                                          Ionicons.home,
-                                          color: Styles.orangeColor,
-                                        )
-                                      : Icon(
-                                          Ionicons.home_outline,
-                                          color: Colors.grey.shade400,
-                                        ),
-                                  onPressed: () => navigationController
-                                      .currentIndex = Pages.home,
+                            IconButton(
+                              hoverColor: Colors.transparent,
+                              splashColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
+                              icon: navigationController.checkIndex(Pages.home)
+                                  ? Icon(
+                                Ionicons.home,
+                                color: Styles.orangeColor,
+                              )
+                                  : Icon(
+                                Ionicons.home_outline,
+                                color: Colors.grey.shade400,
+                              ),
+                              onPressed: () => navigationController.currentIndex = Pages.home,
+                            ),
+                            if (navigationController.checkIndex(Pages.home))
+                              Padding(
+                                padding: const EdgeInsets.only(top: 2.0),
+                                child: Text(
+                                  "Home",
+                                  style: Styles.headLineStyle4.copyWith(color: Styles.orangeColor),
                                 ),
-                                if (navigationController.checkIndex(Pages.home))
-                                  Text(
-                                    "Home",
-                                    style: Styles.headLineStyle4
-                                        .copyWith(color: Styles.orangeColor),
-                                  )
-                              ],
-                            ),
-
-                            //SEARCH
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                IconButton(
-                                  hoverColor: Colors.transparent,
-                                  splashColor: Colors.transparent,
-                                  highlightColor: Colors.transparent,
-                                  icon: navigationController
-                                          .checkIndex(Pages.search)
-                                      ? Icon(
-                                          Ionicons.search,
-                                          color: Styles.orangeColor,
-                                        )
-                                      : Icon(
-                                          Ionicons.search_outline,
-                                          color: Colors.grey.shade400,
-                                        ),
-                                  onPressed: () => navigationController
-                                      .currentIndex = Pages.search,
-                                ),
-                                if (navigationController
-                                    .checkIndex(Pages.search))
-                                  Text(
-                                    "Search",
-                                    style: Styles.headLineStyle4
-                                        .copyWith(color: Styles.orangeColor),
-                                  )
-                              ],
-                            ),
-
-                            Container(
-                              width: AppLayout.getSize(context).width * 0.20,
-                            ),
-
-                            // CATALOG
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                IconButton(
-                                  hoverColor: Colors.transparent,
-                                  splashColor: Colors.transparent,
-                                  highlightColor: Colors.transparent,
-                                  icon: navigationController
-                                          .checkIndex(Pages.catalog)
-                                      ? Icon(
-                                          Ionicons.receipt,
-                                          color: Styles.orangeColor,
-                                        )
-                                      : Icon(
-                                          Ionicons.receipt_outline,
-                                          color: Colors.grey.shade400,
-                                        ),
-                                  onPressed: () => navigationController
-                                      .currentIndex = Pages.catalog,
-                                ),
-                                if (navigationController
-                                    .checkIndex(Pages.catalog))
-                                  Text(
-                                    "Catalog",
-                                    style: Styles.headLineStyle4
-                                        .copyWith(color: Styles.orangeColor),
-                                  )
-                              ],
-                            ),
-
-                            // PROFILE
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                IconButton(
-                                  hoverColor: Colors.transparent,
-                                  splashColor: Colors.transparent,
-                                  highlightColor: Colors.transparent,
-                                  icon: navigationController
-                                          .checkIndex(Pages.profile)
-                                      ? Icon(
-                                          Ionicons.person,
-                                          color: Styles.orangeColor,
-                                        )
-                                      : Icon(
-                                          Ionicons.person_outline,
-                                          color: Colors.grey.shade400,
-                                        ),
-                                  onPressed: () => navigationController
-                                      .currentIndex = Pages.profile,
-                                ),
-                                if (navigationController
-                                    .checkIndex(Pages.profile))
-                                  Text(
-                                    "Profile",
-                                    style: Styles.headLineStyle4
-                                        .copyWith(color: Styles.orangeColor),
-                                  )
-                              ],
-                            ),
+                              )
                           ],
-                        )),
+                        ),
+
+                        //SEARCH
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              hoverColor: Colors.transparent,
+                              splashColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
+                              icon: navigationController.checkIndex(Pages.search)
+                                  ? Icon(
+                                Ionicons.search,
+                                color: Styles.orangeColor,
+                              )
+                                  : Icon(
+                                Ionicons.search_outline,
+                                color: Colors.grey.shade400,
+                              ),
+                              onPressed: () => navigationController.currentIndex = Pages.search,
+                            ),
+                            if (navigationController.checkIndex(Pages.search))
+                              Padding(
+                                padding: const EdgeInsets.only(top: 2.0),
+                                child: Text(
+                                  "Search",
+                                  style: Styles.headLineStyle4.copyWith(color: Styles.orangeColor),
+                                ),
+                              )
+                          ],
+                        ),
+
+                        // Container(
+                        //   width: AppLayout.getSize(context).width * 0.20,
+                        // ),
+
+                        // CATALOG
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              hoverColor: Colors.transparent,
+                              splashColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
+                              icon: navigationController.checkIndex(Pages.catalog)
+                                  ? Icon(
+                                Ionicons.receipt,
+                                color: Styles.orangeColor,
+                              )
+                                  : Icon(
+                                Ionicons.receipt_outline,
+                                color: Colors.grey.shade400,
+                              ),
+                              onPressed: () => navigationController.currentIndex = Pages.catalog,
+                            ),
+                            if (navigationController.checkIndex(Pages.catalog))
+                              Padding(
+                                padding: const EdgeInsets.only(top: 2.0),
+                                child: Text(
+                                  "Catalog",
+                                  style: Styles.headLineStyle4
+                                      .copyWith(color: Styles.orangeColor),
+                                ),
+                              )
+                          ],
+                        ),
+
+                        // PROFILE
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              hoverColor: Colors.transparent,
+                              splashColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
+                              icon: navigationController.checkIndex(Pages.profile)
+                                  ? Icon(
+                                Ionicons.person,
+                                color: Styles.orangeColor,
+                              )
+                                  : Icon(
+                                Ionicons.person_outline,
+                                color: Colors.grey.shade400,
+                              ),
+                              onPressed: () => navigationController.currentIndex = Pages.profile,
+                            ),
+                            if (navigationController.checkIndex(Pages.profile))
+                              Padding(
+                                padding: const EdgeInsets.only(top: 2.0),
+                                child: Text(
+                                  "Profile",
+                                  style: Styles.headLineStyle4.copyWith(color: Styles.orangeColor),
+                                ),
+                              )
+                          ],
+                        ),
+                      ],
+                    )),
                   )
                 ],
               ),

@@ -5,5 +5,5 @@ class AppLayout {
     return MediaQuery.of(context).size;
   }
 
-  static double initNavigationBarHeight = 80.0;
+  static double initNavigationBarHeight = 70.0;
 }

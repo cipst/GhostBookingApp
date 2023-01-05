@@ -11,41 +11,13 @@ class DBHelper {
   static const String _dbName = "booking.db";
   static final DBHelper instance = DBHelper._init();
 
-  static Database? _database;
-  DBHelper._init();
-
-  Future<Database> get database async {
-    if (_database != null) return _database!;
-
-    _database = await _initDB(_dbName);
-    return _database!;
-  }
-
   static final _teachers = [
-    Teacher(
-      name: "Paolo Rossi",
-      image: "https://minimaltoolkit.com/images/randomdata/male/47.jpg",
-    ),
-    Teacher(
-      name: "Robert Green",
-      image: "https://minimaltoolkit.com/images/randomdata/male/76.jpg",
-    ),
-    Teacher(
-      name: "Luca Gialli",
-      image: "https://minimaltoolkit.com/images/randomdata/male/43.jpg",
-    ),
-    Teacher(
-      name: "Jennifer Blue",
-      image: "https://minimaltoolkit.com/images/randomdata/female/27.jpg",
-    ),
-    Teacher(
-      name: "Susan Violet",
-      image: "https://minimaltoolkit.com/images/randomdata/female/103.jpg",
-    ),
-    Teacher(
-      name: "John Black",
-      image: "https://minimaltoolkit.com/images/randomdata/male/54.jpg",
-    ),
+    Teacher(name: "Paolo Rossi"),
+    Teacher(name: "Robert Green"),
+    Teacher(name: "Francesco Azzurro"),
+    Teacher(name: "Jennifer Blue"),
+    Teacher(name: "Susan Violet"),
+    Teacher(name: "John Black"),
   ];
   static final _courses = [
     Course(name: "Mathematics"),
@@ -57,67 +29,72 @@ class DBHelper {
     Course(name: "Geography"),
     Course(name: "Literature")
   ];
-  static final _lessons = [
-    Lesson(
-        course: _courses[0],
-        teacher: _teachers[0],
-        dateTime: DateTime.parse("2023-01-09 15:00")
-    ),
-    Lesson(
-        course: _courses[0],
-        teacher: _teachers[1],
-        dateTime: DateTime.parse("2023-01-09 15:00")
-    ),
-    Lesson(
-        course: _courses[0],
-        teacher: _teachers[2],
-        dateTime: DateTime.parse("2023-01-09 15:00")
-    ),
-    Lesson(
-        course: _courses[1],
-        teacher: _teachers[0],
-        dateTime: DateTime.parse("2023-01-09 16:00")
-    ),
-    Lesson(
-        course: _courses[1],
-        teacher: _teachers[5],
-        dateTime: DateTime.parse("2023-01-10 16:00")
-    ),
-    Lesson(
-        course: _courses[1],
-        teacher: _teachers[4],
-        dateTime: DateTime.parse("2023-01-10 16:00")
-    ),
-    Lesson(
-        course: _courses[2],
-        teacher: _teachers[3],
-        dateTime: DateTime.parse("2023-01-10 17:00")
-    ),
-    Lesson(
-        course: _courses[2],
-        teacher: _teachers[5],
-        dateTime: DateTime.parse("2023-01-11 17:00")
-    ),
-    Lesson(
-        course: _courses[3],
-        teacher: _teachers[1],
-        dateTime: DateTime.parse("2023-01-11 18:00")
-    ),
-    Lesson(
-        course: _courses[4],
-        teacher: _teachers[1],
-        dateTime: DateTime.parse("2023-01-11 19:00")
-    ),
+  static final _dates = [
+    DateTime.parse("2023-01-09 15:00"),
+    DateTime.parse("2023-01-09 16:00"),
+    DateTime.parse("2023-01-09 17:00"),
+    DateTime.parse("2023-01-09 18:00"),
+    DateTime.parse("2023-01-09 19:00"),
+
+    DateTime.parse("2023-01-10 15:00"),
+    DateTime.parse("2023-01-10 16:00"),
+    DateTime.parse("2023-01-10 17:00"),
+    DateTime.parse("2023-01-10 18:00"),
+    DateTime.parse("2023-01-10 19:00"),
+
+    DateTime.parse("2023-01-11 15:00"),
+    DateTime.parse("2023-01-11 16:00"),
+    DateTime.parse("2023-01-11 17:00"),
+    DateTime.parse("2023-01-11 18:00"),
+    DateTime.parse("2023-01-11 19:00"),
+
+    DateTime.parse("2023-01-12 15:00"),
+    DateTime.parse("2023-01-12 16:00"),
+    DateTime.parse("2023-01-12 17:00"),
+    DateTime.parse("2023-01-12 18:00"),
+    DateTime.parse("2023-01-12 19:00"),
+
+    DateTime.parse("2023-01-13 15:00"),
+    DateTime.parse("2023-01-13 16:00"),
+    DateTime.parse("2023-01-13 17:00"),
+    DateTime.parse("2023-01-13 18:00"),
+    DateTime.parse("2023-01-13 19:00"),
+
+    DateTime.parse("2023-01-16 15:00"),
+    DateTime.parse("2023-01-16 16:00"),
+    DateTime.parse("2023-01-16 17:00"),
+    DateTime.parse("2023-01-16 18:00"),
+    DateTime.parse("2023-01-16 19:00"),
+
+    DateTime.parse("2023-01-17 15:00"),
+    DateTime.parse("2023-01-17 16:00"),
+    DateTime.parse("2023-01-17 17:00"),
+    DateTime.parse("2023-01-17 18:00"),
+    DateTime.parse("2023-01-17 19:00"),
   ];
+  static final _lessons = [];
+
+  static Database? _database;
+  DBHelper._init();
+
+  Future<Database> get database async {
+    if (_database != null) return _database!;
+
+    _database = await _initDB(_dbName);
+    return _database!;
+  }
 
   Future<Database> _initDB(String filePath) async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
     debugPrint("Opening Database...");
-    return await openDatabase(path, version: _dbVersion, onCreate: createDB);
+    debugPrint("DATABASE INFO:\n\t"
+        "PATH: $path\n\t"
+        "VERSION: $_dbVersion");
+    return await openDatabase(path, version: _dbVersion, onCreate: _createDB);
   }
 
-  Future createDB(Database db, int version) async {
+  Future _createDB(Database db, int version) async {
     debugPrint("Creating Tables...");
     try {
       /* TABLES CREATIONS */
@@ -132,7 +109,8 @@ class DBHelper {
         "name": "Stefano Cipolletta",
         "email": "stefano.cipolletta@gmail.com",
         "password": "Qwerty123_",
-        "phone": "391234567890"
+        "phone": "391234567890",
+        "image": "",
       });
 
       /* TEACHERS INSERT */
@@ -145,13 +123,32 @@ class DBHelper {
         await db.insert("Course", c.toJson());
       }
 
+      _createLessons();
+
       /* LESSONS INSERT */
       for (final l in _lessons) {
-        debugPrint(l.toJson().toString());
         await db.insert("Lesson", l.toJson());
       }
+
+      debugPrint("Table Created Successfully!");
     } catch (e) {
       debugPrint(e.toString());
+      debugPrint("Table Creation Failed!");
+    }
+  }
+
+  /// foreach teacher, foreach course and foreach available date, create a lesson
+  _createLessons() {
+    for (var teacher in _teachers) {
+      for(var course in _courses) {
+        for (var date in _dates) {
+          _lessons.add(Lesson(
+              teacher: teacher.name,
+              course: course.name,
+              dateTime: date
+          ));
+        }
+      }
     }
   }
 
@@ -161,14 +158,11 @@ class DBHelper {
     debugPrint("Closing Database...");
   }
 
-  Future drop() async {
-    final db = await instance.database;
-    db.execute("DROP TABLE User;");
-    db.execute("DROP TABLE Teacher;");
-    db.execute("DROP TABLE Course;");
-    db.execute("DROP TABLE Lesson;");
-    db.execute("DROP TABLE Booking;");
-    debugPrint("DROPPING Tables...");
+  Future delete() async {
+    final dbPath = await getDatabasesPath();
+    final path = join(dbPath, _dbName);
+    debugPrint("DELETING DATABASE...");
+    deleteDatabase(path);
   }
 
 }

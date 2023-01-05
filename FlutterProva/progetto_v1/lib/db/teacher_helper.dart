@@ -18,15 +18,4 @@ class TeacherHelper {
 
     return teachers;
   }
-
-  static Future<Teacher?> getTeacher(String name) async {
-    final db = await _instance.database;
-
-    final List<Map<String, dynamic>> maps =
-        await db.query("Teacher", where: "name = ?", whereArgs: [name]);
-
-    if (maps.isEmpty) return null;
-
-    return Teacher.fromJson(maps[0]); // only one teacher, got the first one
-  }
 }

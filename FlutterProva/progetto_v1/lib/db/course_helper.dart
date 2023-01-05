@@ -18,15 +18,4 @@ class CourseHelper {
 
     return courses;
   }
-
-  static Future<Course?> getCourse(String name) async {
-    final db = await _instance.database;
-
-    final List<Map<String, dynamic>> maps =
-        await db.query("Course", where: "name = ?", whereArgs: [name]);
-
-    if (maps.isEmpty) return null;
-
-    return Course.fromJson(maps[0]); // only one course, got the first one
-  }
 }

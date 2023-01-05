@@ -11,8 +11,7 @@ class Queries {
 
   static const String createTeacherTable = '''
   CREATE TABLE `Teacher` (
-    `name` VARCHAR(50) PRIMARY KEY,
-    `image` VARCHAR(60) NOT NULL
+    `name` VARCHAR(50) PRIMARY KEY
   );
   ''';
 
@@ -27,7 +26,7 @@ class Queries {
   CREATE TABLE `Lesson` (
     `id` INTEGER PRIMARY KEY AUTOINCREMENT,
     `course` VARCHAR(50) NOT NULL,
-    `teacher` INTEGER NOT NULL,
+    `teacher` VARCHAR(50) NOT NULL,
     `dateTime` VARCHAR(16) NOT NULL,
     FOREIGN KEY (`course`) REFERENCES `Course`(`name`),
     FOREIGN KEY (`teacher`) REFERENCES `Teacher`(`name`)
@@ -39,13 +38,17 @@ class Queries {
   static const String createBookingTable = '''
   CREATE TABLE `Booking` (
     `id` INTEGER PRIMARY KEY AUTOINCREMENT,
-    `user` INTEGER NOT NULL,
+    `user` VARCHAR(50) NOT NULL,
     `lesson` INTEGER NOT NULL,
-    `reminder` VARCHAR(16) NOT NULL,
+    `reminder` VARCHAR(16),
     `status` INTEGER NOT NULL DEFAULT 0,
     FOREIGN KEY (`user`) REFERENCES `User`(`email`),
     FOREIGN KEY (`lesson`) REFERENCES `Lesson`(`id`),
     CHECK (`status` = 0 OR `status` = 1 OR `status` = 2)
   );
+  ''';
+
+  static const String getLessons = '''
+  SELECT l.* FROM Lesson l LEFT JOIN Booking b ON l.id == b.lesson
   ''';
 }

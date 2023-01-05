@@ -8,34 +8,32 @@ class BookingHelper {
   static Future<int> setBooking(Booking booking) async {
     final db = await _instance.database;
 
-    return await db.insert("Booking", booking.toJson(),
-        conflictAlgorithm: ConflictAlgorithm.abort);
+    return await db.insert("Booking", booking.toJson(), conflictAlgorithm: ConflictAlgorithm.abort);
   }
 
-  static Future<List<Booking>> getAllBookings() async {
+  static Future<List<Booking>?> getAllBookings(String email) async {
     final db = await _instance.database;
 
-    final List<Map<String, dynamic>> maps = await db.query("Booking");
+    final List<Map<String, dynamic>> maps = await db.query("Booking", where: "user = ?", whereArgs: [email]);
+    // final List<Map<String, dynamic>> maps = await db.query("Booking");
 
-    if (maps.isEmpty) throw Exception("Booking table is empty");
+    if (maps.isEmpty) return null;
 
     List<Booking> bookings = <Booking>[];
-    int i = 0;
     for (Map<String, dynamic> b in maps) {
-      bookings[i++] = Booking.fromJson(b);
+      bookings.add(Booking.fromJson(b));
     }
 
     return bookings;
   }
 
-  static Future<Booking> getBooking(int id) async {
+  static Future<Booking?> getBooking(int id) async {
     final db = await _instance.database;
 
-    final List<Map<String, dynamic>> maps =
-        await db.query("Booking", where: "id = ?", whereArgs: [id]);
+    final List<Map<String, dynamic>> maps = await db.query("Booking", where: "id = ?", whereArgs: [id]);
 
-    if (maps.isEmpty) throw Exception("Booking table is empty");
+    if (maps.isEmpty) return null;
 
-    return Booking.fromJson(maps[0]); // only one booking, got the first one
+    return Booking.fromJson(maps.first); // only one booking, got the first one
   }
 }

@@ -4,7 +4,9 @@ import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:progetto_v1/controller/lesson_controller.dart';
 import 'package:progetto_v1/model/booking.dart';
+import 'package:progetto_v1/model/lesson.dart';
 import 'package:progetto_v1/ui/components/custom_dialog.dart';
 import 'package:progetto_v1/utils/app_style.dart';
 import 'package:progetto_v1/utils/notification_service.dart';
@@ -29,6 +31,8 @@ class _ReminderDialogState extends State<ReminderDialog> {
   // int _minutesEarly = 0;
   DateTime _reminder = DateTime.now();
   int _id = -1;
+
+  final LessonController _lessonController = Get.put(LessonController());
 
   @override
   Widget build(BuildContext context) {
@@ -123,23 +127,23 @@ class _ReminderDialogState extends State<ReminderDialog> {
     );
   }
 
-  void validator(value) {
+  void validator(value) async {
     if (widget.controller.text.isEmpty) {
       _errorText = "Field must not be empty";
     } else if (widget.controller.text.length > 3) {
       _errorText = "Input too long";
     } else {
-      int _minutes = int.parse(widget.controller.text);
-      DateTime _extimatedTime =
-          widget.appointment.lesson.dateTime!.subtract(Duration(minutes: _minutes));
-      if (_extimatedTime.isBefore(DateTime.now())) {
+      int minutes = int.parse(widget.controller.text);
+      Lesson? lesson = await _lessonController.getLesson(widget.appointment.lesson);
+      DateTime estimatedTime = lesson!.dateTime.subtract(Duration(minutes: minutes));
+      if (estimatedTime.isBefore(DateTime.now())) {
         _errorText =
-            "You are trying to set the reminder at ${DateFormat.Hm().format(_extimatedTime)}";
+            "You are trying to set the reminder at ${DateFormat.Hm().format(estimatedTime)}";
       } else {
         _errorText = null;
         _helpText =
-            "Setting the reminder at ${DateFormat.Hm().format(_extimatedTime)}";
-        _reminder = _extimatedTime;
+            "Setting the reminder at ${DateFormat.Hm().format(estimatedTime)}";
+        _reminder = estimatedTime;
       }
     }
 

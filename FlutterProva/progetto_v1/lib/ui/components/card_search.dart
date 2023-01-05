@@ -53,30 +53,23 @@ class _CardSearchState extends State<CardSearch> {
               width: 80,
               height: 80,
               margin: const EdgeInsets.only(right: 12),
-              decoration:
-              widget.lesson.teacher.image != null ?
-              BoxDecoration(
+              decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 image: DecorationImage(
-                  image: NetworkImage(widget.lesson.teacher.image!),
+                  image: AssetImage("assets/images/${widget.lesson.teacher.toLowerCase().replaceAll(" ", "_")}.jpg"),
                 ),
-              )
-                  :
-              BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.red,
               )
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                widget.lesson.teacher.name,
+                widget.lesson.teacher,
                 style: Styles.headLineStyle2.copyWith(color: Colors.black),
               ),
               const Gap(6),
               Text(
-                widget.lesson.course.name,
+                widget.lesson.course,
                 style: Styles.textStyle,
               ),
               const Gap(8),
@@ -141,14 +134,13 @@ class _CardSearchState extends State<CardSearch> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
                     image: DecorationImage(
-                      image: NetworkImage(
-                          widget.lesson.teacher.image!),
+                      image: AssetImage("assets/images/${widget.lesson.teacher.toLowerCase().replaceAll(" ", "_")}.jpg"),
                     ),
                   ),
                 ),
               ),
               const Gap(15),
-              Text(widget.lesson.teacher.name,
+              Text(widget.lesson.teacher,
                   style: Styles.titleStyle),
               const Gap(30),
               Text(
@@ -168,7 +160,7 @@ class _CardSearchState extends State<CardSearch> {
                     ),
                     const Gap(10),
                     Text(
-                      widget.lesson.course.name,
+                      widget.lesson.course,
                       style: Styles.headLineStyle2.copyWith(
                         color: Colors.black,
                       ),
@@ -214,7 +206,7 @@ class _CardSearchState extends State<CardSearch> {
               ElevatedButton(
                 onPressed: () {
                   Get.snackbar(
-                      "RESERVATION", widget.lesson.teacher.name);
+                      "RESERVATION", widget.lesson.teacher);
                   _dialogConfirmedReservation;
                 },
                 style: Styles.successButtonStyle,

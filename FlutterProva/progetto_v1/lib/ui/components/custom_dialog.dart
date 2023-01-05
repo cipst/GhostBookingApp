@@ -39,8 +39,7 @@ class CustomDialog extends StatelessWidget {
       child: Stack(
         children: <Widget>[
           Container(
-            padding: const EdgeInsets.only(
-                left: 20, top: 45 + 20, right: 20, bottom: 20),
+            padding: EdgeInsets.only(left: 20, top: (svgPath == null ? 20 : 45 + 20), right: 20, bottom: 20),
             margin: const EdgeInsets.only(top: 45, bottom: 10),
             decoration: BoxDecoration(
               shape: BoxShape.rectangle,
@@ -50,14 +49,24 @@ class CustomDialog extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
+                svgPath == null ?
+                icon.marginOnly(bottom: 4)
+                    :
+                Container(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      title,
-                      style: Styles.headLineStyle.copyWith(color: titleColor),
+                    Flexible(
+                      child: Text(
+                        title,
+                        style: Styles.headLineStyle.copyWith(color: titleColor),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                    icon.paddingOnly(bottom: 4),
+                    svgPath != null ?
+                    icon.paddingOnly(bottom: 4)
+                        :
+                    Container(),
                   ],
                 ),
                 const Gap(15),

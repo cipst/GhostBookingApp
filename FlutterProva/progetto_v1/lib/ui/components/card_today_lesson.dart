@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:progetto_v1/controller/navigation_controller.dart';
 import 'package:progetto_v1/model/booking.dart';
+import 'package:progetto_v1/model/lesson.dart';
 import 'package:progetto_v1/ui/components/custom_dialog.dart';
 import 'package:progetto_v1/ui/components/reminder_dialog.dart';
 import 'package:progetto_v1/utils/app_layout.dart';
@@ -15,8 +16,9 @@ import 'package:progetto_v1/utils/notification_service.dart';
 
 class CardTodayLesson extends StatefulWidget {
   final Booking appointment;
+  final Lesson lesson;
 
-  const CardTodayLesson(this.appointment, {super.key});
+  const CardTodayLesson(this.appointment, this.lesson, {super.key});
 
   @override
   State<CardTodayLesson> createState() => _CardTodayLessonState();
@@ -66,8 +68,9 @@ class _CardTodayLessonState extends State<CardTodayLesson> {
             margin: const EdgeInsets.only(right: 12),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
+              color: Styles.orangeColor,
               image: DecorationImage(
-                image: NetworkImage(widget.appointment.lesson!.teacher!.image!),
+                image: AssetImage("assets/images/${widget.lesson.teacher.toLowerCase().replaceAll(" ", "_")}.jpg"),
               ),
             ),
           ),
@@ -75,12 +78,12 @@ class _CardTodayLessonState extends State<CardTodayLesson> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                widget.appointment.lesson!.teacher!.name!,
+                widget.lesson.teacher,
                 style: Styles.headLineStyle2.copyWith(color: Colors.black),
               ),
               const Gap(6),
               Text(
-                widget.appointment.lesson!.course!.name!,
+                widget.lesson.course,
                 style: Styles.textStyle,
               ),
               const Gap(8),
@@ -95,7 +98,7 @@ class _CardTodayLessonState extends State<CardTodayLesson> {
                       ),
                       const Gap(4),
                       Text(
-                          DateFormat.MMMd().format(widget.appointment.lesson.dateTime!))
+                          DateFormat.MMMd().format(widget.lesson.dateTime))
                     ],
                   ),
                   const Gap(20),
@@ -106,7 +109,7 @@ class _CardTodayLessonState extends State<CardTodayLesson> {
                         size: 15,
                       ),
                       const Gap(4),
-                      Text(DateFormat.Hm().format(widget.appointment.lesson.dateTime!))
+                      Text(DateFormat.Hm().format(widget.lesson.dateTime))
                     ],
                   ),
                 ],
@@ -133,13 +136,13 @@ class _CardTodayLessonState extends State<CardTodayLesson> {
         },
         child: _notification
             ? const Icon(
-                Ionicons.notifications,
-                color: Colors.white,
-              )
+          Ionicons.notifications,
+          color: Colors.white,
+        )
             : const Icon(
-                Ionicons.notifications_outline,
-                color: Colors.white,
-              ),
+          Ionicons.notifications_outline,
+          color: Colors.white,
+        ),
       ),
     );
   }
@@ -269,8 +272,8 @@ class _CardTodayLessonState extends State<CardTodayLesson> {
         title: "Cancel reminder?",
         titleStyle: Styles.headLineStyle,
         middleText:
-            // "Reminder set at ${DateFormat.Hm().format(widget.appointment.dateTime!.subtract(Duration(minutes: _minutesEarly)))}\n"
-            "\nAre you sure you want to remove the reminder?",
+        // "Reminder set at ${DateFormat.Hm().format(widget.appointment.dateTime!.subtract(Duration(minutes: _minutesEarly)))}\n"
+        "\nAre you sure you want to remove the reminder?",
         middleTextStyle: Styles.textStyle,
         actions: [
           ElevatedButton(
@@ -317,12 +320,13 @@ class _CardTodayLessonState extends State<CardTodayLesson> {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                       image: DecorationImage(
-                          image: NetworkImage(
-                              widget.appointment.lesson!.teacher!.image!))),
+                        image: AssetImage("assets/images/${widget.lesson.teacher.toLowerCase().replaceAll(" ", "_")}.jpg"),
+                      )
+                  ),
                 ),
               ),
               const Gap(15),
-              Text(widget.appointment.lesson!.teacher!.name!,
+              Text(widget.lesson.teacher,
                   style: Styles.titleStyle),
               const Gap(30),
               Text(
@@ -342,7 +346,7 @@ class _CardTodayLessonState extends State<CardTodayLesson> {
                     ),
                     const Gap(10),
                     Text(
-                      widget.appointment.lesson!.course!.name!,
+                      widget.lesson.course,
                       style: Styles.headLineStyle2.copyWith(
                         color: Colors.black,
                       ),
@@ -358,7 +362,7 @@ class _CardTodayLessonState extends State<CardTodayLesson> {
                     const Icon(Ionicons.calendar_outline),
                     const Gap(10),
                     Text(
-                      DateFormat.MMMMd().format(widget.appointment.lesson.dateTime!),
+                      DateFormat.MMMMd().format(widget.lesson.dateTime),
                       style: Styles.headLineStyle2.copyWith(
                         color: Colors.black,
                       ),
@@ -374,7 +378,7 @@ class _CardTodayLessonState extends State<CardTodayLesson> {
                     const Icon(Ionicons.time_outline),
                     const Gap(10),
                     Text(
-                      DateFormat.Hm().format(widget.appointment.lesson.dateTime!),
+                      DateFormat.Hm().format(widget.lesson.dateTime),
                       style: Styles.headLineStyle2.copyWith(
                         color: Colors.black,
                       ),
@@ -398,78 +402,77 @@ class _CardTodayLessonState extends State<CardTodayLesson> {
       transitionCurve: Curves.easeInOut);
 
   void _onLongPress() => Get.bottomSheet(
-        SizedBox(
-          height: AppLayout.getSize(context).height * 0.20,
-          child: Column(
-            children: [
-              Container(
-                  width: 100,
-                  height: 5,
-                  margin: const EdgeInsets.symmetric(vertical: 8),
-                  decoration: BoxDecoration(
-                      color: Styles.greyColor,
-                      borderRadius: BorderRadius.circular(30))),
+    SizedBox(
+      height: AppLayout.getSize(context).height * 0.20,
+      child: Column(
+        children: [
+          Container(
+              width: 100,
+              height: 5,
+              margin: const EdgeInsets.symmetric(vertical: 8),
+              decoration: BoxDecoration(
+                  color: Styles.greyColor,
+                  borderRadius: BorderRadius.circular(30))),
 
-              const Gap(10),
+          const Gap(10),
 
-              // SHOW IN CATALOG
-              _showInCatalog(),
+          // SHOW IN CATALOG
+          _showInCatalog(),
 
-              const Gap(10),
+          const Gap(10),
 
-              // CANCEL
-              _cancelLesson(),
-            ],
-          ),
-        ),
-        backgroundColor: Colors.white,
-      );
+          // CANCEL
+          _cancelLesson(),
+        ],
+      ),
+    ),
+    backgroundColor: Colors.white,
+  );
 
   ElevatedButton _showInCatalog() => ElevatedButton(
-        onPressed: () {
-          _navigationController.currentIndex = Pages.catalog;
-          Get.back();
-        },
-        // Get.snackbar("Show in catalog", widget.appointment.lesson!.teacher!.name!),
-        style: Styles.blueButtonStyleOutline,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Gap(6),
-            Text(
-              "Show in catalog",
-              style: Styles.headLineStyle3.copyWith(color: Styles.blueColor),
-            ),
-            const Padding(
-              padding: EdgeInsets.only(bottom: 1),
-              child: Icon(Ionicons.receipt_outline),
-            )
-          ],
+    onPressed: () {
+      _navigationController.currentIndex = Pages.catalog;
+      Get.back();
+    },
+    style: Styles.blueButtonStyle,
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Gap(6),
+        Text(
+          "Show in catalog",
+          style: Styles.headLineStyle3.copyWith(color: Colors.white),
         ),
-      );
+        const Padding(
+          padding: EdgeInsets.only(bottom: 1, left: 5),
+          child: Icon(Ionicons.receipt_outline),
+        )
+      ],
+    ),
+  );
 
   ElevatedButton _cancelLesson() => ElevatedButton(
-        onPressed: () {
-          Get.back();
-          Get.snackbar(
-              "Cancel lesson", widget.appointment.lesson!.teacher!.name!);
-        },
-        style: Styles.errorButtonStyle,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Gap(6),
-            Text(
-              "Cancel lesson",
-              style: Styles.headLineStyle3.copyWith(color: Colors.white),
-            ),
-            const Padding(
-              padding: EdgeInsets.only(bottom: 1),
-              child: Icon(
-                Ionicons.close_outline,
-              ),
-            )
-          ],
+    onPressed: () {
+      Get.back();
+      Get.snackbar(
+          "Cancel lesson", widget.lesson.teacher);
+    },
+    style: Styles.errorButtonStyleOutline,
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Gap(6),
+        Text(
+          "Cancel lesson",
+          style: Styles.headLineStyle3.copyWith(color: Styles.errorColor),
         ),
-      );
+        const Padding(
+          padding: EdgeInsets.only(bottom: 1),
+          child: Icon(
+            Ionicons.close_outline,
+          ),
+        )
+      ],
+    ),
+  );
 }

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:progetto_v1/controller/booking_controller.dart';
+import 'package:progetto_v1/controller/lesson_controller.dart';
 import 'package:progetto_v1/controller/navigation_controller.dart';
-import 'package:progetto_v1/model/booking.dart';
+import 'package:progetto_v1/controller/user_controller.dart';
 import 'package:progetto_v1/model/lesson.dart';
 import 'package:progetto_v1/ui/components/card_today_lesson.dart';
 import 'package:progetto_v1/ui/components/empty_data.dart';
+import 'package:progetto_v1/utils/app_layout.dart';
 import 'package:progetto_v1/utils/app_style.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
@@ -18,6 +21,15 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final navigationController = Get.put(NavigationController());
+  final BookingController bookingController = Get.put(BookingController());
+  final LessonController lessonController = Get.put(LessonController());
+  Set<Lesson?> lessons =  {};
+
+  @override
+  void initState() {
+    bookingController.getAllBookings("stefano.cipolletta@gmail.com");
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +38,7 @@ class _HomePageState extends State<HomePage> {
       children: [
         _header(),
         _searchBar(),
-        _todayLessons(),
+        Obx(() => _todayLessons()),
         const Gap(80),
       ],
     );
@@ -47,11 +59,11 @@ class _HomePageState extends State<HomePage> {
                   "Today's Lessons",
                   style: Styles.headLineStyle,
                 ),
-                // Lesson.list.isEmpty
-                //     ?
+                bookingController.bookings.isEmpty
+                    ?
                 GestureDetector(
                     onTap: () =>
-                        navigationController.currentIndex = Pages.search,
+                    navigationController.currentIndex = Pages.search,
                     child: Row(
                       children: [
                         Text(
@@ -69,47 +81,72 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ],
                     ))
-                // : GestureDetector(
-                //     onTap: () =>
-                //         navigationController.currentIndex = Pages.catalog,
-                //     child: Row(
-                //       children: [
-                //         Text(
-                //           "See All",
-                //           style: Styles.textStyle
-                //               .copyWith(color: Styles.orangeColor),
-                //         ),
-                //         Padding(
-                //           padding: const EdgeInsets.only(bottom: 2),
-                //           child: Icon(
-                //             Ionicons.chevron_forward,
-                //             size: 12,
-                //             color: Styles.orangeColor,
-                //           ),
-                //         ),
-                //       ],
-                //     ),
-                //   )
+                    :
+                GestureDetector(
+                  onTap: () =>
+                  navigationController.currentIndex = Pages.catalog,
+                  child: Row(
+                    children: [
+                      Text(
+                        "See All",
+                        style: Styles.textStyle
+                            .copyWith(color: Styles.orangeColor),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 2),
+                        child: Icon(
+                          Ionicons.chevron_forward,
+                          size: 12,
+                          color: Styles.orangeColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
               ],
             ),
           ),
-          // Lesson.list.isEmpty
-          // ?
+          bookingController.bookings.isEmpty
+              ?
           const EmptyData(text: "You have no lesson today")
-          // : Column(
-          //     mainAxisSize: MainAxisSize.max,
-          //     children: List.generate(
-          //         Lesson.list.length,
-          //         (index) => CardTodayLesson(
-          //               Appointment(
-          //                 Lesson.list[index],
-          //                 DateTime.now().add(Duration(hours: index)),
-          //               ),
-          //             )),
-          //   ),
+              :
+          FutureBuilder(
+              future: getAllLessonsInBooking(),
+              builder: (context, snapshot) {
+                if(!snapshot.hasData || snapshot.hasError){
+                  return Container(
+                    margin: EdgeInsets.only(top: AppLayout.getSize(context).width/3),
+                    child: CircularProgressIndicator(
+                      color: Styles.orangeColor,
+                      backgroundColor: Colors.white,
+                    ),
+                  );
+                }
+
+                return Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: List.generate(
+                    snapshot.data.length,
+                    (index) {
+                      return CardTodayLesson(bookingController.bookings[index], snapshot.data.elementAt(index)!);
+                    },
+                  ),
+                );
+              }
+          ),
         ],
       ),
     );
+  }
+
+  Future getAllLessonsInBooking() async {
+    for(var b in bookingController.bookings){
+      Lesson? l = await lessonController.getLesson(b.lesson);
+      if(l != null) {
+        lessons.add(l);
+      }
+    }
+    return lessons;
   }
 
   Container _searchBar() {
@@ -150,9 +187,11 @@ class _HomePageState extends State<HomePage> {
                 "Welcome!",
                 style: Styles.headLineStyle4,
               ),
-              Text(
-                "Stefano",
-                style: Styles.headLineStyle,
+              Obx(() =>
+                  Text(
+                    UserController.user.value?.name ?? "",
+                    style: Styles.headLineStyle,
+                  ),
               ),
             ],
           ),
@@ -174,67 +213,67 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // final List<Widget> _data = [
-  //   CardUpcomingLesson(
-  //     course: "Italiano",
-  //     teacher: "Paolo Rossi",
-  //     image:
-  //     "https://minimaltoolkit.com/images/randomdata/male/47.jpg",
-  //     // dateTime: DateTime.parse("2022-11-18 20:19:00"),
-  //     dateTime: DateTime.now().add(const Duration(minutes: 2)),
-  //     onTap: () =>
-  //         Get.to(
-  //           Scaffold(appBar: AppBar(), body: const Center(child: Text("Paolo Rossi"))),
-  //         ),
-  //   ),
-  //   CardUpcomingLesson(
-  //     course: "Matematica",
-  //     teacher: "Luca Verdi",
-  //     image:
-  //     "https://minimaltoolkit.com/images/randomdata/male/54.jpg",
-  //     // dateTime: DateTime.parse("2022-11-30 16:00:00"),
-  //     dateTime: DateTime.now().add(const Duration(minutes: 3)),
-  //     onTap: () =>
-  //         Get.to(
-  //           Scaffold(appBar: AppBar(), body: const Center(child: Text("Luca Verdi"))),
-  //         ),
-  //   ),
-  //   CardUpcomingLesson(
-  //     course: "Storia",
-  //     teacher: "Francesca Neri",
-  //     image:
-  //     "https://minimaltoolkit.com/images/randomdata/female/27.jpg",
-  //     // dateTime: DateTime.parse("2022-11-30 17:00:00"),
-  //     dateTime: DateTime.now().add(const Duration(minutes: 1)),
-  //     onTap: () =>
-  //         Get.to(
-  //           Scaffold(appBar: AppBar(), body: const Center(child: Text("Francesca Neri"))),
-  //         ),
-  //   ),
-  //   CardUpcomingLesson(
-  //     course: "Storia",
-  //     teacher: "Francesca Neri",
-  //     image:
-  //     "https://minimaltoolkit.com/images/randomdata/female/27.jpg",
-  //     // dateTime: DateTime.parse("2022-11-30 17:00:00"),
-  //     dateTime: DateTime.now().add(const Duration(minutes: 1)),
-  //     onTap: () =>
-  //         Get.to(
-  //           Scaffold(appBar: AppBar(), body: const Center(child: Text("Francesca Neri"))),
-  //         ),
-  //   ),
-  //   CardUpcomingLesson(
-  //     course: "Storia",
-  //     teacher: "Francesca Neri",
-  //     image:
-  //     "https://minimaltoolkit.com/images/randomdata/female/27.jpg",
-  //     // dateTime: DateTime.parse("2022-11-30 17:00:00"),
-  //     dateTime: DateTime.now().add(const Duration(minutes: 2)),
-  //     onTap: () =>
-  //         Get.to(
-  //           Scaffold(appBar: AppBar(), body: const Center(child: Text("Francesca Neri"))),
-  //         ),
-  //   ),
-  // ];
+// final List<Widget> _data = [
+//   CardUpcomingLesson(
+//     course: "Italiano",
+//     teacher: "Paolo Rossi",
+//     image:
+//     "https://minimaltoolkit.com/images/randomdata/male/47.jpg",
+//     // dateTime: DateTime.parse("2022-11-18 20:19:00"),
+//     dateTime: DateTime.now().add(const Duration(minutes: 2)),
+//     onTap: () =>
+//         Get.to(
+//           Scaffold(appBar: AppBar(), body: const Center(child: Text("Paolo Rossi"))),
+//         ),
+//   ),
+//   CardUpcomingLesson(
+//     course: "Matematica",
+//     teacher: "Luca Verdi",
+//     image:
+//     "https://minimaltoolkit.com/images/randomdata/male/54.jpg",
+//     // dateTime: DateTime.parse("2022-11-30 16:00:00"),
+//     dateTime: DateTime.now().add(const Duration(minutes: 3)),
+//     onTap: () =>
+//         Get.to(
+//           Scaffold(appBar: AppBar(), body: const Center(child: Text("Luca Verdi"))),
+//         ),
+//   ),
+//   CardUpcomingLesson(
+//     course: "Storia",
+//     teacher: "Francesca Neri",
+//     image:
+//     "https://minimaltoolkit.com/images/randomdata/female/27.jpg",
+//     // dateTime: DateTime.parse("2022-11-30 17:00:00"),
+//     dateTime: DateTime.now().add(const Duration(minutes: 1)),
+//     onTap: () =>
+//         Get.to(
+//           Scaffold(appBar: AppBar(), body: const Center(child: Text("Francesca Neri"))),
+//         ),
+//   ),
+//   CardUpcomingLesson(
+//     course: "Storia",
+//     teacher: "Francesca Neri",
+//     image:
+//     "https://minimaltoolkit.com/images/randomdata/female/27.jpg",
+//     // dateTime: DateTime.parse("2022-11-30 17:00:00"),
+//     dateTime: DateTime.now().add(const Duration(minutes: 1)),
+//     onTap: () =>
+//         Get.to(
+//           Scaffold(appBar: AppBar(), body: const Center(child: Text("Francesca Neri"))),
+//         ),
+//   ),
+//   CardUpcomingLesson(
+//     course: "Storia",
+//     teacher: "Francesca Neri",
+//     image:
+//     "https://minimaltoolkit.com/images/randomdata/female/27.jpg",
+//     // dateTime: DateTime.parse("2022-11-30 17:00:00"),
+//     dateTime: DateTime.now().add(const Duration(minutes: 2)),
+//     onTap: () =>
+//         Get.to(
+//           Scaffold(appBar: AppBar(), body: const Center(child: Text("Francesca Neri"))),
+//         ),
+//   ),
+// ];
 
 }

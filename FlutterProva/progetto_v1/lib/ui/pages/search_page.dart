@@ -1,12 +1,10 @@
-import 'dart:ffi';
-
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:progetto_v1/controller/course_controller.dart';
+import 'package:progetto_v1/controller/error_controller.dart';
 import 'package:progetto_v1/controller/lesson_controller.dart';
 import 'package:progetto_v1/controller/teacher_controller.dart';
 import 'package:progetto_v1/model/lesson.dart';
@@ -35,8 +33,7 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   void initState(){
-    // lessonController.selectedLessons.clear();
-    lessonController.getLessons(_selectedDate);
+    lessonController.getAllLessons();
     teacherController.getAllTeachers();
     courseController.getAllCourses();
 
@@ -55,7 +52,6 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Stack(
         children:[
           CustomScrollView(
@@ -67,10 +63,10 @@ class _SearchPageState extends State<SearchPage> {
                 snap: true,
                 floating: true,
               ),
-              if(lessonController.errorText.value != "")
+              if(ErrorController.text.value != "")
                 SliverToBoxAdapter(
                     child: Center(
-                      child: Obx(() => Text(lessonController.errorText.value)),
+                      child: Obx(() => Text(ErrorController.text.value)),
                     )
                 ),
 
@@ -109,7 +105,7 @@ class _SearchPageState extends State<SearchPage> {
                         alignment: const Alignment(1.2, -1.5),
                         children: [
                           FloatingActionButton.extended(
-                            onPressed: _onPressed,
+                            onPressed: () => Get.to(() => const SummaryLessons()),
                             label: Row(
                               children: const [
                                 Icon(Ionicons.cart_outline),
@@ -147,10 +143,6 @@ class _SearchPageState extends State<SearchPage> {
         ]
     );
 
-  }
-
-  void _onPressed() {
-    Get.to(() => const SummaryLessons());
   }
 
   /// TabBar on top of the page to choose between Date/Teacher/Subject
@@ -276,12 +268,20 @@ class _SearchPageState extends State<SearchPage> {
         );
       }
 
+      // Filter only lesson on the selected date
+      Iterable<Lesson> lessons = <Lesson>[];
+      lessons = lessonController.lessons.where(
+              (l) => l.dateTime.year == _selectedDate.year &&
+              l.dateTime.month == _selectedDate.month &&
+              l.dateTime.day == _selectedDate.day
+      );
+
       return SliverList(
         delegate: SliverChildBuilderDelegate(
               (context, index) {
-                return CardSearch(lessonController.lessons[index], lessonController);
-              },
-          childCount: lessonController.lessons.length,
+            return CardSearch(lessons.elementAt(index), lessonController);
+          },
+          childCount: lessons.length,
         ),
       );
     } else if (isCurrentCatalog(CatalogType.teacher)) {
@@ -333,7 +333,7 @@ class _SearchPageState extends State<SearchPage> {
         setState(() {
           _selectedDate = selectedDate;
         });
-        lessonController.getLessons(_selectedDate);
+        // lessonController.getLessons(_selectedDate);
       },
     );
   }

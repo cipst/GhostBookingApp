@@ -3,12 +3,13 @@ import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:progetto_v1/controller/booking_controller.dart';
 import 'package:progetto_v1/controller/lesson_controller.dart';
 import 'package:progetto_v1/controller/navigation_controller.dart';
-import 'package:progetto_v1/main.dart';
+import 'package:progetto_v1/controller/user_controller.dart';
+import 'package:progetto_v1/model/booking.dart';
 import 'package:progetto_v1/model/lesson.dart';
-import 'package:progetto_v1/ui/pages/home_page.dart';
-import 'package:progetto_v1/ui/pages/search_page.dart';
+import 'package:progetto_v1/ui/components/custom_dialog.dart';
 import 'package:progetto_v1/utils/app_layout.dart';
 import 'package:progetto_v1/utils/app_style.dart';
 
@@ -21,6 +22,7 @@ class SummaryLessons extends StatefulWidget {
 
 class _SummaryLessonsState extends State<SummaryLessons> {
   final LessonController lessonController = Get.put(LessonController());
+  final BookingController bookingController = Get.put(BookingController());
   final NavigationController navigationController = Get.put(NavigationController());
 
   @override
@@ -64,7 +66,7 @@ class _SummaryLessonsState extends State<SummaryLessons> {
                                             const Gap(8.0),
                                             Padding(
                                               padding: const EdgeInsets.only(top: 2.0),
-                                              child: Text(lesson.teacher.name),
+                                              child: Text(lesson.teacher),
                                             )
                                           ],
                                         ),
@@ -75,7 +77,7 @@ class _SummaryLessonsState extends State<SummaryLessons> {
                                             const Gap(8.0),
                                             Padding(
                                               padding: const EdgeInsets.only(top: 2.0),
-                                              child: Text(lesson.course.name),
+                                              child: Text(lesson.course),
                                             )
                                           ],
                                         ),
@@ -114,12 +116,11 @@ class _SummaryLessonsState extends State<SummaryLessons> {
                                   ],
                                 ),
 
-                                // Delete button
+                                // Delete SelectedLesson button
                                 Expanded(
                                   child: GestureDetector(
                                       onTap: (){
                                         lessonController.selectedLessons.removeWhere((key, value) => key == lesson);
-                                        debugPrint(lessonController.selectedLessons.entries.where((m) => m.value == true).isEmpty.toString());
 
                                         if(lessonController.selectedLessons.entries.where((m) => m.value == true).isEmpty) {
                                           Get.back();
@@ -166,7 +167,9 @@ class _SummaryLessonsState extends State<SummaryLessons> {
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: ElevatedButton(
                         style: ButtonStyle(
-                          backgroundColor: MaterialStatePropertyAll(Styles.errorColor),
+                          side: MaterialStatePropertyAll(BorderSide(color: Styles.errorColor, width: 2)),
+                          backgroundColor: MaterialStatePropertyAll(Styles.bgColor),
+                          foregroundColor: MaterialStatePropertyAll(Styles.errorColor),
                           maximumSize: MaterialStatePropertyAll(Size.fromWidth(AppLayout.getSize(context).width/3)),
                         ),
                         onPressed: (){
@@ -196,14 +199,60 @@ class _SummaryLessonsState extends State<SummaryLessons> {
                           maximumSize: MaterialStatePropertyAll(Size.fromWidth(AppLayout.getSize(context).width/3)),
                         ),
                         onPressed: (){
-                          // TODO: DB call to set the selected lessons as booked
+                          try{
+                            lessonController.selectedLessons.forEach((key, value) async {
+                              Booking b = Booking(
+                                  lesson: key.id!,
+                                  user: UserController.user.value!.email,
+                                  status: StatusType.active);
+                              await bookingController.setBooking(b); // add booked lesson into the db
+                              bookingController.bookings.add(b); // add booked lesson into the list of booked lessons
+                            });
 
-                          // TODO: Remove the selected lessons from the selectedLesson Map
+                            Get.back();
+                            Get.dialog(
+                              CustomDialog(
+                                title: "${lessonController.selectedLessons.length > 1 ? "Lessons" : "Lesson"} added to the catalog",
+                                titleColor: Styles.successColor,
+                                description: "The selected ${lessonController.selectedLessons.length > 1 ? "lessons" : "lesson"} have been added to the catalog successfully",
+                                icon: Icon(Ionicons.checkmark, color: Styles.successColor, size: 50,),
+                                btnText: Text("Close", style: Styles.textStyle.copyWith(color: Colors.white)),
+                                btnStyle: Styles.successButtonStyle,
+                              ),
+                            );
 
-                          // TODO: When go back RECALL getLessons by date
+                            lessonController.selectedLessons.forEach((key, value) {
+                              lessonController.lessons.removeWhere((l) => key == l);
+                            });
 
-                          Get.back();
-                          navigationController.currentIndex = Pages.home;
+                            navigationController.currentIndex = Pages.home;
+                            lessonController.selectedLessons.clear();
+
+                          } on Exception catch(e){
+                            debugPrint(e.toString());
+                            Get.dialog(
+                              CustomDialog(
+                                title: "${lessonController.selectedLessons.length > 1 ? "Lessons" : "Lesson"} NOT added to the catalog",
+                                titleColor: Styles.errorColor,
+                                description: "The selected ${lessonController.selectedLessons.length > 1 ? "lessons" : "lesson"} have NOT been added to the catalog.\nOperation failed!",
+                                icon: Icon(Ionicons.close, color: Styles.errorColor, size: 50),
+                                btnText: Text("Close", style: Styles.textStyle.copyWith(color: Colors.white)),
+                                btnStyle: Styles.errorButtonStyle,
+                              ),
+                            );
+                          } on Error catch(e){
+                            debugPrint(e.toString());
+                            Get.dialog(
+                              CustomDialog(
+                                title: "${lessonController.selectedLessons.length > 1 ? "Lessons" : "Lesson"} NOT added to the catalog",
+                                titleColor: Styles.errorColor,
+                                description: "The selected ${lessonController.selectedLessons.length > 1 ? "lessons" : "lesson"} have NOT been added to the catalog.\nOperation failed!",
+                                icon: Icon(Ionicons.close, color: Styles.errorColor, size: 50),
+                                btnText: Text("Close", style: Styles.textStyle.copyWith(color: Colors.white)),
+                                btnStyle: Styles.errorButtonStyle,
+                              ),
+                            );
+                          }
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,

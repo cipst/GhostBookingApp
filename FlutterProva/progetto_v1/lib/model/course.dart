@@ -4,12 +4,12 @@ class Course {
   Course({required this.name});
 
   factory Course.fromJson(Map<String, dynamic> json) => Course(
-        name: json["name"],
-      );
+    name: json["name"],
+  );
 
   Map<String, dynamic> toJson() => {
-        "name": name,
-      };
+    "name": name,
+  };
 
   @override
   String toString() {

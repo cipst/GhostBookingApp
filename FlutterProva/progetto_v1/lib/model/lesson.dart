@@ -4,9 +4,9 @@ import 'package:progetto_v1/model/teacher.dart';
 
 class Lesson {
   int? id;
-  final Course course;
-  final Teacher teacher;
-  final DateTime dateTime;
+  String course;
+  String teacher;
+  DateTime dateTime;
 
   Lesson({
     this.id,
@@ -17,15 +17,15 @@ class Lesson {
 
   factory Lesson.fromJson(Map<String, dynamic> json) => Lesson(
     id: json["id"],
-    course: Course(name: json["course"]),
-    teacher: Teacher(name: json["teacher"], image: json["image"]),
+    course: json["course"],
+    teacher: json["teacher"],
     dateTime: DateFormat("MM/dd/yyyy HH:mm").parse(json["dateTime"]),
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "course": course.name,
-    "teacher": teacher.name,
+    "course": course,
+    "teacher": teacher,
     "dateTime": "${DateFormat.yMd().format(dateTime)} ${DateFormat.Hm().format(dateTime)}",
   };
 
@@ -33,16 +33,18 @@ class Lesson {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is Lesson &&
-          runtimeType == other.runtimeType &&
-          id == other.id;
+          other is Lesson &&
+              runtimeType == other.runtimeType &&
+              id == other.id;
 
   @override
-  int get hashCode =>
-      id.hashCode ^ course.hashCode ^ teacher.hashCode ^ dateTime.hashCode;
+  int get hashCode => id.hashCode ^ course.hashCode ^ teacher.hashCode ^ dateTime.hashCode;
 
   @override
   String toString() {
-    return "Lesson{\n\t$teacher\n\t$course}";
+    return "Lesson{\n\t"
+        "teacher: $teacher\n\t"
+        "course: $course\n\t"
+        "}";
   }
 }

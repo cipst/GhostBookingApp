@@ -1,13 +1,11 @@
 import 'package:intl/intl.dart';
-import 'package:progetto_v1/model/lesson.dart';
-import 'package:progetto_v1/model/user.dart';
 
 enum StatusType { active, complete, cancel }
 
 class Booking {
   int? id;
-  final User user;
-  final Lesson lesson;
+  String user;
+  int lesson;
   DateTime? reminder;
   StatusType status;
 
@@ -37,6 +35,12 @@ class Booking {
 
   @override
   String toString() {
-    return "Appointment{\n\t$lesson\n\t${DateFormat.MMMMd().format(reminder!)} ${DateFormat.Hm().format(reminder!)}}";
+    return "Booking{\n\t"
+        "ID: $id\n\t"
+        "lesson ID: $lesson\n\t"
+        "user: $user\n\t"
+        "status: $status\n\t"
+        "reminder: ${reminder!=null ? DateFormat.MMMMd().format(reminder!) : ""} ${reminder!=null ? DateFormat.Hm().format(reminder!) : ""}\n\t"
+        "}";
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:progetto_v1/controller/booking_controller.dart';
 import 'package:progetto_v1/controller/lesson_controller.dart';
 import 'package:progetto_v1/controller/navigation_controller.dart';
@@ -24,6 +25,7 @@ class _HomePageState extends State<HomePage> {
   final BookingController bookingController = Get.put(BookingController());
   final LessonController lessonController = Get.put(LessonController());
   Set<Lesson?> lessons =  {};
+  final _today = DateTime.parse("2023-01-09");
 
   @override
   void initState() {
@@ -46,62 +48,72 @@ class _HomePageState extends State<HomePage> {
 
   Padding _todayLessons() {
     return Padding(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       child: Column(
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "Today's Lessons",
-                  style: Styles.headLineStyle,
-                ),
-                bookingController.bookings.isEmpty
-                    ?
-                GestureDetector(
-                    onTap: () =>
-                    navigationController.currentIndex = Pages.search,
-                    child: Row(
-                      children: [
-                        Text(
-                          "Add",
-                          style: Styles.textStyle
-                              .copyWith(color: Styles.orangeColor),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 2),
-                          child: Icon(
-                            Ionicons.add,
-                            size: 12,
-                            color: Styles.orangeColor,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Today's Lessons",
+                      style: Styles.headLineStyle,
+                    ),
+                    bookingController.bookings.isEmpty
+                        ?
+                    GestureDetector(
+                        onTap: () =>
+                        navigationController.currentIndex = Pages.search,
+                        child: Row(
+                          children: [
+                            Text(
+                              "Add",
+                              style: Styles.textStyle
+                                  .copyWith(color: Styles.orangeColor),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 2),
+                              child: Icon(
+                                Ionicons.add,
+                                size: 12,
+                                color: Styles.orangeColor,
+                              ),
+                            ),
+                          ],
+                        ))
+                        :
+                    GestureDetector(
+                      onTap: () =>
+                      navigationController.currentIndex = Pages.catalog,
+                      child: Row(
+                        children: [
+                          Text(
+                            "See All",
+                            style: Styles.textStyle
+                                .copyWith(color: Styles.orangeColor),
                           ),
-                        ),
-                      ],
-                    ))
-                    :
-                GestureDetector(
-                  onTap: () =>
-                  navigationController.currentIndex = Pages.catalog,
-                  child: Row(
-                    children: [
-                      Text(
-                        "See All",
-                        style: Styles.textStyle
-                            .copyWith(color: Styles.orangeColor),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 2),
+                            child: Icon(
+                              Ionicons.chevron_forward,
+                              size: 12,
+                              color: Styles.orangeColor,
+                            ),
+                          ),
+                        ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 2),
-                        child: Icon(
-                          Ionicons.chevron_forward,
-                          size: 12,
-                          color: Styles.orangeColor,
-                        ),
-                      ),
-                    ],
-                  ),
+                    )
+                  ],
+                ),
+                Gap(4),
+                Text(
+                  DateFormat("dd/MM/yyyy").format(_today),
+                  style: Styles.headLineStyle4,
                 )
               ],
             ),

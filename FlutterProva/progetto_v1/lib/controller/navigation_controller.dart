@@ -8,13 +8,10 @@ import 'package:progetto_v1/ui/pages/search_page.dart';
 enum Pages { home, search, catalog, profile }
 
 class NavigationController extends GetxController {
-  var _currentIndex = Pages.home.obs;
+  final _currentIndex = Pages.home.obs;
   final List<Widget> pages = [
     const HomePage(),
     const SearchPage(),
-    // const Center(
-    //   child: Text("SEARCH"),
-    // ),
     const CatalogPage(),
     const ProfilePage(),
   ];

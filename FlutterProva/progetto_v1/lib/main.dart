@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:progetto_v1/controller/navigation_controller.dart';
+import 'package:progetto_v1/controller/user_controller.dart';
 import 'package:progetto_v1/db/db_helper.dart';
 import 'package:progetto_v1/utils/app_layout.dart';
 import 'package:progetto_v1/utils/app_style.dart';
@@ -11,10 +12,11 @@ import 'package:progetto_v1/utils/notification_service.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await NotificationService().init();
-  var db = await DBHelper.instance.database;
+  // await DBHelper.instance.delete();
+  await DBHelper.instance.database;
 
   // await DBHelper.instance.createDB(db, 1);
-  // await DBHelper.instance.drop();
+
 
   runApp(const Main());
 }
@@ -53,18 +55,27 @@ class Root extends StatefulWidget {
 
 class _RootState extends State<Root> {
   final navigationController = Get.put(NavigationController());
+  final UserController userController = Get.put(UserController());
 
-  double _navigationHeight = AppLayout.initNavigationBarHeight;
+  @override
+  void initState() {
+    // TODO: take values from html input login
+    userController.getUser("stefano.cipolletta@gmail.com", "Qwerty123_");
 
-  void _updateNavigationHeight(double newHeight) {
-    setState(() {
-      _navigationHeight = newHeight;
-    });
+    super.initState();
   }
+
+  final double _navigationHeight = AppLayout.initNavigationBarHeight;
+
+  // void _updateNavigationHeight(double newHeight) {
+  //   setState(() {
+  //     _navigationHeight = newHeight;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
-    double maxHeight = AppLayout.getSize(context).height - 80;
+    // double maxHeight = AppLayout.getSize(context).height - 80;
 
     return Scaffold(
       backgroundColor: Styles.bgColor,
@@ -91,8 +102,7 @@ class _RootState extends State<Root> {
               child: Stack(
                 children: [
                   CustomPaint(
-                    size: Size(
-                        AppLayout.getSize(context).width, _navigationHeight),
+                    size: Size(AppLayout.getSize(context).width, _navigationHeight),
                     painter: CustomPainterBottomBar(),
                   ),
                   // GestureDetector(
@@ -143,23 +153,14 @@ class _RootState extends State<Root> {
                               splashColor: Colors.transparent,
                               highlightColor: Colors.transparent,
                               icon: navigationController.checkIndex(Pages.home)
-                                  ? Icon(
-                                Ionicons.home,
-                                color: Styles.orangeColor,
-                              )
-                                  : Icon(
-                                Ionicons.home_outline,
-                                color: Colors.grey.shade400,
-                              ),
+                                  ? Icon(Ionicons.home, color: Styles.orangeColor,)
+                                  : Icon(Ionicons.home_outline, color: Colors.grey.shade400,),
                               onPressed: () => navigationController.currentIndex = Pages.home,
                             ),
                             if (navigationController.checkIndex(Pages.home))
                               Padding(
                                 padding: const EdgeInsets.only(top: 2.0),
-                                child: Text(
-                                  "Home",
-                                  style: Styles.headLineStyle4.copyWith(color: Styles.orangeColor),
-                                ),
+                                child: Text("Home", style: Styles.headLineStyle4.copyWith(color: Styles.orangeColor),),
                               )
                           ],
                         ),

@@ -45,12 +45,14 @@ dependencies:
   date_picker_timeline:
   path:
   path_provider:
+# for session management
+  shared_preferences: ^2.0.15
 # for database
   sqflite:
 # for date time
   intl:
 # for notifications
-  flutter_local_notifications:
+#  flutter_local_notifications:
   flutter_native_timezone:
 # for launcher icon
   flutter_launcher_icons:

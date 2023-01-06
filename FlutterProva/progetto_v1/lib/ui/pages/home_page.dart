@@ -25,7 +25,7 @@ class _HomePageState extends State<HomePage> {
   final BookingController bookingController = Get.put(BookingController());
   final LessonController lessonController = Get.put(LessonController());
   Set<Lesson?> lessons =  {};
-  final _today = DateTime.parse("2023-01-09");
+  final _today = DateTime(2023, 01, 09);
 
   @override
   void initState() {

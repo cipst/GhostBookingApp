@@ -1,5 +1,6 @@
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
@@ -10,9 +11,11 @@ import 'package:progetto_v1/controller/teacher_controller.dart';
 import 'package:progetto_v1/model/lesson.dart';
 import 'package:progetto_v1/ui/components/card_search.dart';
 import 'package:progetto_v1/ui/components/empty_data.dart';
+import 'package:progetto_v1/ui/components/teacher_stepper.dart';
 import 'package:progetto_v1/ui/pages/summary_lessons_page.dart';
 import 'package:progetto_v1/utils/app_layout.dart';
 import 'package:progetto_v1/utils/app_style.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 enum CatalogType { date, teacher, subject }
 
@@ -24,8 +27,10 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  CatalogType _currentCatalog = CatalogType.date;
+  late CatalogType _currentCatalog;
   DateTime _selectedDate = DateTime(2023, 01, 09);
+
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   LessonController lessonController = Get.put(LessonController());
   TeacherController teacherController = Get.put(TeacherController());
@@ -44,6 +49,18 @@ class _SearchPageState extends State<SearchPage> {
     setState(() {
       _currentCatalog = newCatalog;
     });
+    _setPrefInteger("searchTab", newCatalog.index);
+  }
+
+  _setPrefInteger(String key, int value) async {
+    final SharedPreferences prefs = await _prefs;
+    await prefs.setInt(key, value);
+  }
+
+  Future<void> _getPreferences() async {
+    final SharedPreferences prefs = await _prefs;
+    _currentCatalog = CatalogType.values[prefs.getInt("searchTab") ?? 0];
+    return;
   }
 
   bool isCurrentCatalog(CatalogType checkCatalog) {
@@ -52,97 +69,112 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-        children:[
-          CustomScrollView(
-            slivers: [
-              SliverAppBar(
-                title: _catalogTabBar(),
-                backgroundColor: Styles.bgColor,
-                shadowColor: Colors.transparent,
-                snap: true,
-                floating: true,
+    return FutureBuilder<void>(
+        future: _getPreferences(),
+        builder: (context, snapshot) {
+          if(snapshot.hasError){
+            return const EmptyData(text: "Something went wrong...");
+          }
+
+          if(snapshot.connectionState == ConnectionState.waiting){
+            return Container(
+              margin: const EdgeInsets.only(top: 100),
+              child: const Center(
+                  child: CircularProgressIndicator()
               ),
-              if(ErrorController.text.value != "")
-                SliverToBoxAdapter(
-                    child: Center(
-                      child: Obx(() => Text(ErrorController.text.value)),
+            );
+          }
+
+          return Stack(
+              children:[
+                CustomScrollView(
+                  slivers: [
+                    SliverAppBar(
+                      title: _catalogTabBar(),
+                      backgroundColor: Styles.bgColor,
+                      shadowColor: Colors.transparent,
+                      snap: true,
+                      floating: true,
+                    ),
+                    if(ErrorController.text.value != "")
+                      SliverToBoxAdapter(
+                          child: Center(
+                            child: Obx(() => Text(ErrorController.text.value)),
+                          )
+                      ),
+
+                    if (isCurrentCatalog(CatalogType.date))
+                      SliverAppBar(
+                        title: _datePicker(),
+                        centerTitle: true,
+                        toolbarHeight: 100,
+                        backgroundColor: Styles.bgColor,
+                        pinned: true,
+                      ),
+
+                    _catalogList(),
+
+                    SliverToBoxAdapter(
+                      child: Gap(AppLayout.initNavigationBarHeight + 35),
                     )
+                  ],
                 ),
 
-              if (isCurrentCatalog(CatalogType.date))
-                SliverAppBar(
-                  title: _datePicker(),
-                  centerTitle: true,
-                  toolbarHeight: 100,
-                  backgroundColor: Styles.bgColor,
-                  pinned: true,
-                ),
+                // FLOATING ACTION BUTTON WHEN AT LEAST ONE LESSON IS SELECTED
+                // ONLY ON DATE TAB BAR
+                if(isCurrentCatalog(CatalogType.date))
+                  Obx((){
+                    if(!lessonController.selectedLessons.containsValue(true)) return Container();
 
-              Obx(() =>
-                  _catalogList(),
-              ),
+                    return Positioned(
+                      bottom: AppLayout.initNavigationBarHeight + 10,
+                      child: SizedBox(
+                        width: AppLayout.getSize(context).width,
+                        child: Center(
+                          child: FittedBox(
+                            child: Stack(
+                              alignment: const Alignment(1.2, -1.5),
+                              children: [
+                                FloatingActionButton.extended(
+                                  onPressed: () => Get.to(() => const SummaryLessons()),
+                                  label: Row(
+                                    children: const [
+                                      Icon(Ionicons.cart_outline),
+                                      Gap(8),
+                                      Text("Cart"),
+                                    ],
+                                  ),
+                                ),
 
-              SliverToBoxAdapter(
-                child: Gap(AppLayout.initNavigationBarHeight + 35),
-              )
-            ],
-          ),
-
-          // FLOATING ACTION BUTTON WHEN AT LEAST ONE LESSON IS SELECTED
-          // ONLY ON DATE TAB BAR
-          if(isCurrentCatalog(CatalogType.date))
-            Obx((){
-              if(!lessonController.selectedLessons.containsValue(true)) return Container();
-
-              return Positioned(
-                bottom: AppLayout.initNavigationBarHeight + 10,
-                child: SizedBox(
-                  width: AppLayout.getSize(context).width,
-                  child: Center(
-                    child: FittedBox(
-                      child: Stack(
-                        alignment: const Alignment(1.2, -1.5),
-                        children: [
-                          FloatingActionButton.extended(
-                            onPressed: () => Get.to(() => const SummaryLessons()),
-                            label: Row(
-                              children: const [
-                                Icon(Ionicons.cart_outline),
-                                Gap(8),
-                                Text("Cart"),
+                                //BADGE
+                                Container(
+                                  padding: const EdgeInsets.all(4),
+                                  constraints: const BoxConstraints(minHeight: 24, minWidth: 24),
+                                  decoration: BoxDecoration(
+                                      boxShadow: [
+                                        BoxShadow(
+                                            spreadRadius: 1,
+                                            blurRadius: 5,
+                                            color: Colors.black.withAlpha(50))
+                                      ],
+                                      borderRadius: BorderRadius.circular(16),
+                                      color: Styles.blueColor
+                                  ),
+                                  child: Center(
+                                    child: Text("${lessonController.selectedLessons.values.where((b) => b == true).length}", style: const TextStyle(color: Colors.white)),
+                                  ),
+                                ),
                               ],
                             ),
                           ),
-
-                          //BADGE
-                          Container(
-                            padding: const EdgeInsets.all(4),
-                            constraints: const BoxConstraints(minHeight: 24, minWidth: 24),
-                            decoration: BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                      spreadRadius: 1,
-                                      blurRadius: 5,
-                                      color: Colors.black.withAlpha(50))
-                                ],
-                                borderRadius: BorderRadius.circular(16),
-                                color: Styles.blueColor
-                            ),
-                            child: Center(
-                              child: Text("${lessonController.selectedLessons.values.where((b) => b == true).length}", style: const TextStyle(color: Colors.white)),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-              );
-            }),
-        ]
+                    );
+                  }),
+              ]
+          );
+        }
     );
-
   }
 
   /// TabBar on top of the page to choose between Date/Teacher/Subject
@@ -259,35 +291,43 @@ class _SearchPageState extends State<SearchPage> {
   /// Lists of item based on the current catalog section selected
   Widget _catalogList() {
     if (isCurrentCatalog(CatalogType.date)) {
-      if(lessonController.lessons.isEmpty) {
-        return const SliverToBoxAdapter(
-          child: Padding(
-            padding: EdgeInsets.only(top: 30),
-            child: EmptyData(text: "There are no lesson today"),
+      return Obx(() {
+        if(lessonController.lessons.isEmpty) {
+          return const SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.only(top: 30),
+              child: EmptyData(text: "There are no lesson today"),
+            ),
+          );
+        }
+
+        // Filter only lesson on the selected date
+        Iterable<Lesson> lessons = <Lesson>[];
+        lessons = lessonController.lessons.where(
+                (l) => l.dateTime.year == _selectedDate.year &&
+                l.dateTime.month == _selectedDate.month &&
+                l.dateTime.day == _selectedDate.day
+        );
+
+        return SliverList(
+          delegate: SliverChildBuilderDelegate(
+                (context, index) {
+              return CardSearch(lessons.elementAt(index), lessonController);
+            },
+            childCount: lessons.length,
           ),
         );
-      }
+      });
 
-      // Filter only lesson on the selected date
-      Iterable<Lesson> lessons = <Lesson>[];
-      lessons = lessonController.lessons.where(
-              (l) => l.dateTime.year == _selectedDate.year &&
-              l.dateTime.month == _selectedDate.month &&
-              l.dateTime.day == _selectedDate.day
-      );
-
-      return SliverList(
-        delegate: SliverChildBuilderDelegate(
-              (context, index) {
-            return CardSearch(lessons.elementAt(index), lessonController);
-          },
-          childCount: lessons.length,
-        ),
-      );
     } else if (isCurrentCatalog(CatalogType.teacher)) {
-      return _generateList(teacherController.teachers);
+      return const SliverToBoxAdapter(
+        child: TeacherStepper(),
+      );
+      // return _generateList(teacherController.teachers);
     } else {
-      return _generateList(courseController.courses);
+      return Obx(() {
+        return _generateList(courseController.courses);
+      });
     }
   }
 

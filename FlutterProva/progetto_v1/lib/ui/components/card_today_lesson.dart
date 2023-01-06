@@ -260,10 +260,11 @@ class _CardTodayLessonState extends State<CardTodayLesson> {
     //   ],
     // );
     return Get.dialog(
-      ReminderDialog(
-        controller: _controller,
-        appointment: widget.appointment,
-      ),
+      // ReminderDialog(
+      //   controller: _controller,
+      //   appointment: widget.appointment,
+      // ),
+      Container()
     );
   }
 

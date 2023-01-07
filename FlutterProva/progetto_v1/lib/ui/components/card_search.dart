@@ -75,12 +75,29 @@ class _CardSearchState extends State<CardSearch> {
               const Gap(8),
               Row(
                 children: [
-                  const Icon(
-                    Icons.access_time_outlined,
-                    size: 15,
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.calendar_month_outlined,
+                        size: 15,
+                      ),
+                      const Gap(4),
+                      Text(
+                          DateFormat.MMMd().format(widget.lesson.dateTime))
+                    ],
                   ),
-                  const Gap(4),
-                  Text(DateFormat.Hm().format(widget.lesson.dateTime))
+                  const Gap(20),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.access_time_outlined,
+                        size: 15,
+                      ),
+                      const Gap(4),
+                      Text(DateFormat.Hm().format(widget.lesson.dateTime))
+                    ],
+                  ),
                 ],
               )
             ],
@@ -140,8 +157,7 @@ class _CardSearchState extends State<CardSearch> {
                 ),
               ),
               const Gap(15),
-              Text(widget.lesson.teacher,
-                  style: Styles.titleStyle),
+              Text(widget.lesson.teacher, style: Styles.titleStyle, textAlign: TextAlign.center,),
               const Gap(30),
               Text(
                 "Summary",

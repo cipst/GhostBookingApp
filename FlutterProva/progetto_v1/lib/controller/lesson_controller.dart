@@ -36,57 +36,42 @@ class LessonController extends GetxController {
     }
   }
 
-  void getLessonsByDate(DateTime dateTime) async {
+  Future<List<Lesson>?> getLessonsByDate(String dateTime) async {
     try {
       ErrorController.clear();
-      lessons.clear();
-
-      List<Lesson>? lessonsList = await LessonHelper.getLessonsByDate(dateTime);
-      if(lessonsList == null) return;
-
-      for (Lesson t in lessonsList) {
-        lessons.add(t);
-      }
+      return await LessonHelper.getLessonsByDate(dateTime);
     } on Exception catch (e) {
       ErrorController.text.value = e.toString();
+      return null;
     } on Error catch (e) {
       ErrorController.text.value = e.toString();
+      return null;
     }
   }
 
-  void getLessonsByCourse(String course) async {
+  Future<List<Lesson>?> getLessonsByCourse(String course) async {
     try {
       ErrorController.clear();
-      lessons.clear();
-
-      List<Lesson>? lessonsList = await LessonHelper.getLessonsByCourse(course);
-      if(lessonsList == null) return;
-
-      for (Lesson t in lessonsList) {
-        lessons.add(t);
-      }
+      return await LessonHelper.getLessonsByCourse(course);
     } on Exception catch (e) {
       ErrorController.text.value = e.toString();
+      return null;
     } on Error catch (e) {
       ErrorController.text.value = e.toString();
+      return null;
     }
   }
 
-  void getLessonsByTeacher(String teacher) async {
+  Future<List<Lesson>?> getLessonsByTeacher(String teacher) async {
     try {
       ErrorController.clear();
-      lessons.clear();
-
-      List<Lesson>? lessonsList = await LessonHelper.getLessonsByTeacher(teacher);
-      if(lessonsList == null) return;
-
-      for (Lesson t in lessonsList) {
-        lessons.add(t);
-      }
+      return await LessonHelper.getLessonsByTeacher(teacher);
     } on Exception catch (e) {
       ErrorController.text.value = e.toString();
+      return null;
     } on Error catch (e) {
       ErrorController.text.value = e.toString();
+      return null;
     }
   }
 }

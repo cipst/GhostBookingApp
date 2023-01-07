@@ -36,13 +36,13 @@ class LessonHelper {
     return Lesson.fromJson(maps.first); // only one lesson, got the first one
   }
 
-  static Future<List<Lesson>?> getLessonsByDate(DateTime dateTime) async {
+  static Future<List<Lesson>?> getLessonsByDate(String dateTime) async {
     final db = await _instance.database;
 
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
     ${Queries.getLessons}
     WHERE b.id IS NULL AND l.datetime LIKE ?
-    ''', ["${DateFormat.yMd().format(dateTime)}%"]);
+    ''', ["%$dateTime%"]);
 
     if (maps.isEmpty) return null;
 

@@ -89,13 +89,13 @@ class _SearchPageState extends State<SearchPage> {
               children:[
                 CustomScrollView(
                   slivers: [
-                    SliverAppBar(
-                      title: _catalogTabBar(),
-                      backgroundColor: Styles.bgColor,
-                      shadowColor: Colors.transparent,
-                      snap: true,
-                      floating: true,
-                    ),
+                    // SliverAppBar(
+                    //   title: _catalogTabBar(),
+                    //   backgroundColor: Styles.bgColor,
+                    //   shadowColor: Colors.transparent,
+                    //   snap: true,
+                    //   floating: true,
+                    // ),
                     if(ErrorController.text.value != "")
                       SliverToBoxAdapter(
                           child: Center(
@@ -103,14 +103,14 @@ class _SearchPageState extends State<SearchPage> {
                           )
                       ),
 
-                    if (isCurrentCatalog(CatalogType.date))
-                      SliverAppBar(
-                        title: _datePicker(),
-                        centerTitle: true,
-                        toolbarHeight: 100,
-                        backgroundColor: Styles.bgColor,
-                        pinned: true,
-                      ),
+                    // if (isCurrentCatalog(CatalogType.date))
+                    //   SliverAppBar(
+                    //     title: _datePicker(),
+                    //     centerTitle: true,
+                    //     toolbarHeight: 100,
+                    //     backgroundColor: Styles.bgColor,
+                    //     pinned: true,
+                    //   ),
 
                     _catalogList(),
 
@@ -121,56 +121,54 @@ class _SearchPageState extends State<SearchPage> {
                 ),
 
                 // FLOATING ACTION BUTTON WHEN AT LEAST ONE LESSON IS SELECTED
-                // ONLY ON DATE TAB BAR
-                if(isCurrentCatalog(CatalogType.date))
-                  Obx((){
-                    if(!lessonController.selectedLessons.containsValue(true)) return Container();
+                Obx((){
+                  if(!lessonController.selectedLessons.containsValue(true)) return Container();
 
-                    return Positioned(
-                      bottom: AppLayout.initNavigationBarHeight + 10,
-                      child: SizedBox(
-                        width: AppLayout.getSize(context).width,
-                        child: Center(
-                          child: FittedBox(
-                            child: Stack(
-                              alignment: const Alignment(1.2, -1.5),
-                              children: [
-                                FloatingActionButton.extended(
-                                  onPressed: () => Get.to(() => const SummaryLessons()),
-                                  label: Row(
-                                    children: const [
-                                      Icon(Ionicons.cart_outline),
-                                      Gap(8),
-                                      Text("Cart"),
+                  return Positioned(
+                    bottom: AppLayout.initNavigationBarHeight + 10,
+                    child: SizedBox(
+                      width: AppLayout.getSize(context).width,
+                      child: Center(
+                        child: FittedBox(
+                          child: Stack(
+                            alignment: const Alignment(1.2, -1.5),
+                            children: [
+                              FloatingActionButton.extended(
+                                onPressed: () => Get.to(() => const SummaryLessons()),
+                                label: Row(
+                                  children: const [
+                                    Icon(Ionicons.cart_outline),
+                                    Gap(8),
+                                    Text("Cart"),
+                                  ],
+                                ),
+                              ),
+
+                              //BADGE
+                              Container(
+                                padding: const EdgeInsets.all(4),
+                                constraints: const BoxConstraints(minHeight: 24, minWidth: 24),
+                                decoration: BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                          spreadRadius: 1,
+                                          blurRadius: 5,
+                                          color: Colors.black.withAlpha(50))
                                     ],
-                                  ),
+                                    borderRadius: BorderRadius.circular(16),
+                                    color: Styles.blueColor
                                 ),
-
-                                //BADGE
-                                Container(
-                                  padding: const EdgeInsets.all(4),
-                                  constraints: const BoxConstraints(minHeight: 24, minWidth: 24),
-                                  decoration: BoxDecoration(
-                                      boxShadow: [
-                                        BoxShadow(
-                                            spreadRadius: 1,
-                                            blurRadius: 5,
-                                            color: Colors.black.withAlpha(50))
-                                      ],
-                                      borderRadius: BorderRadius.circular(16),
-                                      color: Styles.blueColor
-                                  ),
-                                  child: Center(
-                                    child: Text("${lessonController.selectedLessons.values.where((b) => b == true).length}", style: const TextStyle(color: Colors.white)),
-                                  ),
+                                child: Center(
+                                  child: Text("${lessonController.selectedLessons.values.where((b) => b == true).length}", style: const TextStyle(color: Colors.white)),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                    );
-                  }),
+                    ),
+                  );
+                }),
               ]
           );
         }

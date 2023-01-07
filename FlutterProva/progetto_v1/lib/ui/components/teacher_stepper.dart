@@ -48,8 +48,15 @@ class _TeacherStepperState extends State<TeacherStepper> {
   }
 
   _stepContinue() {
-    _currentStep <= 3 ? setState(() => _currentStep++) : null;
-    _setPrefInteger("step", _currentStep);
+    if(_currentStep <= 3) {
+      if(![_teacherSelectedIndex, _courseSelectedIndex, _dateSelectedIndex, _timeSelectedIndex].contains(-1)) {
+        _currentStep = 4;
+      }else{
+        _currentStep++;
+      }
+      setState(() {});
+      _setPrefInteger("step", _currentStep);
+    }
   }
 
   _stepCancel() {
@@ -169,7 +176,6 @@ class _TeacherStepperState extends State<TeacherStepper> {
                   onStepTapped: (step) => _stepTapped(step),
                   onStepContinue: _stepContinue,
                   onStepCancel: _stepCancel,
-                  // margin: const EdgeInsets.only(bottom: 0),
                   controlsBuilder: _currentStep == 4 ? (context, _) => Container() : null,
                   steps: [
                     Step(
@@ -178,11 +184,11 @@ class _TeacherStepperState extends State<TeacherStepper> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 6, right: 8),
                             child: Icon(
-                              (_currentStep > 0 && _teacherSelectedIndex != -1) ? Ionicons.person : Ionicons.person_outline,
-                              color: (_currentStep > 0 && _teacherSelectedIndex != -1) ? Styles.blueColor : Colors.black,
+                              _teacherSelectedIndex != -1 ? Ionicons.person : Ionicons.person_outline,
+                              color: _teacherSelectedIndex != -1 ? Styles.blueColor : Colors.black,
                             ),
                           ),
-                          Text("Teacher", style: TextStyle(color: (_currentStep > 0 && _teacherSelectedIndex != -1) ? Styles.blueColor : Colors.black)),
+                          Text("Teacher", style: TextStyle(color: _teacherSelectedIndex != -1 ? Styles.blueColor : Colors.black)),
                         ],
                       ),
                       content: Obx(() =>
@@ -209,7 +215,7 @@ class _TeacherStepperState extends State<TeacherStepper> {
                           ),
                       ),
                       isActive: _currentStep >= 0,
-                      state: _currentStep > 0 && _teacherSelectedIndex != -1
+                      state: _teacherSelectedIndex != -1
                           ? StepState.complete
                           : StepState.indexed,
                     ),
@@ -219,11 +225,11 @@ class _TeacherStepperState extends State<TeacherStepper> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 2, right: 8),
                             child: Icon(
-                              (_currentStep > 1 && _courseSelectedIndex != -1) ? Ionicons.book : Ionicons.book_outline,
-                              color: (_currentStep > 1 && _courseSelectedIndex != -1) ? Styles.blueColor : Colors.black,
+                              _courseSelectedIndex != -1 ? Ionicons.book : Ionicons.book_outline,
+                              color: _courseSelectedIndex != -1 ? Styles.blueColor : Colors.black,
                             ),
                           ),
-                          Text("Subject", style: TextStyle(color: (_currentStep > 1 && _courseSelectedIndex != -1) ? Styles.blueColor : Colors.black)),
+                          Text("Subject", style: TextStyle(color: _courseSelectedIndex != -1 ? Styles.blueColor : Colors.black)),
                         ],
                       ),
                       content: Obx(() =>
@@ -250,7 +256,7 @@ class _TeacherStepperState extends State<TeacherStepper> {
                           ),
                       ),
                       isActive: _currentStep >= 0,
-                      state: _currentStep > 1 && _courseSelectedIndex != -1
+                      state: _courseSelectedIndex != -1
                           ? StepState.complete
                           : StepState.indexed,
                     ),
@@ -260,11 +266,11 @@ class _TeacherStepperState extends State<TeacherStepper> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 6, right: 8),
                             child: Icon(
-                              (_currentStep > 2 && _dateSelectedIndex != -1) ? Ionicons.calendar : Ionicons.calendar_outline,
-                              color: (_currentStep > 2 && _dateSelectedIndex != -1) ? Styles.blueColor : Colors.black,
+                              _dateSelectedIndex != -1 ? Ionicons.calendar : Ionicons.calendar_outline,
+                              color: _dateSelectedIndex != -1 ? Styles.blueColor : Colors.black,
                             ),
                           ),
-                          Text("Date", style: TextStyle(color: (_currentStep > 2 && _dateSelectedIndex != -1) ? Styles.blueColor : Colors.black),),
+                          Text("Date", style: TextStyle(color: _dateSelectedIndex != -1 ? Styles.blueColor : Colors.black),),
                         ],
                       ),
                       content: Column(
@@ -289,7 +295,7 @@ class _TeacherStepperState extends State<TeacherStepper> {
                         ),
                       ),
                       isActive: _currentStep >= 0,
-                      state: _currentStep > 2 && _dateSelectedIndex != -1
+                      state: _dateSelectedIndex != -1
                           ? StepState.complete
                           : StepState.indexed,
                     ),
@@ -299,11 +305,11 @@ class _TeacherStepperState extends State<TeacherStepper> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 2, right: 8),
                             child: Icon(
-                              (_currentStep > 3 && _timeSelectedIndex != -1) ? Ionicons.time : Ionicons.time_outline,
-                              color: (_currentStep > 3 && _timeSelectedIndex != -1) ? Styles.blueColor : Colors.black,
+                              _timeSelectedIndex != -1 ? Ionicons.time : Ionicons.time_outline,
+                              color: _timeSelectedIndex != -1 ? Styles.blueColor : Colors.black,
                             ),
                           ),
-                          Text("Time", style: TextStyle(color: (_currentStep > 3 && _timeSelectedIndex != -1) ? Styles.blueColor : Colors.black)),
+                          Text("Time", style: TextStyle(color: _timeSelectedIndex != -1 ? Styles.blueColor : Colors.black)),
                         ],
                       ),
                       content: Column(
@@ -328,12 +334,12 @@ class _TeacherStepperState extends State<TeacherStepper> {
                         ),
                       ),
                       isActive: _currentStep >= 0,
-                      state: _currentStep > 3 && _timeSelectedIndex != -1
+                      state: _timeSelectedIndex != -1
                           ? StepState.complete
                           : StepState.indexed,
                     ),
                     Step(
-                      title: Text("Results"),
+                      title: const Text("Results"),
                       content: Container(),
                       isActive: _currentStep >= 0,
                       state: StepState.indexed,
@@ -347,6 +353,10 @@ class _TeacherStepperState extends State<TeacherStepper> {
                       return const Center(
                         child: CircularProgressIndicator(),
                       );
+                    }
+                    
+                    if(snapshot.hasData && snapshot.data!.isEmpty){
+                      return const EmptyData(text: "No lessons found");
                     }
 
                     return Column(

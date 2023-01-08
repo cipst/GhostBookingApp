@@ -7,19 +7,22 @@ class LessonController extends GetxController {
   final List<Lesson> lessons = <Lesson>[].obs;
   final Map<Lesson, bool> selectedLessons = <Lesson, bool>{}.obs;
 
-  void getAllLessons() async {
+  Future<List<Lesson>?> getAllLessons() async {
     try {
       ErrorController.clear();
       lessons.clear();
 
       List<Lesson>? lessonsList = await LessonHelper.getAllLessons();
-      if(lessonsList == null) return;
+      if(lessonsList == null) return null;
 
       for (Lesson t in lessonsList) {
         lessons.add(t);
       }
+
+      return lessonsList;
     } on Exception catch (e) {
       ErrorController.text.value = e.toString();
+      return null;
     }
   }
 

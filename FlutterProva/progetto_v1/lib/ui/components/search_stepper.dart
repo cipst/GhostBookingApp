@@ -11,14 +11,14 @@ import 'package:progetto_v1/ui/components/empty_data.dart';
 import 'package:progetto_v1/utils/app_style.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class TeacherStepper extends StatefulWidget {
-  const TeacherStepper({Key? key}) : super(key: key);
+class SearchStepper extends StatefulWidget {
+  const SearchStepper({Key? key}) : super(key: key);
 
   @override
-  State<TeacherStepper> createState() => _TeacherStepperState();
+  State<SearchStepper> createState() => _SearchStepperState();
 }
 
-class _TeacherStepperState extends State<TeacherStepper> {
+class _SearchStepperState extends State<SearchStepper> {
   final TeacherController teacherController = Get.put(TeacherController());
   final CourseController courseController = Get.put(CourseController());
   final LessonController lessonController= Get.put(LessonController());
@@ -122,14 +122,31 @@ class _TeacherStepperState extends State<TeacherStepper> {
   }
 
   Future<List<dynamic>> _getLessons() async {
+    List<Lesson>? tmp;
     List<List<Lesson>> lists = [];
 
+    if([_teacherSelectedIndex, _courseSelectedIndex, _dateSelectedIndex, _timeSelectedIndex].every((element) => element==-1)){
+      tmp = await lessonController.getAllLessons();
+
+      tmp?.sort((a, b) {
+        int ris;
+        if((ris = a.dateTime.compareTo(b.dateTime)) != 0) return ris;
+        if((ris = a.teacher.compareTo(b.teacher)) != 0) return ris;
+        if((ris = a.course.compareTo(b.course)) != 0) return ris;
+        return 1;
+      },);
+
+      return tmp!=null? tmp.toList() : [];
+    }
+
     if(_teacherSelectedIndex != -1) {
-      lists.add((await lessonController.getLessonsByTeacher(teacherController.teachers.elementAt(_teacherSelectedIndex).name))!);
+      tmp = await lessonController.getLessonsByTeacher(teacherController.teachers.elementAt(_teacherSelectedIndex).name);
+      tmp != null ? lists.add(tmp) : null;
     }
 
     if(_courseSelectedIndex != -1) {
-      lists.add((await lessonController.getLessonsByCourse(courseController.courses.elementAt(_courseSelectedIndex).name))!);
+      tmp = await lessonController.getLessonsByCourse(courseController.courses.elementAt(_courseSelectedIndex).name);
+      tmp != null ? lists.add(tmp) : null;
     }
 
     if(_dateSelectedIndex != -1) {
@@ -137,11 +154,13 @@ class _TeacherStepperState extends State<TeacherStepper> {
       if(_timeSelectedIndex != -1) {
         datetime += " ${_hours[_timeSelectedIndex]}";
       }
-      lists.add((await lessonController.getLessonsByDate(datetime))!);
+      tmp = await lessonController.getLessonsByDate(datetime);
+      tmp != null ? lists.add(tmp) : null;
     }else{
       if(_timeSelectedIndex != -1) {
         String datetime = "${_hours[_timeSelectedIndex]}";
-        lists.add((await lessonController.getLessonsByDate(datetime))!);
+        tmp = await lessonController.getLessonsByDate(datetime);
+        tmp != null ? lists.add(tmp) : null;
       }
     }
 

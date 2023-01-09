@@ -214,7 +214,7 @@ class _SummaryLessonsState extends State<SummaryLessons> {
                               CustomDialog(
                                 title: "${lessonController.selectedLessons.length > 1 ? "Lessons" : "Lesson"} added to the catalog",
                                 titleColor: Styles.successColor,
-                                description: "The selected ${lessonController.selectedLessons.length > 1 ? "lessons" : "lesson"} have been added to the catalog successfully",
+                                description: "The selected ${lessonController.selectedLessons.length > 1 ? "lessons" : "lesson"} have been successfully added to the catalog",
                                 icon: Icon(Ionicons.checkmark, color: Styles.successColor, size: 50,),
                                 btnText: Text("Close", style: Styles.textStyle.copyWith(color: Colors.white)),
                                 btnStyle: Styles.successButtonStyle,

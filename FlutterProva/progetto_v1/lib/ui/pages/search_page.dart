@@ -75,9 +75,9 @@ class _SearchPageState extends State<SearchPage> {
                           onPressed: () => Get.to(() => const SummaryLessons()),
                           label: Row(
                             children: const [
-                              Icon(Ionicons.cart_outline),
-                              Gap(8),
-                              Text("Cart"),
+                              Icon(Ionicons.albums_outline),
+                              // Gap(8),
+                              // Text("Summary"),
                             ],
                           ),
                         ),

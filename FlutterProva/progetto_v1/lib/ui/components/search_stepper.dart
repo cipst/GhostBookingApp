@@ -24,11 +24,11 @@ class _SearchStepperState extends State<SearchStepper> {
   final LessonController lessonController= Get.put(LessonController());
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
-  late int _currentStep;
-  late int _teacherSelectedIndex;
-  late int _courseSelectedIndex;
-  late int _dateSelectedIndex;
-  late int _timeSelectedIndex;
+  int? _currentStep;
+  int? _teacherSelectedIndex;
+  int? _courseSelectedIndex;
+  int? _dateSelectedIndex;
+  int? _timeSelectedIndex;
 
   final _dates = [
     DateTime(2023, 01, 09),
@@ -42,21 +42,23 @@ class _SearchStepperState extends State<SearchStepper> {
   final _hours = [15, 16, 17, 18, 19];
 
   _stepTapped(int step) {
-    if(step == 4) return;
-    setState(() => _currentStep = step);
-    _setPrefInteger("step", _currentStep);
+    // if(step == 4) return;
+    setState(() => _currentStep = (step == _currentStep) ?  4 : step);
+    _setPrefInteger("step", _currentStep ?? 4);
   }
 
   _stepContinue() {
-    if(_currentStep <= 3) {
+    if(_currentStep != null && _currentStep! <= 3) {
       if(![_teacherSelectedIndex, _courseSelectedIndex, _dateSelectedIndex, _timeSelectedIndex].contains(-1)) {
         _currentStep = 4;
       }else{
-        _currentStep++;
+        _currentStep = _currentStep! + 1;
       }
-      setState(() {});
-      _setPrefInteger("step", _currentStep);
+      _setPrefInteger("step", _currentStep ?? 4);
+    }else{
+      _currentStep = 4;
     }
+    setState(() {});
   }
 
   _stepCancel() {
@@ -71,7 +73,7 @@ class _SearchStepperState extends State<SearchStepper> {
     //subject
       case 1:
         if(_courseSelectedIndex == -1) {
-          _currentStep--;
+          _currentStep = _currentStep! - 1;
           break;
         }
         _courseSelectedIndex = -1;
@@ -81,7 +83,7 @@ class _SearchStepperState extends State<SearchStepper> {
     //date
       case 2:
         if(_dateSelectedIndex == -1) {
-          _currentStep--;
+          _currentStep = _currentStep! - 1;
           break;
         }
         _dateSelectedIndex = -1;
@@ -91,7 +93,7 @@ class _SearchStepperState extends State<SearchStepper> {
     //time
       case 3:
         if(_timeSelectedIndex == -1) {
-          _currentStep--;
+          _currentStep = _currentStep! - 1;
           break;
         }
         _timeSelectedIndex = -1;
@@ -103,7 +105,7 @@ class _SearchStepperState extends State<SearchStepper> {
     }
 
     setState(() {});
-    _setPrefInteger("step", _currentStep);
+    _setPrefInteger("step", _currentStep ?? 4);
   }
 
   _setPrefInteger(String key, int value) async {
@@ -121,44 +123,30 @@ class _SearchStepperState extends State<SearchStepper> {
     return;
   }
 
-  Future<List<dynamic>> _getLessons() async {
+  Future<List<Lesson>> _getLessons() async {
     List<Lesson>? tmp;
     List<List<Lesson>> lists = [];
 
-    if([_teacherSelectedIndex, _courseSelectedIndex, _dateSelectedIndex, _timeSelectedIndex].every((element) => element==-1)){
-      tmp = await lessonController.getAllLessons();
-
-      tmp?.sort((a, b) {
-        int ris;
-        if((ris = a.dateTime.compareTo(b.dateTime)) != 0) return ris;
-        if((ris = a.teacher.compareTo(b.teacher)) != 0) return ris;
-        if((ris = a.course.compareTo(b.course)) != 0) return ris;
-        return 1;
-      },);
-
-      return tmp!=null? tmp.toList() : [];
-    }
-
     if(_teacherSelectedIndex != -1) {
-      tmp = await lessonController.getLessonsByTeacher(teacherController.teachers.elementAt(_teacherSelectedIndex).name);
+      tmp = await lessonController.getLessonsByTeacher(teacherController.teachers.elementAt(_teacherSelectedIndex!).name);
       tmp != null ? lists.add(tmp) : null;
     }
 
-    if(_courseSelectedIndex != -1) {
-      tmp = await lessonController.getLessonsByCourse(courseController.courses.elementAt(_courseSelectedIndex).name);
+    if(_courseSelectedIndex != null && _courseSelectedIndex != -1) {
+      tmp = await lessonController.getLessonsByCourse(courseController.courses.elementAt(_courseSelectedIndex!).name);
       tmp != null ? lists.add(tmp) : null;
     }
 
-    if(_dateSelectedIndex != -1) {
-      String datetime = DateFormat.yMd().format(_dates[_dateSelectedIndex]);
-      if(_timeSelectedIndex != -1) {
-        datetime += " ${_hours[_timeSelectedIndex]}";
+    if(_dateSelectedIndex != null && _dateSelectedIndex != -1) {
+      String datetime = DateFormat.yMd().format(_dates[_dateSelectedIndex!]);
+      if(_timeSelectedIndex != null && _timeSelectedIndex != -1) {
+        datetime += " ${_hours[_timeSelectedIndex!]}";
       }
       tmp = await lessonController.getLessonsByDate(datetime);
       tmp != null ? lists.add(tmp) : null;
     }else{
-      if(_timeSelectedIndex != -1) {
-        String datetime = "${_hours[_timeSelectedIndex]}";
+      if(_timeSelectedIndex != null && _timeSelectedIndex != -1) {
+        String datetime = "${_hours[_timeSelectedIndex!]}";
         tmp = await lessonController.getLessonsByDate(datetime);
         tmp != null ? lists.add(tmp) : null;
       }
@@ -167,7 +155,7 @@ class _SearchStepperState extends State<SearchStepper> {
     return lists.fold<Set>(
         lists.first.toSet(),
             (previousValue, element) => previousValue.intersection(element.toSet())
-    ).toList();
+    ).toList() as List<Lesson>;
   }
 
   @override
@@ -184,14 +172,14 @@ class _SearchStepperState extends State<SearchStepper> {
             _courseSelectedIndex = -1;
             _dateSelectedIndex = -1;
             _timeSelectedIndex = -1;
-            _currentStep = 0;
+            _currentStep = 4;
           }
 
           return Column(
             children: [
               Stepper(
                   physics: const ScrollPhysics(),
-                  currentStep: _currentStep,
+                  currentStep: _currentStep ?? 0,
                   onStepTapped: (step) => _stepTapped(step),
                   onStepContinue: _stepContinue,
                   onStepCancel: _stepCancel,
@@ -233,7 +221,7 @@ class _SearchStepperState extends State<SearchStepper> {
                             ),
                           ),
                       ),
-                      isActive: _currentStep >= 0,
+                      isActive: (_currentStep ?? 0) >= 0,
                       state: _teacherSelectedIndex != -1
                           ? StepState.complete
                           : StepState.indexed,
@@ -274,7 +262,7 @@ class _SearchStepperState extends State<SearchStepper> {
                             ),
                           ),
                       ),
-                      isActive: _currentStep >= 0,
+                      isActive: (_currentStep ?? 0) >= 0,
                       state: _courseSelectedIndex != -1
                           ? StepState.complete
                           : StepState.indexed,
@@ -313,7 +301,7 @@ class _SearchStepperState extends State<SearchStepper> {
                           },
                         ),
                       ),
-                      isActive: _currentStep >= 0,
+                      isActive: (_currentStep ?? 0) >= 0,
                       state: _dateSelectedIndex != -1
                           ? StepState.complete
                           : StepState.indexed,
@@ -352,7 +340,7 @@ class _SearchStepperState extends State<SearchStepper> {
                           },
                         ),
                       ),
-                      isActive: _currentStep >= 0,
+                      isActive: (_currentStep ?? 0) >= 0,
                       state: _timeSelectedIndex != -1
                           ? StepState.complete
                           : StepState.indexed,
@@ -360,35 +348,47 @@ class _SearchStepperState extends State<SearchStepper> {
                     Step(
                       title: const Text("Results"),
                       content: Container(),
-                      isActive: _currentStep >= 0,
+                      isActive: (_currentStep ?? 0) >= 0,
                       state: StepState.indexed,
                     )
-                  ]),
-              FutureBuilder<List<dynamic>>(
-                  future: _getLessons(),
-                  builder: (context, snapshot) {
+                  ]
+              ),
 
-                    if(!snapshot.hasData){
-                      return const Center(
-                        child: CircularProgressIndicator(),
+              if([_teacherSelectedIndex, _courseSelectedIndex, _dateSelectedIndex, _timeSelectedIndex].every((element) => element == -1))
+                Obx(() => Column(
+                  children: List.generate(
+                      lessonController.lessons.length,
+                          (index) {
+                        Lesson l = lessonController.lessons[index];
+                        return CardSearch(l, lessonController);
+                      }
+                  ),
+                )
+                ),
+
+              if(![_teacherSelectedIndex, _courseSelectedIndex, _dateSelectedIndex, _timeSelectedIndex].every((element) => element == null))
+                FutureBuilder<List<Lesson>>(
+                    future: _getLessons(),
+                    builder: (context, snapshot) {
+                      if(snapshot.connectionState == ConnectionState.waiting){
+                        return const Center(child: CircularProgressIndicator(),);
+                      }
+
+                      if(snapshot.data == null || snapshot.data!.isEmpty){
+                        return const EmptyData(text: "No lessons found");
+                      }
+
+                      return Column(
+                        children: List.generate(
+                            snapshot.data?.length ?? 0,
+                                (index) {
+                              Lesson l = snapshot.data![index];
+                              return CardSearch(l, lessonController);
+                            }
+                        ),
                       );
                     }
-                    
-                    if(snapshot.hasData && snapshot.data!.isEmpty){
-                      return const EmptyData(text: "No lessons found");
-                    }
-
-                    return Column(
-                      children: List.generate(
-                          snapshot.data!.length,
-                              (index) {
-                            Lesson l = snapshot.data![index];
-                            return CardSearch(l, lessonController);
-                          }
-                      ),
-                    );
-                  }
-              )
+                ),
             ],
           );
         }

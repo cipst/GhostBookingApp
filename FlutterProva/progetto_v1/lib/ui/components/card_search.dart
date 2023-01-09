@@ -3,8 +3,12 @@ import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:progetto_v1/controller/booking_controller.dart';
 import 'package:progetto_v1/controller/lesson_controller.dart';
+import 'package:progetto_v1/controller/user_controller.dart';
+import 'package:progetto_v1/model/booking.dart';
 import 'package:progetto_v1/model/lesson.dart';
+import 'package:progetto_v1/ui/components/custom_dialog.dart';
 import 'package:progetto_v1/utils/app_style.dart';
 
 class CardSearch extends StatefulWidget {
@@ -21,6 +25,9 @@ class CardSearch extends StatefulWidget {
 }
 
 class _CardSearchState extends State<CardSearch> {
+  final bookingController = Get.put(BookingController());
+  final lessonController = Get.put(LessonController());
+
 
   @override
   Widget build(BuildContext context) {
@@ -220,10 +227,54 @@ class _CardSearchState extends State<CardSearch> {
 
               // RESERVATION
               ElevatedButton(
-                onPressed: () {
-                  Get.snackbar(
-                      "RESERVATION", widget.lesson.teacher);
-                  _dialogConfirmedReservation;
+                onPressed: () async {
+                  // Get.snackbar("RESERVATION", widget.lesson.teacher);
+                  // _dialogConfirmedReservation;
+                  try {
+                    Booking b = Booking(
+                        lesson: widget.lesson.id!,
+                        user: UserController.user.value!.email,
+                        status: StatusType.active);
+                    await bookingController.setBooking(b); // add booked lesson into the db
+                    bookingController.bookings.add(b);
+                    lessonController.selectedLessons.clear(); // remove all eventually selected lessons
+
+                    Get.back();
+                    Get.dialog(
+                      CustomDialog(
+                        title: "Lesson added to the catalog",
+                        titleColor: Styles.successColor,
+                        description: "The selected lesson have been successfully added to the catalog",
+                        icon: Icon(Ionicons.checkmark, color: Styles.successColor, size: 50,),
+                        btnText: Text("Close", style: Styles.textStyle.copyWith(color: Colors.white)),
+                        btnStyle: Styles.successButtonStyle,
+                      ),
+                    );
+                  }on Exception catch(e){
+                    debugPrint(e.toString());
+                    Get.dialog(
+                      CustomDialog(
+                        title: "Lesson NOT added to the catalog",
+                        titleColor: Styles.errorColor,
+                        description: "The selected lesson have NOT been added to the catalog.\nOperation failed!",
+                        icon: Icon(Ionicons.close, color: Styles.errorColor, size: 50),
+                        btnText: Text("Close", style: Styles.textStyle.copyWith(color: Colors.white)),
+                        btnStyle: Styles.errorButtonStyle,
+                      ),
+                    );
+                  }on Error catch(e){
+                    debugPrint(e.toString());
+                    Get.dialog(
+                      CustomDialog(
+                        title: "Lesson NOT added to the catalog",
+                        titleColor: Styles.errorColor,
+                        description: "The selected lesson have NOT been added to the catalog.\nOperation failed!",
+                        icon: Icon(Ionicons.close, color: Styles.errorColor, size: 50),
+                        btnText: Text("Close", style: Styles.textStyle.copyWith(color: Colors.white)),
+                        btnStyle: Styles.errorButtonStyle,
+                      ),
+                    );
+                  }
                 },
                 style: Styles.successButtonStyle,
                 child: Row(
@@ -249,20 +300,6 @@ class _CardSearchState extends State<CardSearch> {
           ),
         ),
       ),
-      transitionCurve: Curves.easeInOut);
-
-  Future<dynamic> _dialogConfirmedReservation() {
-    return Get.defaultDialog(
-        title: "Confirmed reservation",
-        titleStyle: Styles.headLineStyle,
-        middleText: "You have successfully reserved a repetition!",
-        middleTextStyle: Styles.textStyle,
-        actions: [
-          ElevatedButton(
-            onPressed: () => Get.back(),
-            style: Styles.blueButtonStyleOutline,
-            child: const Text("Close"),
-          ),
-        ]);
-  }
+      transitionCurve: Curves.easeInOut
+  );
 }

@@ -68,7 +68,7 @@ class LessonController extends GetxController {
   Future<List<Lesson>?> getLessonsByTeacher(String teacher) async {
     try {
       ErrorController.clear();
-      return await LessonHelper.getLessonsByTeacher(teacher);
+      return (await LessonHelper.getLessonsByTeacher(teacher));
     } on Exception catch (e) {
       ErrorController.text.value = e.toString();
       return null;

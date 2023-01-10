@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    bookingController.getAllBookings("stefano.cipolletta@gmail.com");
+    bookingController.getBookingByDate("stefano.cipolletta@gmail.com", DateFormat.yMd().format(_today));
     super.initState();
   }
 
@@ -110,7 +110,7 @@ class _HomePageState extends State<HomePage> {
                     )
                   ],
                 ),
-                Gap(4),
+                const Gap(4),
                 Text(
                   DateFormat("dd/MM/yyyy").format(_today),
                   style: Styles.headLineStyle4,
@@ -130,7 +130,6 @@ class _HomePageState extends State<HomePage> {
                     margin: EdgeInsets.only(top: AppLayout.getSize(context).width/3),
                     child: CircularProgressIndicator(
                       color: Styles.orangeColor,
-                      backgroundColor: Colors.white,
                     ),
                   );
                 }

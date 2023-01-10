@@ -10,20 +10,24 @@ class BookingController extends GetxController {
     return await BookingHelper.setBooking(booking);
   }
 
-  void getAllBookings(String email) async {
+  Future<List<Booking>?> getAllBookings(String email) async {
     try {
       ErrorController.clear();
       List<Booking>? bookingsList = await BookingHelper.getAllBookings(email);
 
-      if(bookingsList == null) return;
+      if(bookingsList == null) return null;
 
       for (Booking b in bookingsList) {
         bookings.add(b);
       }
+
+      return bookingsList;
     } on Exception catch (e) {
       ErrorController.text.value = e.toString();
+      return null;
     } on Error catch (e) {
       ErrorController.text.value = e.toString();
+      return null;
     }
   }
 
@@ -31,6 +35,27 @@ class BookingController extends GetxController {
     try {
       ErrorController.clear();
       return await BookingHelper.getBooking(id);
+    } on Exception catch (e) {
+      ErrorController.text.value = e.toString();
+      return null;
+    } on Error catch (e) {
+      ErrorController.text.value = e.toString();
+      return null;
+    }
+  }
+
+  Future<List<Booking>?> getBookingByDate(String email, String datetime) async{
+    try {
+      ErrorController.clear();
+      List<Booking>? bookingsList = await BookingHelper.getBookingByDate(email, datetime);
+
+      if(bookingsList == null) return null;
+
+      for (Booking b in bookingsList) {
+        bookings.add(b);
+      }
+
+      return bookingsList;
     } on Exception catch (e) {
       ErrorController.text.value = e.toString();
       return null;

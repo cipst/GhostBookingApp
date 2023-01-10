@@ -5,7 +5,7 @@ import 'package:progetto_v1/controller/lesson_controller.dart';
 import 'package:progetto_v1/controller/navigation_controller.dart';
 import 'package:progetto_v1/controller/user_controller.dart';
 import 'package:progetto_v1/model/lesson.dart';
-import 'package:progetto_v1/ui/components/card_today_lesson.dart';
+import 'package:progetto_v1/ui/components/card_lesson.dart';
 import 'package:progetto_v1/ui/components/empty_data.dart';
 import 'package:progetto_v1/utils/app_layout.dart';
 import 'package:progetto_v1/utils/app_style.dart';
@@ -139,7 +139,7 @@ class _HomePageState extends State<HomePage> {
                   children: List.generate(
                     snapshot.data.length,
                     (index) {
-                      return CardTodayLesson(bookingController.bookings[index], snapshot.data.elementAt(index)!);
+                      return CardLesson(bookingController.bookings[index], snapshot.data.elementAt(index)!);
                     },
                   ),
                 );

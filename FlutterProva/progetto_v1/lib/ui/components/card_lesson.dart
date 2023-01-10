@@ -1,6 +1,4 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -8,27 +6,23 @@ import 'package:ionicons/ionicons.dart';
 import 'package:progetto_v1/controller/navigation_controller.dart';
 import 'package:progetto_v1/model/booking.dart';
 import 'package:progetto_v1/model/lesson.dart';
-import 'package:progetto_v1/ui/components/custom_dialog.dart';
-import 'package:progetto_v1/ui/components/reminder_dialog.dart';
 import 'package:progetto_v1/utils/app_layout.dart';
 import 'package:progetto_v1/utils/app_style.dart';
-import 'package:progetto_v1/utils/notification_service.dart';
 
-class CardTodayLesson extends StatefulWidget {
+class CardLesson extends StatefulWidget {
   final Booking appointment;
   final Lesson lesson;
 
-  const CardTodayLesson(this.appointment, this.lesson, {super.key});
+  const CardLesson(this.appointment, this.lesson, {super.key});
 
   @override
-  State<CardTodayLesson> createState() => _CardTodayLessonState();
+  State<CardLesson> createState() => _CardLessonState();
 }
 
-class _CardTodayLessonState extends State<CardTodayLesson> {
+class _CardLessonState extends State<CardLesson> {
   bool _notification = false;
   final double _cardWidth = 0.9;
 
-  final _controller = TextEditingController();
   final _navigationController = Get.put(NavigationController());
 
   @override
@@ -326,9 +320,10 @@ class _CardTodayLessonState extends State<CardTodayLesson> {
                   ),
                 ),
               ),
-              const Gap(15),
+              const Gap(10),
               Text(widget.lesson.teacher,
-                  style: Styles.titleStyle),
+                  style: Styles.titleStyle,
+              textAlign: TextAlign.center,),
               const Gap(30),
               Text(
                 "Summary",
@@ -433,6 +428,7 @@ class _CardTodayLessonState extends State<CardTodayLesson> {
   ElevatedButton _showInCatalog() => ElevatedButton(
     onPressed: () {
       _navigationController.currentIndex = Pages.catalog;
+      _navigationController.catalogIndex = widget.appointment.id ?? 0;
       Get.back();
     },
     style: Styles.blueButtonStyle,

@@ -3,17 +3,20 @@ import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:progetto_v1/controller/booking_controller.dart';
 import 'package:progetto_v1/controller/navigation_controller.dart';
 import 'package:progetto_v1/model/booking.dart';
 import 'package:progetto_v1/model/lesson.dart';
+import 'package:progetto_v1/ui/components/custom_dialog.dart';
 import 'package:progetto_v1/utils/app_layout.dart';
 import 'package:progetto_v1/utils/app_style.dart';
 
 class CardLesson extends StatefulWidget {
   final Booking appointment;
   final Lesson lesson;
+  final Function()? onChange;
 
-  const CardLesson(this.appointment, this.lesson, {super.key});
+  const CardLesson(this.appointment, this.lesson, {this.onChange, super.key});
 
   @override
   State<CardLesson> createState() => _CardLessonState();
@@ -24,6 +27,7 @@ class _CardLessonState extends State<CardLesson> {
   final double _cardWidth = 0.9;
 
   final _navigationController = Get.put(NavigationController());
+  final _bookingController = Get.put(BookingController());
 
   @override
   Widget build(BuildContext context) {
@@ -258,7 +262,7 @@ class _CardLessonState extends State<CardLesson> {
       //   controller: _controller,
       //   appointment: widget.appointment,
       // ),
-      Container()
+        Container()
     );
   }
 
@@ -322,8 +326,8 @@ class _CardLessonState extends State<CardLesson> {
               ),
               const Gap(10),
               Text(widget.lesson.teacher,
-                  style: Styles.titleStyle,
-              textAlign: TextAlign.center,),
+                style: Styles.titleStyle,
+                textAlign: TextAlign.center,),
               const Gap(30),
               Text(
                 "Summary",
@@ -450,9 +454,47 @@ class _CardLessonState extends State<CardLesson> {
 
   ElevatedButton _cancelLesson() => ElevatedButton(
     onPressed: () {
-      Get.back();
-      Get.snackbar(
-          "Cancel lesson", widget.lesson.teacher);
+      try{
+        if (widget.appointment.id != null) {
+          debugPrint(widget.appointment.toString());
+          debugPrint(widget.lesson.toString());
+          _bookingController.removeBooking(widget.appointment.id!);
+        }
+        widget.onChange;
+        Get.back();
+        Get.dialog(
+          CustomDialog(
+            title: "Lesson removed from the catalog",
+            titleColor: Styles.successColor,
+            description: "The selected lesson has been successfully removed from the catalog",
+            icon: Icon(Ionicons.trash_outline, color: Styles.successColor, size: 50,),
+            btnText: Text("Close", style: Styles.textStyle.copyWith(color: Colors.white)),
+            btnStyle: Styles.successButtonStyle,
+          ),
+        );
+      }on Exception catch(e){
+        Get.dialog(
+          CustomDialog(
+            title: "Lesson NOT removed from the catalog",
+            titleColor: Styles.errorColor,
+            description: "The selected lesson has NOT been removed from the catalog.\nOperation failed!",
+            icon: Icon(Ionicons.close, color: Styles.errorColor, size: 50),
+            btnText: Text("Close", style: Styles.textStyle.copyWith(color: Colors.white)),
+            btnStyle: Styles.errorButtonStyle,
+          ),
+        );
+      }on Error catch (e){
+        Get.dialog(
+          CustomDialog(
+            title: "Lesson NOT removed from the catalog",
+            titleColor: Styles.errorColor,
+            description: "The selected lesson has NOT been removed from the catalog.\nOperation failed!",
+            icon: Icon(Ionicons.close, color: Styles.errorColor, size: 50),
+            btnText: Text("Close", style: Styles.textStyle.copyWith(color: Colors.white)),
+            btnStyle: Styles.errorButtonStyle,
+          ),
+        );
+      }
     },
     style: Styles.errorButtonStyleOutline,
     child: Row(

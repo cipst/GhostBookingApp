@@ -45,6 +45,7 @@ class Lesson {
     return "Lesson{\n\t"
         "teacher: $teacher\n\t"
         "course: $course\n\t"
+        "datetime: ${DateFormat.yMd().format(dateTime)} ${DateFormat.Hm().format(dateTime)}\n\t"
         "}";
   }
 }

@@ -82,7 +82,6 @@ class LessonHelper {
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
     SELECT l.* FROM Lesson l LEFT JOIN Booking b ON l.id == b.lesson
     WHERE b.id IS NULL AND l.teacher = ?
-    GROUP BY l.datetime
     ORDER BY l.datetime, l.course, l.teacher
     ''', [teacher]);
 

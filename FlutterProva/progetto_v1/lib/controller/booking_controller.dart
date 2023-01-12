@@ -18,19 +18,21 @@ class BookingController extends GetxController {
     return await BookingHelper.setBooking(booking);
   }
 
-  Future<void> removeBooking(int id) async {
-    int removed = await BookingHelper.removeBooking(id);
+  Future<void> completeBooking(int id) async {
+    int updated = await BookingHelper.completeBooking(id);
+    if(updated != 0){
+      int index = bookings.indexWhere((b) => b.id == id);
+      bookings[index].status = StatusType.complete;
+      getAllBookings(bookings[index].user);
+    }
+  }
+
+  Future<void> cancelBooking(int id) async {
+    int removed = await BookingHelper.cancelBooking(id);
     if(removed != 0){
-      int index = 0;
-      bookings.removeWhere((b) {
-        if(b.id == id){ //found the right booked lesson
-          keys.removeAt(index);
-          lessons.removeWhere((l) => l.id == b.lesson); // remove the correct lesson's info
-          return true; //remove the booked lesson
-        }
-        ++index;
-        return false;
-      });
+      int index = bookings.indexWhere((b) => b.id == id);
+      bookings[index].status = StatusType.cancel;
+      getAllBookings(bookings[index].user);
     }
   }
 

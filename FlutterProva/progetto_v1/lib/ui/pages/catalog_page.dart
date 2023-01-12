@@ -41,8 +41,8 @@ class _CatalogPageState extends State<CatalogPage> {
       if (k.currentContext != null) {
         Scrollable.ensureVisible(
           k.currentContext!,
-          duration: const Duration(seconds: 1),
-          curve: Curves.easeIn,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeOutQuad,
         );
         retry = false;
       } else {

@@ -14,7 +14,7 @@ class DBHelper {
   static final _teachers = [
     Teacher(name: "Paolo Rossi"),
     Teacher(name: "Robert Green"),
-    Teacher(name: "Francesco Azzurro"),
+    Teacher(name: "Luca Neri"),
     Teacher(name: "Jennifer Blue"),
     Teacher(name: "Susan Violet"),
     Teacher(name: "John Black"),

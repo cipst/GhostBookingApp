@@ -14,7 +14,7 @@ class LessonHelper {
 
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
     SELECT l.* FROM Lesson l LEFT JOIN Booking b ON l.id == b.lesson
-    WHERE b.id IS NULL
+    WHERE (b.id IS NULL OR b.status == 2)
     ORDER BY l.datetime, l.teacher, l.course
     ''');
 
@@ -43,7 +43,7 @@ class LessonHelper {
 
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
     SELECT l.* FROM Lesson l LEFT JOIN Booking b ON l.id == b.lesson
-    WHERE b.id IS NULL AND l.datetime LIKE ?
+    WHERE (b.id IS NULL OR b.status == 2) AND l.datetime LIKE ?
     ORDER BY l.datetime, l.teacher, l.course
     ''', ["%$dateTime%"]);
 
@@ -62,7 +62,7 @@ class LessonHelper {
 
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
     SELECT l.* FROM Lesson l LEFT JOIN Booking b ON l.id == b.lesson
-    WHERE b.id IS NULL AND l.course = ?
+    WHERE (b.id IS NULL OR b.status == 2) AND l.course = ?
     ORDER BY l.datetime, l.teacher, l.course
     ''', [course]);
 
@@ -81,7 +81,7 @@ class LessonHelper {
 
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
     SELECT l.* FROM Lesson l LEFT JOIN Booking b ON l.id == b.lesson
-    WHERE b.id IS NULL AND l.teacher = ?
+    WHERE (b.id IS NULL OR b.status == 2) AND l.teacher = ?
     ORDER BY l.datetime, l.course, l.teacher
     ''', [teacher]);
 

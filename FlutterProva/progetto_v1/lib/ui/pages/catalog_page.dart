@@ -38,36 +38,11 @@ class _CatalogPageState extends State<CatalogPage> {
     // });
   }
 
-  Future<List<Lesson>> _getLessons() async{
-    List<Lesson> lessons = <Lesson>[];
-    await bookingController.getAllBookings(UserController.user.value?.email ?? "stefano.cipolletta@gmail.com");
-
-    for(Booking b in bookingController.bookings){
-      Lesson? l = await lessonController.getLesson(b.lesson);
-      (l != null) ? lessons.add(l) : null;
-    }
-    return lessons;
-  }
-
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Lesson>>(
-      future: _getLessons(),
-      builder: (context, snapshot) {
 
-        if(snapshot.connectionState == ConnectionState.waiting){
-          return Center(
-            child: CircularProgressIndicator(
-              color: Styles.orangeColor,
-            ),
-          );
-        }
-
-        if(!snapshot.hasData){
-          return const EmptyData(text: "No data found");
-        }
-
-        return CustomScrollView(
+    return Obx(() =>
+        CustomScrollView(
           controller: scrollController,
           slivers: [
             const SliverAppBar(
@@ -75,23 +50,33 @@ class _CatalogPageState extends State<CatalogPage> {
               pinned: true,
               centerTitle: true,
             ),
+            bookingController.bookings.isEmpty ?
+            SliverToBoxAdapter(
+              child: Container(
+                  margin: const EdgeInsets.only(top: 70),
+                  child: const EmptyData(text: "No lessons in the catalog")
+              ),
+            )
+                :
             SliverList(
-              delegate: SliverChildBuilderDelegate(childCount: bookingController.bookings.length,
-                    (context, index) {
-                  return Obx(() =>
-                      Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 20.0),
-                          child: CardLesson(bookingController.bookings[index], snapshot.data![index]))
-                  );
-                },
+              delegate: SliverChildBuilderDelegate(
+                childCount: bookingController.bookings.length,
+                    (context, index) =>
+                    Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: CardLesson(
+                          bookingController.bookings[index],
+                          bookingController.lessons[index],
+                          // onChange: () => setState((){}),
+                        )
+                    ),
               ),
             ),
             SliverToBoxAdapter(
               child: Gap(AppLayout.initNavigationBarHeight + 10),
             )
           ],
-        );
-      },
+        )
     );
   }
 }

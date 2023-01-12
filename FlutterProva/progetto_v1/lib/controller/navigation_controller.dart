@@ -9,7 +9,7 @@ enum Pages { home, search, catalog, profile }
 
 class NavigationController extends GetxController {
   final _currentIndex = Pages.home.obs;
-  final _catalogIndex = (-1).obs;
+  final _catalogIndexToScroll = (0).obs;
 
   final List<Widget> pages = [
     const HomePage(),
@@ -27,6 +27,9 @@ class NavigationController extends GetxController {
     return currentIndex == index;
   }
 
-  int get catalogIndex => _catalogIndex.value;
-  set catalogIndex(int index) => _catalogIndex.value = index;
+  int get catalogIndexToScroll => _catalogIndexToScroll.value;
+
+  set catalogIndexToScroll(int index) {
+    _catalogIndexToScroll.value = index;
+  }
 }

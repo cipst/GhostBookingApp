@@ -14,9 +14,8 @@ import 'package:progetto_v1/utils/app_style.dart';
 class CardLesson extends StatefulWidget {
   final Booking appointment;
   final Lesson lesson;
-  final Function()? onChange;
 
-  const CardLesson(this.appointment, this.lesson, {this.onChange, super.key});
+  const CardLesson(this.appointment, this.lesson, {super.key});
 
   @override
   State<CardLesson> createState() => _CardLessonState();
@@ -432,7 +431,7 @@ class _CardLessonState extends State<CardLesson> {
   ElevatedButton _showInCatalog() => ElevatedButton(
     onPressed: () {
       _navigationController.currentIndex = Pages.catalog;
-      _navigationController.catalogIndex = widget.appointment.id ?? 0;
+      _navigationController.catalogIndexToScroll = _bookingController.keys.indexOf(widget.key);
       Get.back();
     },
     style: Styles.blueButtonStyle,
@@ -456,11 +455,8 @@ class _CardLessonState extends State<CardLesson> {
     onPressed: () {
       try{
         if (widget.appointment.id != null) {
-          debugPrint(widget.appointment.toString());
-          debugPrint(widget.lesson.toString());
           _bookingController.removeBooking(widget.appointment.id!);
         }
-        widget.onChange;
         Get.back();
         Get.dialog(
           CustomDialog(

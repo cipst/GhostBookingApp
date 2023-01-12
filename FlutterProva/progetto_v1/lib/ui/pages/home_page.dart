@@ -129,6 +129,7 @@ class _HomePageState extends State<HomePage> {
                     CardLesson(
                       bookingController.bookings[index],
                       bookingController.lessons.elementAt(index),
+                      key: bookingController.keys[index],
                     )
             ),
           )

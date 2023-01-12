@@ -29,21 +29,39 @@ class _CatalogPageState extends State<CatalogPage> {
   @override
   void initState() {
     super.initState();
-    // WidgetsBinding.instance.addPostFrameCallback((_){
-    //   if (navigationController.catalogIndex != -1) {
-    //     int index = bookingController.bookings
-    //         .indexWhere((b) => b.id == navigationController.catalogIndex);
-    //     scrollController.animateTo(index.toDouble(), duration: const Duration(seconds: 1), curve: const ElasticInCurve());
-    //   }
-    // });
+  }
+
+  _scrollFunction()
+  {
+    bool retry = true;
+    GlobalKey k;
+    int index = navigationController.catalogIndexToScroll;
+    do{
+      k = bookingController.keys.elementAt(index) as GlobalKey;
+      if (k.currentContext != null) {
+        Scrollable.ensureVisible(
+          k.currentContext!,
+          duration: const Duration(seconds: 1),
+          curve: Curves.easeIn,
+        );
+        retry = false;
+      } else {
+        if (index > 0) {
+          index--;
+        }else{
+          retry = false;
+        }
+      }
+    }while(retry);
+    navigationController.catalogIndexToScroll = 0; //reset scroll index to 0
   }
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollFunction());
 
     return Obx(() =>
         CustomScrollView(
-          controller: scrollController,
           slivers: [
             const SliverAppBar(
               title: Text("FILTRI QUI"),
@@ -60,17 +78,17 @@ class _CatalogPageState extends State<CatalogPage> {
                 :
             SliverList(
               delegate: SliverChildBuilderDelegate(
-                childCount: bookingController.bookings.length,
-                    (context, index) =>
-                    Container(
+                  childCount: bookingController.bookings.length,
+                      (context, index){
+                    return Container(
                         margin: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: CardLesson(
                           bookingController.bookings[index],
                           bookingController.lessons[index],
-                          // onChange: () => setState((){}),
+                          key: bookingController.keys[index],
                         )
-                    ),
-              ),
+                    );
+                  }),
             ),
             SliverToBoxAdapter(
               child: Gap(AppLayout.initNavigationBarHeight + 10),

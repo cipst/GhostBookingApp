@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:progetto_v1/controller/error_controller.dart';
 import 'package:progetto_v1/controller/lesson_controller.dart';
@@ -11,6 +12,7 @@ class BookingController extends GetxController {
 
   final List<Booking> bookings = <Booking>[].obs;
   final List<Lesson> lessons = <Lesson>[].obs;
+  final keys = [].obs;
 
   Future<int> setBooking(Booking booking) async {
     return await BookingHelper.setBooking(booking);
@@ -19,8 +21,15 @@ class BookingController extends GetxController {
   Future<void> removeBooking(int id) async {
     int removed = await BookingHelper.removeBooking(id);
     if(removed != 0){
+      int index = 0;
       bookings.removeWhere((b) {
-        return b.id == id;
+        if(b.id == id){ //found the right booked lesson
+          keys.removeAt(index);
+          lessons.removeWhere((l) => l.id == b.lesson); // remove the correct lesson's info
+          return true; //remove the booked lesson
+        }
+        ++index;
+        return false;
       });
     }
   }
@@ -37,12 +46,14 @@ class BookingController extends GetxController {
       ErrorController.clear();
       bookings.clear();
       lessons.clear();
+      keys.clear();
       List<Booking>? bookingsList = await BookingHelper.getAllBookings(email);
 
       if(bookingsList == null) return null;
 
       for (Booking b in bookingsList) {
         bookings.add(b);
+        keys.add(GlobalKey(debugLabel: "${b.id}"));
       }
 
       await _getLessons();
@@ -74,12 +85,14 @@ class BookingController extends GetxController {
       ErrorController.clear();
       bookings.clear();
       lessons.clear();
+      keys.clear();
       List<Booking>? bookingsList = await BookingHelper.getBookingByDate(email, datetime);
 
       if(bookingsList == null) return null;
 
       for (Booking b in bookingsList) {
         bookings.add(b);
+        keys.add(GlobalKey(debugLabel: "${b.id}"));
       }
 
       await _getLessons();

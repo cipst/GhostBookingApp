@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
   final navigationController = Get.put(NavigationController());
   final BookingController bookingController = Get.put(BookingController());
   final LessonController lessonController = Get.put(LessonController());
-  Set<Lesson?> lessons =  {};
+
   final _today = DateTime(2023, 01, 09);
 
   @override
@@ -122,42 +122,20 @@ class _HomePageState extends State<HomePage> {
               ?
           const EmptyData(text: "You have no lesson today")
               :
-          FutureBuilder(
-              future: getAllLessonsInBooking(),
-              builder: (context, snapshot) {
-                if(!snapshot.hasData || snapshot.hasError){
-                  return Container(
-                    margin: EdgeInsets.only(top: AppLayout.getSize(context).width/3),
-                    child: CircularProgressIndicator(
-                      color: Styles.orangeColor,
-                    ),
-                  );
-                }
-
-                return Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: List.generate(
-                    snapshot.data.length,
-                    (index) {
-                      return CardLesson(bookingController.bookings[index], snapshot.data.elementAt(index)!);
-                    },
-                  ),
-                );
-              }
+          Obx(() => Column(
+            mainAxisSize: MainAxisSize.max,
+            children: List.generate(bookingController.lessons.length,
+                    (index) =>
+                    CardLesson(
+                      bookingController.bookings[index],
+                      bookingController.lessons.elementAt(index),
+                    )
+            ),
+          )
           ),
         ],
       ),
     );
-  }
-
-  Future getAllLessonsInBooking() async {
-    for(var b in bookingController.bookings){
-      Lesson? l = await lessonController.getLesson(b.lesson);
-      if(l != null) {
-        lessons.add(l);
-      }
-    }
-    return lessons;
   }
 
   Container _searchBar() {
@@ -223,68 +201,5 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
-// final List<Widget> _data = [
-//   CardUpcomingLesson(
-//     course: "Italiano",
-//     teacher: "Paolo Rossi",
-//     image:
-//     "https://minimaltoolkit.com/images/randomdata/male/47.jpg",
-//     // dateTime: DateTime.parse("2022-11-18 20:19:00"),
-//     dateTime: DateTime.now().add(const Duration(minutes: 2)),
-//     onTap: () =>
-//         Get.to(
-//           Scaffold(appBar: AppBar(), body: const Center(child: Text("Paolo Rossi"))),
-//         ),
-//   ),
-//   CardUpcomingLesson(
-//     course: "Matematica",
-//     teacher: "Luca Verdi",
-//     image:
-//     "https://minimaltoolkit.com/images/randomdata/male/54.jpg",
-//     // dateTime: DateTime.parse("2022-11-30 16:00:00"),
-//     dateTime: DateTime.now().add(const Duration(minutes: 3)),
-//     onTap: () =>
-//         Get.to(
-//           Scaffold(appBar: AppBar(), body: const Center(child: Text("Luca Verdi"))),
-//         ),
-//   ),
-//   CardUpcomingLesson(
-//     course: "Storia",
-//     teacher: "Francesca Neri",
-//     image:
-//     "https://minimaltoolkit.com/images/randomdata/female/27.jpg",
-//     // dateTime: DateTime.parse("2022-11-30 17:00:00"),
-//     dateTime: DateTime.now().add(const Duration(minutes: 1)),
-//     onTap: () =>
-//         Get.to(
-//           Scaffold(appBar: AppBar(), body: const Center(child: Text("Francesca Neri"))),
-//         ),
-//   ),
-//   CardUpcomingLesson(
-//     course: "Storia",
-//     teacher: "Francesca Neri",
-//     image:
-//     "https://minimaltoolkit.com/images/randomdata/female/27.jpg",
-//     // dateTime: DateTime.parse("2022-11-30 17:00:00"),
-//     dateTime: DateTime.now().add(const Duration(minutes: 1)),
-//     onTap: () =>
-//         Get.to(
-//           Scaffold(appBar: AppBar(), body: const Center(child: Text("Francesca Neri"))),
-//         ),
-//   ),
-//   CardUpcomingLesson(
-//     course: "Storia",
-//     teacher: "Francesca Neri",
-//     image:
-//     "https://minimaltoolkit.com/images/randomdata/female/27.jpg",
-//     // dateTime: DateTime.parse("2022-11-30 17:00:00"),
-//     dateTime: DateTime.now().add(const Duration(minutes: 2)),
-//     onTap: () =>
-//         Get.to(
-//           Scaffold(appBar: AppBar(), body: const Center(child: Text("Francesca Neri"))),
-//         ),
-//   ),
-// ];
 
 }

@@ -206,7 +206,7 @@ class _SummaryLessonsState extends State<SummaryLessons> {
                                   user: UserController.user.value!.email,
                                   status: StatusType.active);
                               await bookingController.setBooking(b); // add booked lesson into the db
-                              bookingController.bookings.add(b); // add booked lesson into the list of booked lessons
+                              // bookingController.bookings.add(b); // add booked lesson into the list of booked lessons
                             });
 
                             Get.back();

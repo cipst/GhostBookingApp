@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
@@ -8,6 +9,7 @@ import 'package:progetto_v1/controller/teacher_controller.dart';
 import 'package:progetto_v1/model/lesson.dart';
 import 'package:progetto_v1/ui/components/card_search.dart';
 import 'package:progetto_v1/ui/components/empty_data.dart';
+import 'package:progetto_v1/utils/app_layout.dart';
 import 'package:progetto_v1/utils/app_style.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -175,221 +177,227 @@ class _SearchStepperState extends State<SearchStepper> {
             _currentStep = 4;
           }
 
-          return Column(
-            children: [
-              Stepper(
-                  physics: const ScrollPhysics(),
-                  currentStep: _currentStep ?? 0,
-                  onStepTapped: (step) => _stepTapped(step),
-                  onStepContinue: _stepContinue,
-                  onStepCancel: _stepCancel,
-                  controlsBuilder: _currentStep == 4 ? (context, _) => Container() : null,
-                  steps: [
-                    Step(
-                      title: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 6, right: 8),
-                            child: Icon(
-                              _teacherSelectedIndex != -1 ? Ionicons.person : Ionicons.person_outline,
-                              color: _teacherSelectedIndex != -1 ? Styles.blueColor : Colors.black,
-                            ),
-                          ),
-                          Text("Teacher", style: TextStyle(color: _teacherSelectedIndex != -1 ? Styles.blueColor : Colors.black)),
-                        ],
-                      ),
-                      content: Obx(() =>
-                          Column(
-                            children: List.generate(
-                              teacherController.teachers.length,
-                                  (index) {
-                                return ListTile(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  title: Text(teacherController.teachers.elementAt(index).name),
-                                  textColor: (_teacherSelectedIndex == index && _currentStep == 0) ? Colors.white : Styles.textColor,
-                                  tileColor: (_teacherSelectedIndex == index && _currentStep == 0) ? Styles.blueColor : Colors.transparent,
-                                  onTap: (){
-                                    setState(() {
-                                      _teacherSelectedIndex = index;
-                                    });
-                                    _setPrefInteger("teacherIndex", index);
-                                  },
-                                );
-                              },
-                            ),
-                          ),
-                      ),
-                      isActive: (_currentStep ?? 0) >= 0,
-                      state: _teacherSelectedIndex != -1
-                          ? StepState.complete
-                          : StepState.indexed,
-                    ),
-                    Step(
-                      title: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 2, right: 8),
-                            child: Icon(
-                              _courseSelectedIndex != -1 ? Ionicons.book : Ionicons.book_outline,
-                              color: _courseSelectedIndex != -1 ? Styles.blueColor : Colors.black,
-                            ),
-                          ),
-                          Text("Subject", style: TextStyle(color: _courseSelectedIndex != -1 ? Styles.blueColor : Colors.black)),
-                        ],
-                      ),
-                      content: Obx(() =>
-                          Column(
-                            children: List.generate(
-                              courseController.courses.length,
-                                  (index) {
-                                return ListTile(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  title: Text(courseController.courses.elementAt(index).name),
-                                  textColor: (_courseSelectedIndex == index && _currentStep == 1) ? Colors.white : Styles.textColor,
-                                  tileColor: (_courseSelectedIndex == index && _currentStep == 1) ? Styles.blueColor : Colors.transparent,
-                                  onTap: (){
-                                    setState(() {
-                                      _courseSelectedIndex = index;
-                                    });
-                                    _setPrefInteger("courseIndex", index);
-                                  },
-                                );
-                              },
-                            ),
-                          ),
-                      ),
-                      isActive: (_currentStep ?? 0) >= 0,
-                      state: _courseSelectedIndex != -1
-                          ? StepState.complete
-                          : StepState.indexed,
-                    ),
-                    Step(
-                      title: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 6, right: 8),
-                            child: Icon(
-                              _dateSelectedIndex != -1 ? Ionicons.calendar : Ionicons.calendar_outline,
-                              color: _dateSelectedIndex != -1 ? Styles.blueColor : Colors.black,
-                            ),
-                          ),
-                          Text("Date", style: TextStyle(color: _dateSelectedIndex != -1 ? Styles.blueColor : Colors.black),),
-                        ],
-                      ),
-                      content: Column(
-                        children: List.generate(
-                          _dates.length,
-                              (index) {
-                            return ListTile(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              title: Center(child: Text(DateFormat("dd/MM/yyyy").format(_dates.elementAt(index)))),
-                              textColor: (_dateSelectedIndex == index && _currentStep == 2) ? Colors.white : Styles.textColor,
-                              tileColor: (_dateSelectedIndex == index && _currentStep == 2) ? Styles.blueColor : Colors.transparent,
-                              onTap: (){
-                                setState(() {
-                                  _dateSelectedIndex = index;
-                                });
-                                _setPrefInteger("dateIndex", index);
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                      isActive: (_currentStep ?? 0) >= 0,
-                      state: _dateSelectedIndex != -1
-                          ? StepState.complete
-                          : StepState.indexed,
-                    ),
-                    Step(
-                      title: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 2, right: 8),
-                            child: Icon(
-                              _timeSelectedIndex != -1 ? Ionicons.time : Ionicons.time_outline,
-                              color: _timeSelectedIndex != -1 ? Styles.blueColor : Colors.black,
-                            ),
-                          ),
-                          Text("Time", style: TextStyle(color: _timeSelectedIndex != -1 ? Styles.blueColor : Colors.black)),
-                        ],
-                      ),
-                      content: Column(
-                        children: List.generate(
-                          _hours.length,
-                              (index) {
-                            return ListTile(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              title: Center(child: Text("${_hours.elementAt(index)}:00")),
-                              textColor: (_timeSelectedIndex == index && _currentStep == 3) ? Colors.white : Styles.textColor,
-                              tileColor: (_timeSelectedIndex == index && _currentStep == 3) ? Styles.blueColor : Colors.transparent,
-                              onTap: (){
-                                setState(() {
-                                  _timeSelectedIndex = index;
-                                });
-                                _setPrefInteger("timeIndex", index);
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                      isActive: (_currentStep ?? 0) >= 0,
-                      state: _timeSelectedIndex != -1
-                          ? StepState.complete
-                          : StepState.indexed,
-                    ),
-                    Step(
-                      title: const Text("Results"),
-                      content: Container(),
-                      isActive: (_currentStep ?? 0) >= 0,
-                      state: StepState.indexed,
-                    )
-                  ]
-              ),
+          return Obx(() =>
+              CustomScrollView(
+                slivers: [
 
-              if([_teacherSelectedIndex, _courseSelectedIndex, _dateSelectedIndex, _timeSelectedIndex].every((element) => element == -1))
-                Obx(() => Column(
-                  children: List.generate(
-                      lessonController.lessons.length,
-                          (index) {
-                        Lesson l = lessonController.lessons[index];
-                        return CardSearch(l, lessonController);
-                      }
+                  SliverToBoxAdapter(
+                    child: Stepper(
+                        physics: const ScrollPhysics(),
+                        currentStep: _currentStep ?? 0,
+                        onStepTapped: (step) => _stepTapped(step),
+                        onStepContinue: _stepContinue,
+                        onStepCancel: _stepCancel,
+                        controlsBuilder: _currentStep == 4 ? (context, _) => Container() : null,
+                        steps: [
+                          Step(
+                            title: Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 6, right: 8),
+                                  child: Icon(
+                                    _teacherSelectedIndex != -1 ? Ionicons.person : Ionicons.person_outline,
+                                    color: _teacherSelectedIndex != -1 ? Styles.blueColor : Colors.black,
+                                  ),
+                                ),
+                                Text("Teacher", style: TextStyle(color: _teacherSelectedIndex != -1 ? Styles.blueColor : Colors.black)),
+                              ],
+                            ),
+                            content: Obx(() =>
+                                Column(
+                                  children: List.generate(
+                                    teacherController.teachers.length,
+                                        (index) {
+                                      return ListTile(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        title: Text(teacherController.teachers.elementAt(index).name),
+                                        textColor: (_teacherSelectedIndex == index && _currentStep == 0) ? Colors.white : Styles.textColor,
+                                        tileColor: (_teacherSelectedIndex == index && _currentStep == 0) ? Styles.blueColor : Colors.transparent,
+                                        onTap: (){
+                                          setState(() {
+                                            _teacherSelectedIndex = index;
+                                          });
+                                          _setPrefInteger("teacherIndex", index);
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ),
+                            ),
+                            isActive: (_currentStep ?? 0) >= 0,
+                            state: _teacherSelectedIndex != -1
+                                ? StepState.complete
+                                : StepState.indexed,
+                          ),
+                          Step(
+                            title: Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 2, right: 8),
+                                  child: Icon(
+                                    _courseSelectedIndex != -1 ? Ionicons.book : Ionicons.book_outline,
+                                    color: _courseSelectedIndex != -1 ? Styles.blueColor : Colors.black,
+                                  ),
+                                ),
+                                Text("Subject", style: TextStyle(color: _courseSelectedIndex != -1 ? Styles.blueColor : Colors.black)),
+                              ],
+                            ),
+                            content: Obx(() =>
+                                Column(
+                                  children: List.generate(
+                                    courseController.courses.length,
+                                        (index) {
+                                      return ListTile(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        title: Text(courseController.courses.elementAt(index).name),
+                                        textColor: (_courseSelectedIndex == index && _currentStep == 1) ? Colors.white : Styles.textColor,
+                                        tileColor: (_courseSelectedIndex == index && _currentStep == 1) ? Styles.blueColor : Colors.transparent,
+                                        onTap: (){
+                                          setState(() {
+                                            _courseSelectedIndex = index;
+                                          });
+                                          _setPrefInteger("courseIndex", index);
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ),
+                            ),
+                            isActive: (_currentStep ?? 0) >= 0,
+                            state: _courseSelectedIndex != -1
+                                ? StepState.complete
+                                : StepState.indexed,
+                          ),
+                          Step(
+                            title: Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 6, right: 8),
+                                  child: Icon(
+                                    _dateSelectedIndex != -1 ? Ionicons.calendar : Ionicons.calendar_outline,
+                                    color: _dateSelectedIndex != -1 ? Styles.blueColor : Colors.black,
+                                  ),
+                                ),
+                                Text("Date", style: TextStyle(color: _dateSelectedIndex != -1 ? Styles.blueColor : Colors.black),),
+                              ],
+                            ),
+                            content: Column(
+                              children: List.generate(
+                                _dates.length,
+                                    (index) {
+                                  return ListTile(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    title: Center(child: Text(DateFormat("dd/MM/yyyy").format(_dates.elementAt(index)))),
+                                    textColor: (_dateSelectedIndex == index && _currentStep == 2) ? Colors.white : Styles.textColor,
+                                    tileColor: (_dateSelectedIndex == index && _currentStep == 2) ? Styles.blueColor : Colors.transparent,
+                                    onTap: (){
+                                      setState(() {
+                                        _dateSelectedIndex = index;
+                                      });
+                                      _setPrefInteger("dateIndex", index);
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
+                            isActive: (_currentStep ?? 0) >= 0,
+                            state: _dateSelectedIndex != -1
+                                ? StepState.complete
+                                : StepState.indexed,
+                          ),
+                          Step(
+                            title: Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 2, right: 8),
+                                  child: Icon(
+                                    _timeSelectedIndex != -1 ? Ionicons.time : Ionicons.time_outline,
+                                    color: _timeSelectedIndex != -1 ? Styles.blueColor : Colors.black,
+                                  ),
+                                ),
+                                Text("Time", style: TextStyle(color: _timeSelectedIndex != -1 ? Styles.blueColor : Colors.black)),
+                              ],
+                            ),
+                            content: Column(
+                              children: List.generate(
+                                _hours.length,
+                                    (index) {
+                                  return ListTile(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    title: Center(child: Text("${_hours.elementAt(index)}:00")),
+                                    textColor: (_timeSelectedIndex == index && _currentStep == 3) ? Colors.white : Styles.textColor,
+                                    tileColor: (_timeSelectedIndex == index && _currentStep == 3) ? Styles.blueColor : Colors.transparent,
+                                    onTap: (){
+                                      setState(() {
+                                        _timeSelectedIndex = index;
+                                      });
+                                      _setPrefInteger("timeIndex", index);
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
+                            isActive: (_currentStep ?? 0) >= 0,
+                            state: _timeSelectedIndex != -1
+                                ? StepState.complete
+                                : StepState.indexed,
+                          ),
+                          Step(
+                            title: const Text("Results"),
+                            content: Container(),
+                            isActive: (_currentStep ?? 0) >= 0,
+                            state: StepState.indexed,
+                          )
+                        ]
+                    ),
                   ),
-                )
-                ),
 
-              if(![_teacherSelectedIndex, _courseSelectedIndex, _dateSelectedIndex, _timeSelectedIndex].every((element) => element == null))
-                FutureBuilder<List<Lesson>>(
-                    future: _getLessons(),
-                    builder: (context, snapshot) {
-                      if(snapshot.connectionState == ConnectionState.waiting){
-                        return const Center(child: CircularProgressIndicator(),);
-                      }
+                  if([_teacherSelectedIndex, _courseSelectedIndex, _dateSelectedIndex, _timeSelectedIndex].every((element) => element == -1))
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        childCount: lessonController.lessons.length,
+                            (context, index) => CardSearch(lessonController.lessons[index], lessonController),
+                      ),
+                    ),
 
-                      if(snapshot.data == null || snapshot.data!.isEmpty){
-                        return const EmptyData(text: "No lessons found");
-                      }
+                  if(![_teacherSelectedIndex, _courseSelectedIndex, _dateSelectedIndex, _timeSelectedIndex].every((element) => element == null))
+                    FutureBuilder<List<Lesson>>(
+                        future: _getLessons(),
+                        builder: (context, snapshot) {
+                          if(snapshot.connectionState == ConnectionState.waiting){
+                            return const SliverToBoxAdapter(
+                                child: Center(child: CircularProgressIndicator(),)
+                            );
+                          }
 
-                      return Column(
-                        children: List.generate(
-                            snapshot.data?.length ?? 0,
-                                (index) {
-                              Lesson l = snapshot.data![index];
-                              return CardSearch(l, lessonController);
-                            }
-                        ),
-                      );
-                    }
-                ),
-            ],
+                          if(snapshot.data == null || snapshot.data!.isEmpty){
+                            return const SliverToBoxAdapter(
+                                child: EmptyData(text: "No lessons found")
+                            );
+                          }
+
+                          return SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              childCount: snapshot.data?.length ?? 0,
+                                  (context, index) => CardSearch(snapshot.data![index], lessonController),
+                            ),
+                          );
+                        }
+                    ),
+
+                  SliverToBoxAdapter(
+                    child: Gap(AppLayout.initNavigationBarHeight + 35),
+                  )
+                ],
+              )
           );
         }
     );

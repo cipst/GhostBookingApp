@@ -35,24 +35,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Stack(
         children: [
-          CustomScrollView(
-            slivers: [
-              if(ErrorController.text.value != "")
-                SliverToBoxAdapter(
-                    child: Center(
-                      child: Obx(() => Text(ErrorController.text.value)),
-                    )
-                ),
-
-              const SliverToBoxAdapter(
-                child: SearchStepper(),
-              ),
-
-              SliverToBoxAdapter(
-                child: Gap(AppLayout.initNavigationBarHeight + 35),
-              )
-            ],
-          ),
+          const SearchStepper(),
 
           // FLOATING ACTION BUTTON WHEN AT LEAST ONE LESSON IS SELECTED
           Obx(() {

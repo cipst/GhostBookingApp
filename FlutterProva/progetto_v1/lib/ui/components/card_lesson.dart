@@ -149,7 +149,9 @@ class _CardLessonState extends State<CardLesson> {
           child: Container(
             margin: const EdgeInsets.symmetric(vertical: 40, horizontal: 36),
             decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(20)),
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20)
+            ),
             child: Stack(
                 children: [
                   Padding(
@@ -233,17 +235,19 @@ class _CardLessonState extends State<CardLesson> {
                         ]),
                         const Gap(20),
 
+                        (widget.appointment.status != StatusType.active) ?
+                        const Gap(20) : Container(),
+
                         // SHOW IN CATALOG
                         _showInCatalog(),
-                        const Gap(10),
 
                         // COMPLETE
-                        _completeLesson(),
-                        const Gap(10),
+                        (widget.appointment.status == StatusType.active) ?
+                        _completeLesson() : Container(),
 
                         // CANCEL
-                        _cancelLesson(),
-                        const Gap(10),
+                        (widget.appointment.status == StatusType.active) ?
+                        _cancelLesson() : Container(),
                       ],
                     ),
                   ),
@@ -291,41 +295,59 @@ class _CardLessonState extends State<CardLesson> {
             ),
           ),
         ),
-        transitionCurve: Curves.easeInOut);
+        transitionCurve: Curves.easeInOut
+    );
   }
 
-  void _onLongPress() => Get.bottomSheet(
-    SizedBox(
-      height: AppLayout.getSize(context).height * 0.30,
-      child: Column(
-        children: [
-          Container(
-              width: 100,
-              height: 5,
-              margin: const EdgeInsets.symmetric(vertical: 8),
-              decoration: BoxDecoration(
-                  color: Styles.greyColor,
-                  borderRadius: BorderRadius.circular(30))),
+  void _onLongPress() {
+    var height = (widget.appointment.status == StatusType.active)
+        ? AppLayout.getSize(context).height * 0.30
+        : AppLayout.initNavigationBarHeight * 2;
 
-          const Gap(10),
 
-          // SHOW IN CATALOG
-          _showInCatalog(),
+    Get.bottomSheet(
+      SizedBox(
+        height: height,
+        child: Column(
+          children: [
+            Container(
+                width: 100,
+                height: 5,
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                decoration: BoxDecoration(
+                    color: Styles.greyColor,
+                    borderRadius: BorderRadius.circular(30))),
 
-          const Gap(10),
+            (widget.appointment.status == StatusType.active)
+                ? Gap(height/20)
+                : Gap(height/5),
 
-          // COMPLETE
-          _completeLesson(),
+            // SHOW IN CATALOG
+            _showInCatalog(),
 
-          const Gap(10),
+            (widget.appointment.status == StatusType.active)
+                ? Gap(height/20)
+                : Container(),
 
-          // CANCEL
-          _cancelLesson(),
-        ],
+            // COMPLETE
+            (widget.appointment.status == StatusType.active)
+                ? _completeLesson()
+                : Container(),
+
+            (widget.appointment.status == StatusType.active)
+                ? Gap(height/20)
+                : Container(),
+
+            // CANCEL
+            (widget.appointment.status == StatusType.active)
+                ? _cancelLesson()
+                : Container(),
+          ],
+        ),
       ),
-    ),
-    backgroundColor: Colors.white,
-  );
+      backgroundColor: Colors.white,
+    );
+  }
 
   ElevatedButton _showInCatalog() => ElevatedButton(
     onPressed: () {
@@ -405,7 +427,8 @@ class _CardLessonState extends State<CardLesson> {
           child: Icon(
             Ionicons.close_outline,
           ),
-        )
+        ),
+        const Gap(10),
       ],
     ),
   );
@@ -465,7 +488,8 @@ class _CardLessonState extends State<CardLesson> {
           child: Icon(
             Ionicons.checkmark,
           ),
-        )
+        ),
+        const Gap(10),
       ],
     ),
   );

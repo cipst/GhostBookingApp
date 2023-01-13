@@ -6,6 +6,7 @@ import 'package:progetto_v1/controller/navigation_controller.dart';
 import 'package:progetto_v1/controller/user_controller.dart';
 import 'package:progetto_v1/ui/components/card_lesson.dart';
 import 'package:progetto_v1/ui/components/empty_data.dart';
+import 'package:progetto_v1/utils/app_layout.dart';
 import 'package:progetto_v1/utils/app_style.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
@@ -39,7 +40,7 @@ class _HomePageState extends State<HomePage> {
         _header(),
         _searchBar(),
         Obx(() => _todayLessons()),
-        const Gap(80),
+        Gap(AppLayout.initNavigationBarHeight),
       ],
     );
   }

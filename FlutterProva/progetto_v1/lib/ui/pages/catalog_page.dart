@@ -24,6 +24,7 @@ class _CatalogPageState extends State<CatalogPage> {
   final navigationController = Get.put(NavigationController());
   final scrollController = ScrollController();
 
+  StatusType? filterStatus;
 
   @override
   void initState() {
@@ -48,7 +49,11 @@ class _CatalogPageState extends State<CatalogPage> {
                           child: ElevatedButton(
                             style: ButtonStyle(
                                 shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
-                                backgroundColor: MaterialStatePropertyAll(Colors.white),
+                                backgroundColor: MaterialStatePropertyAll(
+                                    (filterStatus == StatusType.active)
+                                        ? Styles.successColor
+                                        : Colors.white
+                                ),
                                 side: MaterialStatePropertyAll(BorderSide(color: Styles.successColor))
                             ),
                             onPressed: () => _getByStatus(StatusType.active),
@@ -59,12 +64,16 @@ class _CatalogPageState extends State<CatalogPage> {
                                     height: 10,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(100),
-                                      color: Styles.successColor,
+                                      color: (filterStatus == StatusType.active)
+                                          ? Colors.white
+                                          : Styles.successColor,
                                     ),
                                   ),
                                   const Gap(8),
                                   Text("Active", style: Styles.headLineStyle4.copyWith(
-                                      color: Styles.successColor
+                                      color: (filterStatus == StatusType.active)
+                                          ? Colors.white
+                                          : Styles.successColor
                                   ),),
                                 ]
                             ),
@@ -75,7 +84,11 @@ class _CatalogPageState extends State<CatalogPage> {
                           child: ElevatedButton(
                             style: ButtonStyle(
                                 shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
-                                backgroundColor: MaterialStatePropertyAll(Colors.white),
+                                backgroundColor: MaterialStatePropertyAll(
+                                    (filterStatus == StatusType.complete)
+                                        ? Styles.errorColor
+                                        : Colors.white
+                                ),
                                 side: MaterialStatePropertyAll(BorderSide(color: Styles.errorColor))
                             ),
                             onPressed: () => _getByStatus(StatusType.complete),
@@ -86,12 +99,16 @@ class _CatalogPageState extends State<CatalogPage> {
                                     height: 10,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(100),
-                                      color: Styles.errorColor,
+                                      color: (filterStatus == StatusType.complete)
+                                          ? Colors.white
+                                          : Styles.errorColor,
                                     ),
                                   ),
                                   const Gap(8),
                                   Text("Completed", style: Styles.headLineStyle4.copyWith(
-                                      color: Styles.errorColor
+                                      color: (filterStatus == StatusType.complete)
+                                          ? Colors.white
+                                          : Styles.errorColor
                                   ),),
                                 ]
                             ),
@@ -102,7 +119,11 @@ class _CatalogPageState extends State<CatalogPage> {
                           child: ElevatedButton(
                             style: ButtonStyle(
                                 shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
-                                backgroundColor: MaterialStatePropertyAll(Colors.white),
+                                backgroundColor: MaterialStatePropertyAll(
+                                    (filterStatus == StatusType.cancel)
+                                        ? Styles.greyColor
+                                        : Colors.white
+                                ),
                                 side: MaterialStatePropertyAll(BorderSide(color: Styles.greyColor))
                             ),
                             onPressed: () => _getByStatus(StatusType.cancel),
@@ -113,12 +134,16 @@ class _CatalogPageState extends State<CatalogPage> {
                                     height: 10,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(100),
-                                      color: Styles.greyColor,
+                                      color: (filterStatus == StatusType.cancel)
+                                          ? Colors.white
+                                          : Styles.greyColor,
                                     ),
                                   ),
                                   const Gap(8),
                                   Text("Cancelled", style: Styles.headLineStyle4.copyWith(
-                                      color: Styles.greyColor
+                                      color: (filterStatus == StatusType.cancel)
+                                          ? Colors.white
+                                          : Styles.greyColor
                                   ),),
                                 ]
                             ),
@@ -137,27 +162,14 @@ class _CatalogPageState extends State<CatalogPage> {
                                 padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
                                 child: ElevatedButton(
                                   style: ButtonStyle(
-                                      shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
-                                      backgroundColor: MaterialStatePropertyAll(Colors.white),
-                                      side: MaterialStatePropertyAll(BorderSide(color: Styles.successColor))
+                                    shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+                                    backgroundColor: MaterialStatePropertyAll(Colors.white),
+                                    side: MaterialStatePropertyAll(BorderSide(color: Styles.orangeColor, width: 2))
                                   ),
                                   onPressed: () => null,
-                                  child: Row(
-                                      children: [
-                                        Container(
-                                          width: 10,
-                                          height: 10,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(100),
-                                            color: Styles.successColor,
-                                          ),
-                                        ),
-                                        const Gap(8),
-                                        Text("Active", style: Styles.headLineStyle4.copyWith(
-                                            color: Styles.successColor
-                                        ),),
-                                      ]
-                                  ),
+                                  child: Text("Active", style: Styles.headLineStyle4.copyWith(
+                                      color: Styles.orangeColor
+                                  ),),
                                 )
                             ),
                             Container(
@@ -165,27 +177,14 @@ class _CatalogPageState extends State<CatalogPage> {
                                 padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
                                 child: ElevatedButton(
                                   style: ButtonStyle(
-                                      shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
+                                      shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
                                       backgroundColor: MaterialStatePropertyAll(Colors.white),
-                                      side: MaterialStatePropertyAll(BorderSide(color: Styles.errorColor))
+                                      side: MaterialStatePropertyAll(BorderSide(color: Styles.orangeColor, width: 2))
                                   ),
                                   onPressed: () => null,
-                                  child: Row(
-                                      children: [
-                                        Container(
-                                          width: 10,
-                                          height: 10,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(100),
-                                            color: Styles.errorColor,
-                                          ),
-                                        ),
-                                        const Gap(8),
-                                        Text("Completed", style: Styles.headLineStyle4.copyWith(
-                                            color: Styles.errorColor
-                                        ),),
-                                      ]
-                                  ),
+                                  child: Text("Active", style: Styles.headLineStyle4.copyWith(
+                                      color: Styles.orangeColor
+                                  ),),
                                 )
                             ),
                             Container(
@@ -193,27 +192,29 @@ class _CatalogPageState extends State<CatalogPage> {
                                 padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
                                 child: ElevatedButton(
                                   style: ButtonStyle(
-                                      shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
+                                      shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
                                       backgroundColor: MaterialStatePropertyAll(Colors.white),
-                                      side: MaterialStatePropertyAll(BorderSide(color: Styles.greyColor))
+                                      side: MaterialStatePropertyAll(BorderSide(color: Styles.orangeColor, width: 2))
                                   ),
                                   onPressed: () => null,
-                                  child: Row(
-                                      children: [
-                                        Container(
-                                          width: 10,
-                                          height: 10,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(100),
-                                            color: Styles.greyColor,
-                                          ),
-                                        ),
-                                        const Gap(8),
-                                        Text("Cancelled", style: Styles.headLineStyle4.copyWith(
-                                            color: Styles.greyColor
-                                        ),),
-                                      ]
+                                  child: Text("Active", style: Styles.headLineStyle4.copyWith(
+                                      color: Styles.orangeColor
+                                  ),),
+                                )
+                            ),
+                            Container(
+                                margin: const EdgeInsets.only(left: 10),
+                                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
+                                child: ElevatedButton(
+                                  style: ButtonStyle(
+                                      shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+                                      backgroundColor: MaterialStatePropertyAll(Colors.white),
+                                      side: MaterialStatePropertyAll(BorderSide(color: Styles.orangeColor, width: 2))
                                   ),
+                                  onPressed: () => null,
+                                  child: Text("Active", style: Styles.headLineStyle4.copyWith(
+                                      color: Styles.orangeColor
+                                  ),),
                                 )
                             ),
                           ]
@@ -261,7 +262,14 @@ class _CatalogPageState extends State<CatalogPage> {
   }
 
   void _getByStatus(StatusType status) {
-    debugPrint("STATUS INDEX: ${status.index}");
-    bookingController.getBookingByStatus("stefano.cipolletta@gmail.com", status);
+
+    if(filterStatus == status){
+      filterStatus = null;
+      bookingController.getAllBookings("stefano.cipolletta@gmail.com");
+    }else{
+      filterStatus = status;
+      bookingController.getBookingByStatus("stefano.cipolletta@gmail.com", status);
+    }
+    setState((){});
   }
 }

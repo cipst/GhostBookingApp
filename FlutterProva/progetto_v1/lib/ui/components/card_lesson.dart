@@ -14,8 +14,9 @@ import 'package:progetto_v1/utils/app_style.dart';
 class CardLesson extends StatefulWidget {
   final Booking appointment;
   final Lesson lesson;
+  final bool getAll;
 
-  const CardLesson(this.appointment, this.lesson, {super.key});
+  const CardLesson(this.appointment, this.lesson, {required this.getAll, super.key});
 
   @override
   State<CardLesson> createState() => _CardLessonState();
@@ -376,7 +377,7 @@ class _CardLessonState extends State<CardLesson> {
     onPressed: () {
       try{
         if (widget.appointment.id != null) {
-          _bookingController.cancelBooking(widget.appointment.id!);
+          _bookingController.cancelBooking(widget.appointment.id!, widget.getAll);
         }
         Get.back();
         Get.dialog(
@@ -437,7 +438,7 @@ class _CardLessonState extends State<CardLesson> {
     onPressed: (){
       try{
         if (widget.appointment.id != null) {
-          _bookingController.completeBooking(widget.appointment.id!);
+          _bookingController.completeBooking(widget.appointment.id!, widget.getAll);
         }
         Get.back();
         Get.dialog(

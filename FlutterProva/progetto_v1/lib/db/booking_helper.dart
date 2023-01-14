@@ -27,7 +27,7 @@ class BookingHelper {
   static Future<List<Booking>?> getAllBookings(String email) async {
     final db = await _instance.database;
 
-    final List<Map<String, dynamic>> maps = await db.query("Booking", where: "user = ?", whereArgs: [email]);
+    final List<Map<String, dynamic>> maps = await db.query("Booking", where: "user = ?", whereArgs: [email], orderBy: "status");
     // final List<Map<String, dynamic>> maps = await db.query("Booking");
 
     if (maps.isEmpty) return null;
@@ -57,7 +57,7 @@ class BookingHelper {
     final List<Map<String, dynamic>> maps = await db.rawQuery("""
     SELECT b.* FROM Booking b JOIN Lesson l ON b.lesson = l.id
     WHERE b.user = ? AND l.datetime LIKE ?
-    ORDER BY l.datetime, l.teacher, l.course
+    ORDER BY b.status, l.datetime, l.teacher, l.course
     """, [email, "%$datetime%"]);
 
     if (maps.isEmpty) return null;

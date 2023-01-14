@@ -121,18 +121,19 @@ class _HomePageState extends State<HomePage> {
               ?
           const EmptyData(text: "You have no lesson today")
               :
-          Obx(() => Column(
-            mainAxisSize: MainAxisSize.max,
-            children: List.generate(bookingController.lessons.length,
-                    (index) =>
-                    CardLesson(
-                      bookingController.bookings[index],
-                      bookingController.lessons.elementAt(index),
-                      key: bookingController.keys[index],
-                    )
-            ),
-          )
-          ),
+          Obx((){
+            return Column(
+              mainAxisSize: MainAxisSize.max,
+              children: List.generate(
+                  bookingController.lessons.length,
+                      (index) => CardLesson(
+                    bookingController.bookings[index],
+                    bookingController.lessons.elementAt(index),
+                    getAll: false,
+                    key: bookingController.keys[index],
+                  )),
+            );
+          }),
         ],
       ),
     );

@@ -22,11 +22,19 @@ class _CatalogPageState extends State<CatalogPage> {
   final navigationController = Get.put(NavigationController());
   final scrollController = ScrollController();
 
+
+  @override
+  void initState() {
+    bookingController.getAllBookings("stefano.cipolletta@gmail.com");
+    super.initState();
+  }
+
   _scrollFunction()
   {
     bool retry = true;
     GlobalKey k;
     int index = navigationController.catalogIndexToScroll;
+    if(bookingController.keys.isEmpty) return;
     do{
       k = bookingController.keys.elementAt(index) as GlobalKey;
       if (k.currentContext != null) {
@@ -76,6 +84,7 @@ class _CatalogPageState extends State<CatalogPage> {
                         child: CardLesson(
                           bookingController.bookings[index],
                           bookingController.lessons[index],
+                          getAll: true,
                           key: bookingController.keys[index],
                         )
                     );

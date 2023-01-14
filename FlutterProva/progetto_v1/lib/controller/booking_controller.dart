@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:progetto_v1/controller/error_controller.dart';
 import 'package:progetto_v1/controller/lesson_controller.dart';
 import 'package:progetto_v1/controller/user_controller.dart';
@@ -18,21 +19,25 @@ class BookingController extends GetxController {
     return await BookingHelper.setBooking(booking);
   }
 
-  Future<void> completeBooking(int id) async {
+  Future<void> completeBooking(int id, bool getAll) async {
     int updated = await BookingHelper.completeBooking(id);
     if(updated != 0){
       int index = bookings.indexWhere((b) => b.id == id);
       bookings[index].status = StatusType.complete;
-      getAllBookings(bookings[index].user);
+      (getAll)
+          ? getAllBookings(bookings[index].user)
+          : getBookingByDate(bookings[index].user, DateFormat.yMd().format(lessons[index].dateTime));
     }
   }
 
-  Future<void> cancelBooking(int id) async {
+  Future<void> cancelBooking(int id, bool getAll) async {
     int removed = await BookingHelper.cancelBooking(id);
     if(removed != 0){
       int index = bookings.indexWhere((b) => b.id == id);
       bookings[index].status = StatusType.cancel;
-      getAllBookings(bookings[index].user);
+      (getAll)
+          ? getAllBookings(bookings[index].user)
+          : getBookingByDate(bookings[index].user, DateFormat.yMd().format(lessons[index].dateTime));
     }
   }
 
@@ -54,6 +59,8 @@ class BookingController extends GetxController {
       if(bookingsList == null) return null;
 
       for (Booking b in bookingsList) {
+        Lesson? l = await lessonController.getLesson(b.lesson);
+        (l != null) ? lessons.add(l) : null;
         bookings.add(b);
         keys.add(GlobalKey(debugLabel: "${b.id}"));
       }

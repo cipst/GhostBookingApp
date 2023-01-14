@@ -50,7 +50,6 @@ class BookingHelper {
     return Booking.fromJson(maps.first); // only one booking, got the first one
   }
 
-
   static Future<List<Booking>?> getBookingByDate(String email, String datetime) async {
     final db = await _instance.database;
 
@@ -59,6 +58,25 @@ class BookingHelper {
     WHERE b.user = ? AND l.datetime LIKE ?
     ORDER BY b.status, l.datetime, l.teacher, l.course
     """, [email, "%$datetime%"]);
+
+    if (maps.isEmpty) return null;
+
+    List<Booking> bookings = <Booking>[];
+    for (Map<String, dynamic> b in maps) {
+      bookings.add(Booking.fromJson(b));
+    }
+
+    return bookings;
+  }
+
+  static Future<List<Booking>?> getBookingByStatus(String email, StatusType status) async {
+    final db = await _instance.database;
+
+    final List<Map<String, dynamic>> maps = await db.rawQuery("""
+    SELECT b.* FROM Booking b JOIN Lesson l ON b.lesson = l.id
+    WHERE b.user = ? AND b.status = ?
+    ORDER BY l.datetime, l.teacher, l.course
+    """, [email, status.index]);
 
     if (maps.isEmpty) return null;
 

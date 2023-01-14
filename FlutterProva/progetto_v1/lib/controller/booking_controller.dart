@@ -38,13 +38,6 @@ class BookingController extends GetxController {
     }
   }
 
-  Future<void> _getLessons() async{
-    for(Booking b in bookings){
-      Lesson? l = await lessonController.getLesson(b.lesson);
-      (l != null) ? lessons.add(l) : null;
-    }
-  }
-
   Future<List<Booking>?> getAllBookings(String email) async {
     try {
       ErrorController.clear();
@@ -60,7 +53,6 @@ class BookingController extends GetxController {
         bookings.add(b);
       }
 
-      await _getLessons();
       return bookingsList;
     } on Exception catch (e) {
       ErrorController.text.value = e.toString();
@@ -94,10 +86,36 @@ class BookingController extends GetxController {
       if(bookingsList == null) return null;
 
       for (Booking b in bookingsList) {
+        Lesson? l = await lessonController.getLesson(b.lesson);
+        (l != null) ? lessons.add(l) : null;
         bookings.add(b);
       }
 
-      await _getLessons();
+      return bookingsList;
+    } on Exception catch (e) {
+      ErrorController.text.value = e.toString();
+      return null;
+    } on Error catch (e) {
+      ErrorController.text.value = e.toString();
+      return null;
+    }
+  }
+
+  Future<List<Booking>?> getBookingByStatus(String email, StatusType status) async{
+    try {
+      ErrorController.clear();
+      bookings.clear();
+      lessons.clear();
+      List<Booking>? bookingsList = await BookingHelper.getBookingByStatus(email, status);
+
+      if(bookingsList == null) return null;
+
+      for (Booking b in bookingsList) {
+        Lesson? l = await lessonController.getLesson(b.lesson);
+        (l != null) ? lessons.add(l) : null;
+        bookings.add(b);
+      }
+
       return bookingsList;
     } on Exception catch (e) {
       ErrorController.text.value = e.toString();

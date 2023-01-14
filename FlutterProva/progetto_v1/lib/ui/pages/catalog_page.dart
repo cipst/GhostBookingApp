@@ -7,6 +7,7 @@ import 'package:progetto_v1/controller/navigation_controller.dart';
 import 'package:progetto_v1/ui/components/card_lesson.dart';
 import 'package:progetto_v1/ui/components/empty_data.dart';
 import 'package:progetto_v1/utils/app_layout.dart';
+import 'package:progetto_v1/utils/app_style.dart';
 
 class CatalogPage extends StatefulWidget {
   const CatalogPage({super.key});
@@ -31,13 +32,206 @@ class _CatalogPageState extends State<CatalogPage> {
 
   @override
   Widget build(BuildContext context) {
+
     return Obx(() =>
         CustomScrollView(
           slivers: [
-            const SliverAppBar(
-              title: Text("FILTRI QUI"),
-              pinned: true,
+            SliverAppBar(
+              title: Column(
+                children: [
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                            padding: const EdgeInsets.symmetric(vertical: 5),
+                            child: ElevatedButton(
+                              style: ButtonStyle(
+                                  shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
+                                  backgroundColor: MaterialStatePropertyAll(Colors.white),
+                                  side: MaterialStatePropertyAll(BorderSide(color: Styles.successColor))
+                              ),
+                              onPressed: () => {
+                                Get.snackbar("ACTIVE", "")
+                              },
+                              child: Row(
+                                  children: [
+                                    Container(
+                                      width: 10,
+                                      height: 10,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(100),
+                                        color: Styles.successColor,
+                                      ),
+                                    ),
+                                    const Gap(8),
+                                    Text("Active", style: Styles.headLineStyle4.copyWith(
+                                        color: Styles.successColor
+                                    ),),
+                                  ]
+                              ),
+                            )
+                        ),
+                        Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
+                            child: ElevatedButton(
+                              style: ButtonStyle(
+                                  shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
+                                  backgroundColor: MaterialStatePropertyAll(Colors.white),
+                                  side: MaterialStatePropertyAll(BorderSide(color: Styles.errorColor))
+                              ),
+                              onPressed: () => {
+                                Get.snackbar("COMPLETED", "")
+                              },
+                              child: Row(
+                                  children: [
+                                    Container(
+                                      width: 10,
+                                      height: 10,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(100),
+                                        color: Styles.errorColor,
+                                      ),
+                                    ),
+                                    const Gap(8),
+                                    Text("Completed", style: Styles.headLineStyle4.copyWith(
+                                        color: Styles.errorColor
+                                    ),),
+                                  ]
+                              ),
+                            )
+                        ),
+                        Container(
+                            padding: const EdgeInsets.symmetric(vertical: 5),
+                            child: ElevatedButton(
+                              style: ButtonStyle(
+                                  shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
+                                  backgroundColor: MaterialStatePropertyAll(Colors.white),
+                                  side: MaterialStatePropertyAll(BorderSide(color: Styles.greyColor))
+                              ),
+                              onPressed: () => {
+                                Get.snackbar("CANCELLED", "")
+                              },
+                              child: Row(
+                                  children: [
+                                    Container(
+                                      width: 10,
+                                      height: 10,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(100),
+                                        color: Styles.greyColor,
+                                      ),
+                                    ),
+                                    const Gap(8),
+                                    Text("Cancelled", style: Styles.headLineStyle4.copyWith(
+                                        color: Styles.greyColor
+                                    ),),
+                                  ]
+                              ),
+                            )
+                        ),
+                      ]
+                  ),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        Row(
+                            children: [
+                              Container(
+                                  margin: const EdgeInsets.only(left: 10),
+                                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
+                                  child: ElevatedButton(
+                                    style: ButtonStyle(
+                                        shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
+                                        backgroundColor: MaterialStatePropertyAll(Colors.white),
+                                        side: MaterialStatePropertyAll(BorderSide(color: Styles.successColor))
+                                    ),
+                                    onPressed: () => null,
+                                    child: Row(
+                                        children: [
+                                          Container(
+                                            width: 10,
+                                            height: 10,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(100),
+                                              color: Styles.successColor,
+                                            ),
+                                          ),
+                                          const Gap(8),
+                                          Text("Active", style: Styles.headLineStyle4.copyWith(
+                                              color: Styles.successColor
+                                          ),),
+                                        ]
+                                    ),
+                                  )
+                              ),
+                              Container(
+                                  margin: const EdgeInsets.only(left: 10),
+                                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
+                                  child: ElevatedButton(
+                                    style: ButtonStyle(
+                                        shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
+                                        backgroundColor: MaterialStatePropertyAll(Colors.white),
+                                        side: MaterialStatePropertyAll(BorderSide(color: Styles.errorColor))
+                                    ),
+                                    onPressed: () => null,
+                                    child: Row(
+                                        children: [
+                                          Container(
+                                            width: 10,
+                                            height: 10,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(100),
+                                              color: Styles.errorColor,
+                                            ),
+                                          ),
+                                          const Gap(8),
+                                          Text("Completed", style: Styles.headLineStyle4.copyWith(
+                                              color: Styles.errorColor
+                                          ),),
+                                        ]
+                                    ),
+                                  )
+                              ),
+                              Container(
+                                  margin: const EdgeInsets.only(left: 10),
+                                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
+                                  child: ElevatedButton(
+                                    style: ButtonStyle(
+                                        shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
+                                        backgroundColor: MaterialStatePropertyAll(Colors.white),
+                                        side: MaterialStatePropertyAll(BorderSide(color: Styles.greyColor))
+                                    ),
+                                    onPressed: () => null,
+                                    child: Row(
+                                        children: [
+                                          Container(
+                                            width: 10,
+                                            height: 10,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(100),
+                                              color: Styles.greyColor,
+                                            ),
+                                          ),
+                                          const Gap(8),
+                                          Text("Cancelled", style: Styles.headLineStyle4.copyWith(
+                                              color: Styles.greyColor
+                                          ),),
+                                        ]
+                                    ),
+                                  )
+                              ),
+                            ]
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
               centerTitle: true,
+              floating: true,
+              backgroundColor: Colors.white,
+              toolbarHeight: 120,
             ),
             bookingController.bookings.isEmpty ?
             SliverToBoxAdapter(

@@ -119,17 +119,49 @@ class _CardLessonState extends State<CardLesson> {
   }
 
   Positioned _statusBox() {
+    var color = widget.appointment.status == StatusType.active ? Styles.successColor
+        : widget.appointment.status == StatusType.complete ? Styles.errorColor
+        : Styles.greyColor;
+
+    var status = widget.appointment.status == StatusType.active ? "Active"
+        : widget.appointment.status == StatusType.complete ? "Completed"
+        : "Cancelled";
+
     return Positioned(
         top: 10,
         right: 10,
-        width: 20,
-        height: 20,
         child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
           decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: widget.appointment.status == StatusType.active ? Styles.successColor
-                  : widget.appointment.status == StatusType.complete ? Styles.errorColor
-                  : Styles.greyColor
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(5),
+            border: Border.all(
+              color: color,
+            ),
+            color: Colors.white,
+          ),
+          child: Row(
+            children: [
+              // BADGE
+              Container(
+                width: 10,
+                height: 10,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(100),
+                  color: color,
+                ),
+              ),
+
+              const Gap(8),
+
+              // STATUS
+              Text(
+                status,
+                style: Styles.headLineStyle4.copyWith(
+                    color: color
+                ),
+              ),
+            ],
           ),
         )
     );

@@ -353,7 +353,6 @@ class _CardLessonState extends State<CardLesson> {
   ElevatedButton _showInCatalog() => ElevatedButton(
     onPressed: () {
       _navigationController.currentIndex = Pages.catalog;
-      _navigationController.catalogIndexToScroll = _bookingController.keys.indexOf(widget.key);
       Get.back();
     },
     style: Styles.blueButtonStyle,

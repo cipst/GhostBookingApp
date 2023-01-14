@@ -1,9 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:progetto_v1/controller/error_controller.dart';
 import 'package:progetto_v1/controller/lesson_controller.dart';
-import 'package:progetto_v1/controller/user_controller.dart';
 import 'package:progetto_v1/db/booking_helper.dart';
 import 'package:progetto_v1/model/booking.dart';
 import 'package:progetto_v1/model/lesson.dart';
@@ -13,7 +11,6 @@ class BookingController extends GetxController {
 
   final List<Booking> bookings = <Booking>[].obs;
   final List<Lesson> lessons = <Lesson>[].obs;
-  final keys = [].obs;
 
   Future<int> setBooking(Booking booking) async {
     return await BookingHelper.setBooking(booking);
@@ -53,7 +50,6 @@ class BookingController extends GetxController {
       ErrorController.clear();
       bookings.clear();
       lessons.clear();
-      keys.clear();
       List<Booking>? bookingsList = await BookingHelper.getAllBookings(email);
 
       if(bookingsList == null) return null;
@@ -62,7 +58,6 @@ class BookingController extends GetxController {
         Lesson? l = await lessonController.getLesson(b.lesson);
         (l != null) ? lessons.add(l) : null;
         bookings.add(b);
-        keys.add(GlobalKey(debugLabel: "${b.id}"));
       }
 
       await _getLessons();
@@ -94,14 +89,12 @@ class BookingController extends GetxController {
       ErrorController.clear();
       bookings.clear();
       lessons.clear();
-      keys.clear();
       List<Booking>? bookingsList = await BookingHelper.getBookingByDate(email, datetime);
 
       if(bookingsList == null) return null;
 
       for (Booking b in bookingsList) {
         bookings.add(b);
-        keys.add(GlobalKey(debugLabel: "${b.id}"));
       }
 
       await _getLessons();

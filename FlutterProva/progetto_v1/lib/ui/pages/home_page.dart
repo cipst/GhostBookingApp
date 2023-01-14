@@ -130,7 +130,6 @@ class _HomePageState extends State<HomePage> {
                     bookingController.bookings[index],
                     bookingController.lessons.elementAt(index),
                     getAll: false,
-                    key: bookingController.keys[index],
                   )),
             );
           }),

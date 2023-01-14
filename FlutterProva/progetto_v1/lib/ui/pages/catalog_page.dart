@@ -29,36 +29,8 @@ class _CatalogPageState extends State<CatalogPage> {
     super.initState();
   }
 
-  _scrollFunction()
-  {
-    bool retry = true;
-    GlobalKey k;
-    int index = navigationController.catalogIndexToScroll;
-    if(bookingController.keys.isEmpty) return;
-    do{
-      k = bookingController.keys.elementAt(index) as GlobalKey;
-      if (k.currentContext != null) {
-        Scrollable.ensureVisible(
-          k.currentContext!,
-          duration: const Duration(milliseconds: 500),
-          curve: Curves.easeOutQuad,
-        );
-        retry = false;
-      } else {
-        if (index > 0) {
-          index--;
-        }else{
-          retry = false;
-        }
-      }
-    }while(retry);
-    navigationController.catalogIndexToScroll = 0; //reset scroll index to 0
-  }
-
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollFunction());
-
     return Obx(() =>
         CustomScrollView(
           slivers: [
@@ -85,7 +57,6 @@ class _CatalogPageState extends State<CatalogPage> {
                           bookingController.bookings[index],
                           bookingController.lessons[index],
                           getAll: true,
-                          key: bookingController.keys[index],
                         )
                     );
                   }),

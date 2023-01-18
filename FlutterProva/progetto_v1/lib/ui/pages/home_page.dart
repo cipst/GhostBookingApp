@@ -125,10 +125,10 @@ class _HomePageState extends State<HomePage> {
             return Column(
               mainAxisSize: MainAxisSize.max,
               children: List.generate(
-                  bookingController.lessons.length,
+                  bookingController.bookings.keys.length,
                       (index) => CardLesson(
-                    bookingController.bookings[index],
-                    bookingController.lessons.elementAt(index),
+                    bookingController.bookings.keys.elementAt(index),
+                    bookingController.bookings.values.elementAt(index),
                     getAll: false,
                   )),
             );

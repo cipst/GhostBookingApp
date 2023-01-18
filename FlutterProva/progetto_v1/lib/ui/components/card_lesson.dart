@@ -408,7 +408,7 @@ class _CardLessonState extends State<CardLesson> {
     onPressed: () {
       try{
         if (widget.appointment.id != null) {
-          _bookingController.cancelBooking(widget.appointment.id!, widget.getAll);
+          _bookingController.updateBookingStatus(widget.appointment.id!, widget.getAll, StatusType.cancel);
         }
         Get.back();
         Get.dialog(
@@ -469,7 +469,7 @@ class _CardLessonState extends State<CardLesson> {
     onPressed: (){
       try{
         if (widget.appointment.id != null) {
-          _bookingController.completeBooking(widget.appointment.id!, widget.getAll);
+          _bookingController.updateBookingStatus(widget.appointment.id!, widget.getAll, StatusType.complete);
         }
         Get.back();
         Get.dialog(

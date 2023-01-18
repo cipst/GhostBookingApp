@@ -11,17 +11,10 @@ class BookingHelper {
     return await db.insert("Booking", booking.toJson(), conflictAlgorithm: ConflictAlgorithm.abort);
   }
 
-  static Future<int> completeBooking(int id) async {
+  static Future<int> updateBookingStatus(int id, int newStatus) async {
     final db = await _instance.database;
 
-    return await db.update("Booking", {"status": 1}, where: "id = ?", whereArgs: [id]);
-  }
-
-  static Future<int> cancelBooking(int id) async {
-    final db = await _instance.database;
-
-    // return await db.delete("Booking", where: "id = ?", whereArgs: [id]);
-    return await db.update("Booking", {"status": 2}, where: "id = ?", whereArgs: [id]);
+    return await db.update("Booking", {"status": newStatus}, where: "id = ?", whereArgs: [id]);
   }
 
   static Future<List<Booking>?> getAllBookings(String email) async {

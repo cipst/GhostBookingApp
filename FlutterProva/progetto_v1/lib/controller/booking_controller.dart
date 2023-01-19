@@ -69,7 +69,7 @@ class BookingController extends GetxController {
     });
 
     // lesson filter null ==> no lessons found
-    if(byDate == null && byTime == null && byTeacher == null && byCourse == null){
+    if(byDate == null || byTime == null || byTeacher == null || byCourse == null){
       bookingsFiltered.clear();
       return;
     }
@@ -87,28 +87,43 @@ class BookingController extends GetxController {
     newLesson = _filter(newLesson, byTeacher!);
     newLesson = _filter(newLesson, byCourse!);
 
-    // adding booked lesson filtered
-    for(Lesson l in newLesson){
-      try {
-        Booking b = bookings.keys.firstWhere(
-                (b) => byStatus.isNotEmpty
-                ? byStatus.contains(b) && bookings[b] == l
-                : bookings[b] == l
-        );
-        bookingsFiltered[b] = l;
-      } on Error catch (e) {
-        debugPrint(e.toString());
+    if(newLesson.isNotEmpty) {
+      // adding booked lesson filtered
+      for (Lesson l in newLesson) {
+        try {
+          Booking b = bookings.keys.firstWhere((b) => byStatus.isNotEmpty
+              ? byStatus.contains(b) && bookings[b] == l
+              : bookings[b] == l);
+          bookingsFiltered[b] = l;
+        } on Error catch (e) {
+          debugPrint(e.toString());
+        }
       }
+      return;
     }
 
-    if(newLesson.isEmpty){
-      // adding booked lesson filtered only by status
-      for(Booking b in byStatus){
+    // adding booked lesson filtered by status
+    for(Booking b in byStatus){
+      // no other filters ==> only status
+      if(byDate!.isEmpty && byTime!.isEmpty && byTeacher!.isEmpty && byCourse!.isEmpty) {
+        bookingsFiltered[b] = bookings[b]!;
+      }
+
+      // check if all others filter are present
+      if (_checkLessonsFilter([byDate!, byTime!, byTeacher!, byCourse!], bookings[b]!)) {
         bookingsFiltered[b] = bookings[b]!;
       }
     }
 
     return;
+  }
+
+  bool _checkLessonsFilter(List<Set<Lesson>> ls, Lesson check){
+    bool ris = true;
+    for(Set<Lesson> l in ls){
+      ris &= l.isNotEmpty && l.contains(check);
+    }
+    return ris;
   }
 
   Set<Lesson> _filter(Set<Lesson> prev, Set<Lesson> toCheck){
@@ -126,6 +141,8 @@ class BookingController extends GetxController {
     return await BookingHelper.setBooking(booking);
   }
 
+  /// Update the status of the booked lesson given (<i>id</i>)
+  /// - [bool] <i>getAll</i> check if, after the update, have to fetch all booked lesson or only by date
   Future<void> updateBookingStatus(int id, bool getAll, StatusType newStatus) async {
     int rows = await BookingHelper.updateBookingStatus(id, newStatus.index);
     if(rows != 0){

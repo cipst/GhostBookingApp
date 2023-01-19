@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:progetto_v1/controller/navigation_controller.dart';
@@ -7,7 +10,7 @@ import 'package:progetto_v1/db/db_helper.dart';
 import 'package:progetto_v1/utils/app_layout.dart';
 import 'package:progetto_v1/utils/app_style.dart';
 import 'package:progetto_v1/ui/components/custom_bottom_bar.dart';
-import 'package:progetto_v1/utils/notification_service.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,30 +59,39 @@ class Root extends StatefulWidget {
 class _RootState extends State<Root> {
   final navigationController = Get.put(NavigationController());
   final UserController userController = Get.put(UserController());
+  late final WebViewController _controller;
+  var loadingPercentage = 0;
+
+  final double _navigationHeight = AppLayout.initNavigationBarHeight;
 
   @override
   void initState() {
     // TODO: take values from html input login
-    userController.getUser("stefano.cipolletta@gmail.com", "Qwerty123_");
+    // userController.getUser("stefano.cipolletta@gmail.com", "Qwerty123_");
+    _controller = WebViewController()
+      ..loadFlutterAsset("assets/www/index.html")
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..addJavaScriptChannel(
+        'NewUser',
+        onMessageReceived: (message) {
+          Map<String, dynamic> json = jsonDecode(message.message);
+          debugPrint("EMAIL: ${json["email"]}");
+          debugPrint("PSW: ${json["password"]}");
+          userController.login(json["email"], json["password"]);
+        },
+      );
+
 
     super.initState();
   }
 
-  final double _navigationHeight = AppLayout.initNavigationBarHeight;
-
-  // void _updateNavigationHeight(double newHeight) {
-  //   setState(() {
-  //     _navigationHeight = newHeight;
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
-    // double maxHeight = AppLayout.getSize(context).height - 80;
-
     return Scaffold(
       backgroundColor: Styles.bgColor,
-      body: Stack(
+      body: Obx(() => UserController.user.value != null
+          ? Stack(
         children: [
           // main page content
           Positioned(
@@ -105,39 +117,6 @@ class _RootState extends State<Root> {
                     size: Size(AppLayout.getSize(context).width, _navigationHeight),
                     painter: CustomPainterBottomBar(),
                   ),
-                  // GestureDetector(
-                  //   onVerticalDragUpdate: (DragUpdateDetails details) {
-                  //     double positionY = AppLayout.getSize(context).height -
-                  //         details.globalPosition.dy;
-                  //
-                  //     // limits at 80 height minimum
-                  //     if (positionY < 80) {
-                  //       _updateNavigationHeight(80.0);
-                  //     } else if (positionY <= maxHeight) {
-                  //       _updateNavigationHeight(positionY);
-                  //     }
-                  //   },
-                  //   child: Center(
-                  //     heightFactor: 0.6,
-                  //     child: FloatingActionButton(
-                  //       backgroundColor: Styles.orangeColor,
-                  //       elevation: 0.1,
-                  //       onPressed: () {
-                  //         if (_navigationHeight > (maxHeight / 2)) {
-                  //           _updateNavigationHeight(80.0);
-                  //         } else {
-                  //           _updateNavigationHeight(maxHeight);
-                  //         }
-                  //       },
-                  //       child: Padding(
-                  //         padding: const EdgeInsets.only(bottom: 4),
-                  //         child: _navigationHeight > (maxHeight / 2)
-                  //             ? const Icon(Ionicons.chevron_down)
-                  //             : const Icon(Ionicons.chevron_up),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                   SizedBox(
                     width: AppLayout.getSize(context).width,
                     height: AppLayout.initNavigationBarHeight,
@@ -194,10 +173,6 @@ class _RootState extends State<Root> {
                               )
                           ],
                         ),
-
-                        // Container(
-                        //   width: AppLayout.getSize(context).width * 0.20,
-                        // ),
 
                         // CATALOG
                         Row(
@@ -267,6 +242,8 @@ class _RootState extends State<Root> {
             ),
           )
         ],
+      )
+          : WebViewWidget(controller: _controller),
       ),
     );
   }

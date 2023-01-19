@@ -45,6 +45,8 @@ dependencies:
   date_picker_timeline:
   path:
   path_provider:
+# for web view login page
+  webview_flutter: ^4.0.1
 # for session management
   shared_preferences: ^2.0.15
 # for database
@@ -91,6 +93,7 @@ flutter:
     - assets/illustrations/blue/
     - assets/illustrations/green/
     - assets/illustrations/pink/
+    - assets/www/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

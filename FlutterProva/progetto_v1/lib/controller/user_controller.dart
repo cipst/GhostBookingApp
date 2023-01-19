@@ -6,10 +6,13 @@ import 'package:progetto_v1/model/user.dart';
 class UserController extends GetxController {
   static final user = Rxn<User>();
 
-  void getUser(String email, String password) async {
+  void login(String email, String password) async {
     try {
       ErrorController.clear();
       User? u = await UserHelper.getUser(email, password);
+      if(u == null){
+        Get.snackbar("Wrong credentials", "Email or password are wrong, retry!");
+      }
       user.value = u;
     } on Exception catch (e) {
       ErrorController.text.value = e.toString();
@@ -17,6 +20,8 @@ class UserController extends GetxController {
       ErrorController.text.value = e.toString();
     }
   }
+
+  void logout() => user.value = null;
 
   void updateImage(String imageName) async {
     try{

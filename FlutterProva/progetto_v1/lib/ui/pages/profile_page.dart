@@ -10,6 +10,8 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final UserController userController = Get.put(UserController());
+
   @override
   Widget build(BuildContext context) {
     return Obx(() => Column(
@@ -18,6 +20,7 @@ class _ProfilePageState extends State<ProfilePage> {
           Text(UserController.user.value?.name ?? "NAME"),
           Text(UserController.user.value?.email ?? "EMAIL"),
           Text(UserController.user.value?.phone ?? "PHONE"),
+          ElevatedButton(onPressed: () => userController.logout(), child: const Text("Logout")),
         ]
     ),
     );

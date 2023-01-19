@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login</title>
+</head>
+<style>
+body {
+    color: #3b3b3b;
+    background-color: #EEEDF2;
+    font-family: 'Roboto', sans-serif;
+    margin-top: 7em;
+}
+
+button {
+    background-color: white;
+    color: #526799;
+    padding: .5em 1.5em;
+    border: 1px solid #526799;
+    border-radius: .5em;
+    font-size: 1em;
+    transition: all .2s ease-in-out;
+}
+
+button:hover {
+    background-color: #526799;
+    color: white;
+    cursor: pointer;
+}
+
+button:active {
+    background-color: #526799;
+    color: white;
+    cursor: pointer;
+    border: 1px solid white;
+    outline: #52679998 solid 4px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: #526799;
+}
+
+main {
+    text-align: center;
+}
+
+header {
+    text-align: center;
+}
+
+form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: white;
+    /*width: 40%;*/
+    margin: 0 auto;
+    padding: 0 0 1em 0;
+    border-radius: .7em;
+}
+
+div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+fieldset {
+    border-radius: .2em;
+    margin: .5em;
+}
+
+input {
+    padding: .5em;
+    border-radius: .2em;
+    border: 1px solid;
+}
+
+input:active, input:focus {
+    outline: #526799 .2em solid;
+}
+
+footer {
+    margin-top: 2.5em;
+    text-align: center;
+}
+</style>
+<body>
+<header>
+    <h1>Login</h1>
+</header>
+<main>
+    <form id="form-section" aria-labelledby="form-title">
+        <h2 id="form-title">Personal information</h2>
+
+        <fieldset>
+            <legend id="email-desc">Insert here your email</legend>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" aria-required="true" aria-describedby="email-desc">
+        </fieldset>
+
+        <fieldset>
+            <legend id="password-desc">Insert here your password</legend>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" aria-describedby="password-desc">
+        </fieldset>
+
+        <br>
+        <br>
+
+        <button type="button" onClick="handleSubmit()">Login</button>
+    </form>
+</main>
+<footer>
+    <p>Copyright &copy; Stefano Cipolletta</p>
+</footer>
+
+<!-- javascript -->
+<script type="text/javascript">
+    function handleSubmit() {
+        const form = document.getElementById('form-section');
+        const formData = new FormData(form);
+        let ris = {};
+
+        for(const [k, v] of formData){
+            ris[k] = v;
+        }
+
+        NewUser.postMessage(JSON.stringify(ris));
+    }
+</script>
+</body>
+</html>

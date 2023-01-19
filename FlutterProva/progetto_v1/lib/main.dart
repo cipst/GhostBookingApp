@@ -60,7 +60,6 @@ class _RootState extends State<Root> {
   final navigationController = Get.put(NavigationController());
   final UserController userController = Get.put(UserController());
   late final WebViewController _controller;
-  var loadingPercentage = 0;
 
   final double _navigationHeight = AppLayout.initNavigationBarHeight;
 
@@ -90,7 +89,7 @@ class _RootState extends State<Root> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Styles.bgColor,
-      body: Obx(() => UserController.user.value != null
+      body: Obx(() => userController.user.value != null
           ? Stack(
         children: [
           // main page content

@@ -4,7 +4,7 @@ import 'package:progetto_v1/db/user_helper.dart';
 import 'package:progetto_v1/model/user.dart';
 
 class UserController extends GetxController {
-  static final user = Rxn<User>();
+  final user = Rxn<User>();
 
   void login(String email, String password) async {
     try {

@@ -47,6 +47,8 @@ dependencies:
   path_provider:
 # for web view login page
   webview_flutter: ^4.0.1
+# for image picker
+  image_picker:
 # for session management
   shared_preferences: ^2.0.15
 # for database

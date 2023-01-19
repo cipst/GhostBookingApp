@@ -21,6 +21,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final navigationController = Get.put(NavigationController());
+  final UserController userController = Get.put(UserController());
   final BookingController bookingController = Get.put(BookingController());
   final LessonController lessonController = Get.put(LessonController());
 
@@ -178,7 +179,7 @@ class _HomePageState extends State<HomePage> {
               ),
               Obx(() =>
                   Text(
-                    UserController.user.value?.name ?? "",
+                    userController.user.value?.name ?? "",
                     style: Styles.headLineStyle,
                   ),
               ),

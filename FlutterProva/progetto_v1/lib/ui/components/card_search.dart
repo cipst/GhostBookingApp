@@ -29,6 +29,7 @@ class _CardSearchState extends State<CardSearch> {
   final bookingController = Get.put(BookingController());
   final lessonController = Get.put(LessonController());
   final navigationController = Get.put(NavigationController());
+  final UserController userController = Get.put(UserController());
 
 
   @override
@@ -233,7 +234,7 @@ class _CardSearchState extends State<CardSearch> {
                   try {
                     Booking b = Booking(
                         lesson: widget.lesson.id!,
-                        user: UserController.user.value!.email,
+                        user: userController.user.value!.email,
                         status: StatusType.active);
                     await bookingController.setBooking(b); // add booked lesson into the db
                     // bookingController.bookings.add(b);

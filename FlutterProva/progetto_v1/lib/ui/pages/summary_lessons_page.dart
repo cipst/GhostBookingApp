@@ -24,6 +24,7 @@ class _SummaryLessonsState extends State<SummaryLessons> {
   final LessonController lessonController = Get.put(LessonController());
   final BookingController bookingController = Get.put(BookingController());
   final NavigationController navigationController = Get.put(NavigationController());
+  final UserController userController = Get.put(UserController());
 
   @override
   Widget build(BuildContext context) {
@@ -203,7 +204,7 @@ class _SummaryLessonsState extends State<SummaryLessons> {
                             lessonController.selectedLessons.forEach((key, value) async {
                               Booking b = Booking(
                                   lesson: key.id!,
-                                  user: UserController.user.value!.email,
+                                  user: userController.user.value!.email,
                                   status: StatusType.active);
                               await bookingController.setBooking(b); // add booked lesson into the db
                               // bookingController.bookings.add(b); // add booked lesson into the list of booked lessons

@@ -11,6 +11,8 @@ class UserController extends GetxController {
       User? u = await UserHelper.getUser(email, password);
       if(u == null){
         Get.snackbar("Wrong credentials", "Email or password are wrong, retry!");
+      }else{
+        Get.snackbar("Good credentials", "${u.name} - ${u.email}");
       }
       user.value = u;
     } on Exception catch (e) {

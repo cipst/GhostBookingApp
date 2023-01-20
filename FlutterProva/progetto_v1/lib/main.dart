@@ -100,7 +100,9 @@ class _RootState extends State<Root> {
 
             if(!snapshot.hasData) return const Center(child: Text("NO DATA FOUND"));
 
-            userController.login(snapshot.data!["email"]!, snapshot.data!["password"]!);
+            if(snapshot.data!["email"]!.isNotEmpty && snapshot.data!["password"]!.isNotEmpty) {
+              userController.login(snapshot.data!["email"]!, snapshot.data!["password"]!);
+            }
 
             return Obx(() => userController.user.value != null
                 ? Stack(

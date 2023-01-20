@@ -8,6 +8,7 @@ import 'package:progetto_v1/model/booking.dart';
 import 'package:progetto_v1/model/lesson.dart';
 import 'package:progetto_v1/ui/components/card_lesson.dart';
 import 'package:progetto_v1/ui/components/empty_data.dart';
+import 'package:progetto_v1/ui/pages/special_page.dart';
 import 'package:progetto_v1/utils/app_layout.dart';
 import 'package:progetto_v1/utils/app_style.dart';
 import 'package:gap/gap.dart';
@@ -224,15 +225,26 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           Expanded(child: Container()),
-          Container(
-            width: 60,
-            height: 60,
-            decoration: BoxDecoration(
-              // color: Colors.white,
-              borderRadius: BorderRadius.circular(15),
-              image: const DecorationImage(
-                scale: 1,
-                image: AssetImage("assets/book.png"),
+          GestureDetector(
+            onTap: (){
+              Get.snackbar("🎁", "Try something else... 😉",
+                snackPosition: SnackPosition.BOTTOM,
+                margin: const EdgeInsets.only(bottom: 20),
+              );
+            },
+            onLongPress: (){
+              Get.to(() => const SpecialPage());
+            },
+            child: Container(
+              width: 60,
+              height: 60,
+              decoration: BoxDecoration(
+                // color: Colors.white,
+                borderRadius: BorderRadius.circular(15),
+                image: const DecorationImage(
+                  scale: 1,
+                  image: AssetImage("assets/book.png"),
+                ),
               ),
             ),
           )

@@ -1,5 +1,5 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:progetto_v1/controller/error_controller.dart';
 import 'package:progetto_v1/db/teacher_helper.dart';
 import 'package:progetto_v1/model/teacher.dart';
 
@@ -9,7 +9,6 @@ class TeacherController extends GetxController {
 
   Future<List<Teacher>?> getAllTeachers() async {
     try {
-      ErrorController.clear();
       teachers.clear();
 
       List<Teacher>? teachersList = await TeacherHelper.getAllTeachers();
@@ -20,10 +19,10 @@ class TeacherController extends GetxController {
       }
       return teachersList;
     } on Exception catch (e) {
-      ErrorController.text.value = e.toString();
+      debugPrint(e.toString());
       return null;
     } on Error catch (e) {
-      ErrorController.text.value = e.toString();
+      debugPrint(e.toString());
       return null;
     }
   }

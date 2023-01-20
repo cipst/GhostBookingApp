@@ -3,7 +3,7 @@ class Queries {
   CREATE TABLE `User` (
     `email` VARCHAR(50) PRIMARY KEY,
     `name` VARCHAR(50) NOT NULL,
-    `image` VARCHAR(60), 
+    `image` VARCHAR(60) NOT NULL, 
     `password` VARCHAR(50) NOT NULL,
     `phone` VARCHAR(20) NOT NULL
   );

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:progetto_v1/controller/course_controller.dart';
-import 'package:progetto_v1/controller/error_controller.dart';
 import 'package:progetto_v1/controller/lesson_controller.dart';
 import 'package:progetto_v1/controller/teacher_controller.dart';
 import 'package:progetto_v1/ui/components/search_stepper.dart';

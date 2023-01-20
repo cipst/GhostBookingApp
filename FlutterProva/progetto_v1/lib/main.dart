@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:progetto_v1/controller/navigation_controller.dart';
@@ -14,12 +13,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await NotificationService().init();
-  // await DBHelper.instance.delete();
   await DBHelper.instance.database;
-
-  // await DBHelper.instance.createDB(db, 1);
-
 
   runApp(const Main());
 }
@@ -79,7 +73,6 @@ class _RootState extends State<Root> {
 
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -235,7 +228,7 @@ class _RootState extends State<Root> {
                 ],
               ),
             ),
-          )
+          ),
         ],
       )
           : WebViewWidget(controller: _controller),

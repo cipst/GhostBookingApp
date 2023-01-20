@@ -237,7 +237,6 @@ class _CardSearchState extends State<CardSearch> {
                         user: userController.user.value!.email,
                         status: StatusType.active);
                     await bookingController.setBooking(b); // add booked lesson into the db
-                    // bookingController.bookings.add(b);
                     lessonController.selectedLessons.clear(); // remove all eventually selected lessons
 
                     Get.back();

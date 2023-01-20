@@ -2,9 +2,9 @@ class User {
   String name;
   String email;
   String phone;
-  String? image;
+  String image;
 
-  User({required this.name, required this.email, required this.phone, this.image});
+  User({required this.name, required this.email, required this.phone, required this.image});
 
   factory User.fromJson(Map<String, dynamic> json) => User(
     name: json["name"],

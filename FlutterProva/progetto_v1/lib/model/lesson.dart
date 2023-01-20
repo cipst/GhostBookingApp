@@ -1,6 +1,4 @@
 import 'package:intl/intl.dart';
-import 'package:progetto_v1/model/course.dart';
-import 'package:progetto_v1/model/teacher.dart';
 
 class Lesson {
   int? id;

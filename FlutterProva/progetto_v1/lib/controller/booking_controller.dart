@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:progetto_v1/controller/error_controller.dart';
 import 'package:progetto_v1/controller/lesson_controller.dart';
 import 'package:progetto_v1/db/booking_helper.dart';
 import 'package:progetto_v1/model/booking.dart';
@@ -159,7 +158,6 @@ class BookingController extends GetxController {
 
   Future<List<Booking>?> getAllBookings(String email) async {
     try {
-      ErrorController.clear();
       bookings.clear();
       bookingsFiltered.clear();
       List<Booking>? bookingsList = await BookingHelper.getAllBookings(email);
@@ -175,30 +173,28 @@ class BookingController extends GetxController {
 
       return bookingsList;
     } on Exception catch (e) {
-      ErrorController.text.value = e.toString();
+      debugPrint(e.toString());
       return null;
     } on Error catch (e) {
-      ErrorController.text.value = e.toString();
+      debugPrint(e.toString());
       return null;
     }
   }
 
   Future<Booking?> getBooking(int id) async {
     try {
-      ErrorController.clear();
       return await BookingHelper.getBooking(id);
     } on Exception catch (e) {
-      ErrorController.text.value = e.toString();
+      debugPrint(e.toString());
       return null;
     } on Error catch (e) {
-      ErrorController.text.value = e.toString();
+      debugPrint(e.toString());
       return null;
     }
   }
 
   Future<List<Booking>?> getBookingByDate(String email, String datetime) async{
     try {
-      ErrorController.clear();
       bookings.clear();
       List<Booking>? bookingsList = await BookingHelper.getBookingByDate(email, datetime);
 
@@ -211,17 +207,16 @@ class BookingController extends GetxController {
 
       return bookingsList;
     } on Exception catch (e) {
-      ErrorController.text.value = e.toString();
+      debugPrint(e.toString());
       return null;
     } on Error catch (e) {
-      ErrorController.text.value = e.toString();
+      debugPrint(e.toString());
       return null;
     }
   }
 
   Future<List<Booking>?> getBookingByStatus(String email, StatusType status) async{
     try {
-      ErrorController.clear();
       bookings.clear();
       List<Booking>? bookingsList = await BookingHelper.getBookingByStatus(email, status);
 
@@ -234,10 +229,10 @@ class BookingController extends GetxController {
 
       return bookingsList;
     } on Exception catch (e) {
-      ErrorController.text.value = e.toString();
+      debugPrint(e.toString());
       return null;
     } on Error catch (e) {
-      ErrorController.text.value = e.toString();
+      debugPrint(e.toString());
       return null;
     }
   }

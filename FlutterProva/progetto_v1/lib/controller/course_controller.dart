@@ -1,5 +1,5 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:progetto_v1/controller/error_controller.dart';
 import 'package:progetto_v1/db/course_helper.dart';
 import 'package:progetto_v1/model/course.dart';
 
@@ -8,7 +8,6 @@ class CourseController extends GetxController {
 
   Future<List<Course>?> getAllCourses() async {
     try {
-      ErrorController.clear();
       courses.clear();
 
       List<Course>? coursesList = await CourseHelper.getAllCourses();
@@ -20,10 +19,10 @@ class CourseController extends GetxController {
 
       return coursesList;
     } on Exception catch (e) {
-      ErrorController.text.value = e.toString();
+      debugPrint(e.toString());
       return null;
     } on Error catch (e) {
-      ErrorController.text.value = e.toString();
+      debugPrint(e.toString());
       return null;
     }
   }

@@ -44,7 +44,6 @@ class _SearchStepperState extends State<SearchStepper> {
   final _hours = [15, 16, 17, 18, 19];
 
   _stepTapped(int step) {
-    // if(step == 4) return;
     setState(() => _currentStep = (step == _currentStep) ?  4 : step);
     _setPrefInteger("step", _currentStep ?? 4);
   }
@@ -212,7 +211,22 @@ class _SearchStepperState extends State<SearchStepper> {
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(10),
                                         ),
-                                        title: Text(teacherController.teachers.elementAt(index).name),
+                                        title: Row(
+                                          children: [
+                                            Container(
+                                                width: 55,
+                                                height: 55,
+                                                margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                  image: DecorationImage(
+                                                    image: AssetImage("assets/images/${teacherController.teachers.elementAt(index).name.toLowerCase().replaceAll(" ", "_")}.jpg"),
+                                                  ),
+                                                )
+                                            ),
+                                            Text(teacherController.teachers.elementAt(index).name),
+                                          ],
+                                        ),
                                         textColor: (_teacherSelectedIndex == index && _currentStep == 0) ? Colors.white : Styles.textColor,
                                         tileColor: (_teacherSelectedIndex == index && _currentStep == 0) ? Styles.blueColor : Colors.transparent,
                                         onTap: (){

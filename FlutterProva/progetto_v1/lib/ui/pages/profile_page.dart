@@ -8,8 +8,10 @@ import 'package:ionicons/ionicons.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:progetto_v1/controller/user_controller.dart';
+import 'package:progetto_v1/ui/components/custom_dialog.dart';
 import 'package:progetto_v1/utils/app_layout.dart';
 import 'package:progetto_v1/utils/app_style.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -21,11 +23,29 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final UserController userController = Get.put(UserController());
 
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
+  _setPrefString(String key, String value) async {
+    final SharedPreferences prefs = await _prefs;
+    await prefs.setString(key, value);
+  }
+
   _updateImage() async {
     if((userController.user.value?.image != null && (userController.user.value?.image)!.isNotEmpty)){
-      userController.updateImage("");
-      userController.user.value!.image = "";
+      File(userController.user.value!.image).delete(); // remove image from the storage
+      userController.updateImage(""); // update image in db
+      userController.user.value!.image = ""; // set the image to blank
       setState(() {});
+      Get.dialog(
+        CustomDialog(
+          title: "Profile picture removed",
+          titleColor: Styles.successColor,
+          description: "Your profile picture has been successfully removed.\nYou will see the default one again",
+          icon: Icon(Ionicons.close_circle_outline, color: Styles.successColor, size: 50,),
+          btnText: Text("Close", style: Styles.textStyle.copyWith(color: Colors.white)),
+          btnStyle: Styles.successButtonStyle,
+        ),
+      );
       return;
     }
 
@@ -39,9 +59,19 @@ class _ProfilePageState extends State<ProfilePage> {
 
     await File(image.path).copy('$path/$fileName');
 
-    userController.updateImage('$path/$fileName');
-    userController.user.value!.image = '$path/$fileName';
+    userController.updateImage('$path/$fileName'); // update image in db
+    userController.user.value!.image = '$path/$fileName'; // set image to the path
     setState(() {});
+    Get.dialog(
+      CustomDialog(
+        title: "Profile picture updated",
+        titleColor: Styles.successColor,
+        description: "The new profile picture has been successfully uploaded",
+        icon: Icon(Ionicons.checkmark_circle_outline, color: Styles.successColor, size: 50,),
+        btnText: Text("Close", style: Styles.textStyle.copyWith(color: Colors.white)),
+        btnStyle: Styles.successButtonStyle,
+      ),
+    );
   }
 
   @override
@@ -94,7 +124,11 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           ElevatedButton(
               style: Styles.errorButtonStyleOutline,
-              onPressed: () => userController.logout(),
+              onPressed: () {
+                userController.logout();
+                _setPrefString("email", "");
+                _setPrefString("password", "");
+              },
               child: Text("Logout", style: Styles.headLineStyle3.copyWith(color: Styles.errorColor),)
           ),
           Gap(AppLayout.initNavigationBarHeight),

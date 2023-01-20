@@ -10,6 +10,7 @@ import 'package:progetto_v1/utils/app_layout.dart';
 import 'package:progetto_v1/utils/app_style.dart';
 import 'package:progetto_v1/ui/components/custom_bottom_bar.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,7 +56,21 @@ class _RootState extends State<Root> {
   final UserController userController = Get.put(UserController());
   late final WebViewController _controller;
 
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   final double _navigationHeight = AppLayout.initNavigationBarHeight;
+
+  _setPrefString(String key, String value) async {
+    final SharedPreferences prefs = await _prefs;
+    await prefs.setString(key, value);
+  }
+
+  Future<Map<String, String>> _getPreferences() async {
+    final SharedPreferences prefs = await _prefs;
+    return {
+      "email": prefs.getString("email") ?? "",
+      "password": prefs.getString("password") ?? ""
+    };
+  }
 
   @override
   void initState() {
@@ -67,9 +82,10 @@ class _RootState extends State<Root> {
         onMessageReceived: (message) {
           Map<String, dynamic> json = jsonDecode(message.message);
           userController.login(json["email"], json["password"]);
+          _setPrefString("email", json["email"]);
+          _setPrefString("password", json["password"]);
         },
       );
-
 
     super.initState();
   }
@@ -78,160 +94,170 @@ class _RootState extends State<Root> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Styles.bgColor,
-      body: Obx(() => userController.user.value != null
-          ? Stack(
-        children: [
-          // main page content
-          Positioned(
-            top: 0,
-            left: 0,
-            child: SizedBox(
-              width: AppLayout.getSize(context).width,
-              height: AppLayout.getSize(context).height,
-              child: Obx(() => navigationController.currentPage),
-            ),
-          ),
+      body: FutureBuilder<Map<String, String>>(
+          future: _getPreferences(),
+          builder: (context, snapshot) {
 
-          // bottom navigation bar
-          Positioned(
-            bottom: 0,
-            left: 0,
-            child: SizedBox(
-              width: AppLayout.getSize(context).width,
-              height: _navigationHeight,
-              child: Stack(
-                children: [
-                  CustomPaint(
-                    size: Size(AppLayout.getSize(context).width, _navigationHeight),
-                    painter: CustomPainterBottomBar(),
-                  ),
-                  SizedBox(
+            if(!snapshot.hasData) return const Center(child: Text("NO DATA FOUND"));
+
+            userController.login(snapshot.data!["email"]!, snapshot.data!["password"]!);
+
+            return Obx(() => userController.user.value != null
+                ? Stack(
+              children: [
+                // main page content
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  child: SizedBox(
                     width: AppLayout.getSize(context).width,
-                    height: AppLayout.initNavigationBarHeight,
-                    child: Obx(() => Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    height: AppLayout.getSize(context).height,
+                    child: Obx(() => navigationController.currentPage),
+                  ),
+                ),
+
+                // bottom navigation bar
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  child: SizedBox(
+                    width: AppLayout.getSize(context).width,
+                    height: _navigationHeight,
+                    child: Stack(
                       children: [
-                        //HOME
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              hoverColor: Colors.transparent,
-                              splashColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              icon: navigationController.checkIndex(Pages.home)
-                                  ? Icon(Ionicons.home, color: Styles.orangeColor,)
-                                  : Icon(Ionicons.home_outline, color: Colors.grey.shade400,),
-                              onPressed: () => navigationController.currentIndex = Pages.home,
-                            ),
-                            if (navigationController.checkIndex(Pages.home))
-                              Padding(
-                                padding: const EdgeInsets.only(top: 2.0),
-                                child: Text("Home", style: Styles.headLineStyle4.copyWith(color: Styles.orangeColor),),
-                              )
-                          ],
+                        CustomPaint(
+                          size: Size(AppLayout.getSize(context).width, _navigationHeight),
+                          painter: CustomPainterBottomBar(),
                         ),
-
-                        //SEARCH
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              hoverColor: Colors.transparent,
-                              splashColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              icon: navigationController.checkIndex(Pages.search)
-                                  ? Icon(
-                                Ionicons.search,
-                                color: Styles.orangeColor,
-                              )
-                                  : Icon(
-                                Ionicons.search_outline,
-                                color: Colors.grey.shade400,
+                        SizedBox(
+                          width: AppLayout.getSize(context).width,
+                          height: AppLayout.initNavigationBarHeight,
+                          child: Obx(() => Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              //HOME
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  IconButton(
+                                    hoverColor: Colors.transparent,
+                                    splashColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    icon: navigationController.checkIndex(Pages.home)
+                                        ? Icon(Ionicons.home, color: Styles.orangeColor,)
+                                        : Icon(Ionicons.home_outline, color: Colors.grey.shade400,),
+                                    onPressed: () => navigationController.currentIndex = Pages.home,
+                                  ),
+                                  if (navigationController.checkIndex(Pages.home))
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 2.0),
+                                      child: Text("Home", style: Styles.headLineStyle4.copyWith(color: Styles.orangeColor),),
+                                    )
+                                ],
                               ),
-                              onPressed: () => navigationController.currentIndex = Pages.search,
-                            ),
-                            if (navigationController.checkIndex(Pages.search))
-                              Padding(
-                                padding: const EdgeInsets.only(top: 2.0),
-                                child: Text(
-                                  "Search",
-                                  style: Styles.headLineStyle4.copyWith(color: Styles.orangeColor),
-                                ),
-                              )
-                          ],
-                        ),
 
-                        // CATALOG
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              hoverColor: Colors.transparent,
-                              splashColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              icon: navigationController.checkIndex(Pages.catalog)
-                                  ? Icon(
-                                Ionicons.receipt,
-                                color: Styles.orangeColor,
-                              )
-                                  : Icon(
-                                Ionicons.receipt_outline,
-                                color: Colors.grey.shade400,
+                              //SEARCH
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  IconButton(
+                                    hoverColor: Colors.transparent,
+                                    splashColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    icon: navigationController.checkIndex(Pages.search)
+                                        ? Icon(
+                                      Ionicons.search,
+                                      color: Styles.orangeColor,
+                                    )
+                                        : Icon(
+                                      Ionicons.search_outline,
+                                      color: Colors.grey.shade400,
+                                    ),
+                                    onPressed: () => navigationController.currentIndex = Pages.search,
+                                  ),
+                                  if (navigationController.checkIndex(Pages.search))
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 2.0),
+                                      child: Text(
+                                        "Search",
+                                        style: Styles.headLineStyle4.copyWith(color: Styles.orangeColor),
+                                      ),
+                                    )
+                                ],
                               ),
-                              onPressed: () => navigationController.currentIndex = Pages.catalog,
-                            ),
-                            if (navigationController.checkIndex(Pages.catalog))
-                              Padding(
-                                padding: const EdgeInsets.only(top: 2.0),
-                                child: Text(
-                                  "Catalog",
-                                  style: Styles.headLineStyle4
-                                      .copyWith(color: Styles.orangeColor),
-                                ),
-                              )
-                          ],
-                        ),
 
-                        // PROFILE
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              hoverColor: Colors.transparent,
-                              splashColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              icon: navigationController.checkIndex(Pages.profile)
-                                  ? Icon(
-                                Ionicons.person,
-                                color: Styles.orangeColor,
-                              )
-                                  : Icon(
-                                Ionicons.person_outline,
-                                color: Colors.grey.shade400,
+                              // CATALOG
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  IconButton(
+                                    hoverColor: Colors.transparent,
+                                    splashColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    icon: navigationController.checkIndex(Pages.catalog)
+                                        ? Icon(
+                                      Ionicons.receipt,
+                                      color: Styles.orangeColor,
+                                    )
+                                        : Icon(
+                                      Ionicons.receipt_outline,
+                                      color: Colors.grey.shade400,
+                                    ),
+                                    onPressed: () => navigationController.currentIndex = Pages.catalog,
+                                  ),
+                                  if (navigationController.checkIndex(Pages.catalog))
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 2.0),
+                                      child: Text(
+                                        "Catalog",
+                                        style: Styles.headLineStyle4
+                                            .copyWith(color: Styles.orangeColor),
+                                      ),
+                                    )
+                                ],
                               ),
-                              onPressed: () => navigationController.currentIndex = Pages.profile,
-                            ),
-                            if (navigationController.checkIndex(Pages.profile))
-                              Padding(
-                                padding: const EdgeInsets.only(top: 2.0),
-                                child: Text(
-                                  "Profile",
-                                  style: Styles.headLineStyle4.copyWith(color: Styles.orangeColor),
-                                ),
-                              )
-                          ],
-                        ),
+
+                              // PROFILE
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  IconButton(
+                                    hoverColor: Colors.transparent,
+                                    splashColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    icon: navigationController.checkIndex(Pages.profile)
+                                        ? Icon(
+                                      Ionicons.person,
+                                      color: Styles.orangeColor,
+                                    )
+                                        : Icon(
+                                      Ionicons.person_outline,
+                                      color: Colors.grey.shade400,
+                                    ),
+                                    onPressed: () => navigationController.currentIndex = Pages.profile,
+                                  ),
+                                  if (navigationController.checkIndex(Pages.profile))
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 2.0),
+                                      child: Text(
+                                        "Profile",
+                                        style: Styles.headLineStyle4.copyWith(color: Styles.orangeColor),
+                                      ),
+                                    )
+                                ],
+                              ),
+                            ],
+                          )),
+                        )
                       ],
-                    )),
-                  )
-                ],
-              ),
-            ),
-          ),
-        ],
-      )
-          : WebViewWidget(controller: _controller),
+                    ),
+                  ),
+                ),
+              ],
+            )
+                : WebViewWidget(controller: _controller),
+            );
+          }
       ),
     );
   }

@@ -7,6 +7,7 @@ import 'package:progetto_v1/controller/course_controller.dart';
 import 'package:progetto_v1/controller/lesson_controller.dart';
 import 'package:progetto_v1/controller/navigation_controller.dart';
 import 'package:progetto_v1/controller/teacher_controller.dart';
+import 'package:progetto_v1/controller/user_controller.dart';
 import 'package:progetto_v1/model/booking.dart';
 import 'package:progetto_v1/model/course.dart';
 import 'package:progetto_v1/model/teacher.dart';
@@ -30,6 +31,7 @@ class _CatalogPageState extends State<CatalogPage> {
   final teacherController = Get.put(TeacherController());
   final courseController = Get.put(CourseController());
   final navigationController = Get.put(NavigationController());
+  final userController = Get.put(UserController());
   final scrollController = ScrollController();
 
   final _dates = [
@@ -78,7 +80,7 @@ class _CatalogPageState extends State<CatalogPage> {
 
   @override
   void initState() {
-    bookingController.getAllBookings("stefano.cipolletta@gmail.com");
+    bookingController.getAllBookings(userController.user.value!.email);
 
     super.initState();
   }
@@ -90,14 +92,14 @@ class _CatalogPageState extends State<CatalogPage> {
       filters[key] = value;
     }
     setState((){});
-    bookingController.applyFilters("stefano.cipolletta@gmail.com", filters);
+    bookingController.applyFilters(userController.user.value!.email, filters);
   }
 
   void _clearFilter(){
     setState(() {
       filters.clear();
     });
-    bookingController.applyFilters("stefano.cipolletta@gmail.com", filters);
+    bookingController.applyFilters(userController.user.value!.email, filters);
   }
 
   @override

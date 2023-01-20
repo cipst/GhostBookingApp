@@ -65,8 +65,6 @@ class _RootState extends State<Root> {
 
   @override
   void initState() {
-    // TODO: take values from html input login
-    // userController.getUser("stefano.cipolletta@gmail.com", "Qwerty123_");
     _controller = WebViewController()
       ..loadFlutterAsset("assets/www/index.html")
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
@@ -74,8 +72,6 @@ class _RootState extends State<Root> {
         'NewUser',
         onMessageReceived: (message) {
           Map<String, dynamic> json = jsonDecode(message.message);
-          debugPrint("EMAIL: ${json["email"]}");
-          debugPrint("PSW: ${json["password"]}");
           userController.login(json["email"], json["password"]);
         },
       );

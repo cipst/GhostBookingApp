@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    bookingController.getBookingByDate("stefano.cipolletta@gmail.com", DateFormat.yMd().format(_today));
+    bookingController.getBookingByDate(userController.user.value!.email, DateFormat.yMd().format(_today));
     super.initState();
   }
 

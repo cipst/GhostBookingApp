@@ -46,8 +46,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("QUI - BUILD PROFILE PAGE");
-
     return Obx(() => Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -75,9 +73,30 @@ class _ProfilePageState extends State<ProfilePage> {
             ],
           ),
           Text(userController.user.value!.name, style: Styles.headLineStyle,),
-          Text(userController.user.value!.email, style: Styles.headLineStyle2,),
-          Text("+${userController.user.value!.phone}", style: Styles.headLineStyle3,),
-          ElevatedButton(onPressed: () => userController.logout(), child: const Text("Logout")),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Ionicons.mail_open_outline),
+              const Gap(8),
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(userController.user.value!.email, style: Styles.headLineStyle2),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Ionicons.call_outline, color: Styles.greyColor,),
+              const Gap(8),
+              Text("+${userController.user.value!.phone.substring(0, 2)} ${userController.user.value!.phone.substring(2)}", style: Styles.headLineStyle3,),
+            ],
+          ),
+          ElevatedButton(
+              style: Styles.errorButtonStyleOutline,
+              onPressed: () => userController.logout(),
+              child: Text("Logout", style: Styles.headLineStyle3.copyWith(color: Styles.errorColor),)
+          ),
           Gap(AppLayout.initNavigationBarHeight),
         ]
     ),
@@ -95,10 +114,10 @@ class _ProfilePageState extends State<ProfilePage> {
           child: CircleAvatar(
             backgroundColor: Styles.bgColor,
             radius: 95,
-            foregroundImage: (userController.user.value!.image != null && userController.user.value!.image!.isNotEmpty)
-                ? FileImage(File(userController.user.value!.image!))
+            foregroundImage: (userController.user.value!.image.isNotEmpty)
+                ? FileImage(File(userController.user.value!.image))
                 : null,
-            child: !(userController.user.value!.image != null && userController.user.value!.image!.isNotEmpty)
+            child: (userController.user.value!.image.isEmpty)
                 ? Image.asset("assets/images/default.png")
                 : null,
           ),

@@ -4,6 +4,8 @@ import 'package:progetto_v1/controller/booking_controller.dart';
 import 'package:progetto_v1/controller/lesson_controller.dart';
 import 'package:progetto_v1/controller/navigation_controller.dart';
 import 'package:progetto_v1/controller/user_controller.dart';
+import 'package:progetto_v1/model/booking.dart';
+import 'package:progetto_v1/model/lesson.dart';
 import 'package:progetto_v1/ui/components/card_lesson.dart';
 import 'package:progetto_v1/ui/components/empty_data.dart';
 import 'package:progetto_v1/utils/app_layout.dart';
@@ -25,12 +27,27 @@ class _HomePageState extends State<HomePage> {
   final BookingController bookingController = Get.put(BookingController());
   final LessonController lessonController = Get.put(LessonController());
 
+  final TextEditingController _searchQuery = TextEditingController();
+  Map<Booking, Lesson> _booked = {};
+
   final _today = DateTime(2023, 01, 09);
 
   @override
   void initState() {
-    bookingController.getBookingByDate(userController.user.value!.email, DateFormat.yMd().format(_today));
+    _booked = {};
+    _getBookingByDate();
+
+    _searchQuery.addListener(() {
+      _buildSearchLessons();
+      setState(() {});
+    });
+
     super.initState();
+  }
+
+  Future<void> _getBookingByDate() async {
+    final tmp = await bookingController.getBookingByDate(userController.user.value!.email, DateFormat.yMd().format(_today));
+    tmp == null ? _booked = {} : _booked = tmp;
   }
 
   @override
@@ -44,6 +61,28 @@ class _HomePageState extends State<HomePage> {
         Gap(AppLayout.initNavigationBarHeight),
       ],
     );
+  }
+
+  _buildSearchLessons(){
+    final searchText = _searchQuery.text.trim();
+    debugPrint("SEARCH: $searchText");
+
+    if(searchText.isEmpty){
+      _getBookingByDate();
+      return;
+    }
+
+    Map<Booking, Lesson> ris = {};
+    bookingController.bookings.forEach((key, value) {
+      if(key.status.toString().toLowerCase().contains(searchText.toLowerCase()) ||
+          value.teacher.toLowerCase().contains(searchText.toLowerCase()) ||
+          value.course.toLowerCase().contains(searchText.toLowerCase()) ||
+          DateFormat("dd/MM/yyyy HH:mm").format(value.dateTime).contains(searchText.toLowerCase())
+      ){
+        ris[key] = value;
+      }
+    });
+    _booked = ris;
   }
 
   Padding _todayLessons() {
@@ -118,22 +157,20 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-          bookingController.bookings.isEmpty
+          _booked.isEmpty
               ?
           const EmptyData(text: "You have no lesson today")
               :
-          Obx((){
-            return Column(
-              mainAxisSize: MainAxisSize.max,
-              children: List.generate(
-                  bookingController.bookings.keys.length,
-                      (index) => CardLesson(
-                    bookingController.bookings.keys.elementAt(index),
-                    bookingController.bookings.values.elementAt(index),
-                    getAll: false,
-                  )),
-            );
-          }),
+          Column(
+            mainAxisSize: MainAxisSize.max,
+            children: List.generate(
+                _booked.keys.length,
+                    (index) => CardLesson(
+                  _booked.keys.elementAt(index),
+                  _booked.values.elementAt(index),
+                  getAll: false,
+                )),
+          )
         ],
       ),
     );
@@ -143,6 +180,7 @@ class _HomePageState extends State<HomePage> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 24),
       child: TextField(
+        controller: _searchQuery,
         decoration: InputDecoration(
           hintText: "Search",
           focusColor: Styles.orangeColor,

@@ -193,7 +193,7 @@ class BookingController extends GetxController {
     }
   }
 
-  Future<List<Booking>?> getBookingByDate(String email, String datetime) async{
+  Future<Map<Booking, Lesson>?> getBookingByDate(String email, String datetime) async{
     try {
       bookings.clear();
       List<Booking>? bookingsList = await BookingHelper.getBookingByDate(email, datetime);
@@ -205,7 +205,7 @@ class BookingController extends GetxController {
         l != null ? bookings[b] = l : null;
       }
 
-      return bookingsList;
+      return bookings;
     } on Exception catch (e) {
       debugPrint(e.toString());
       return null;

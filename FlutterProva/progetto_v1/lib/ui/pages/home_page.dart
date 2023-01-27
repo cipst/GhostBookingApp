@@ -227,12 +227,6 @@ class _HomePageState extends State<HomePage> {
           Expanded(child: Container()),
           GestureDetector(
             onTap: (){
-              Get.snackbar("🎁", "Try something else... 😉",
-                snackPosition: SnackPosition.BOTTOM,
-                margin: const EdgeInsets.only(bottom: 20),
-              );
-            },
-            onLongPress: (){
               Get.to(() => const SpecialPage());
             },
             child: Container(

@@ -129,7 +129,17 @@ class _ProfilePageState extends State<ProfilePage> {
                 _setPrefString("email", "");
                 _setPrefString("password", "");
               },
-              child: Text("Logout", style: Styles.headLineStyle3.copyWith(color: Styles.errorColor),)
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 1),
+                    child: Text("Logout", style: Styles.headLineStyle3.copyWith(color: Styles.errorColor),),
+                  ),
+                  const Gap(8),
+                  const Icon(Ionicons.log_out_outline),
+                ],
+              )
           ),
           Gap(AppLayout.initNavigationBarHeight),
         ]

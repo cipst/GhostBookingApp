@@ -91,15 +91,16 @@ def main():
     print("Dictionary loaded")
 
     start = input("Insert start word: ")
-    end = input("Insert end word: ")
-
+    
     if (start not in word_list):
         print("Start word not in dictionary")
-        exit()
+        return
+
+    end = input("Insert end word: ")
 
     if (end not in word_list):
         print("End word not in dictionary")
-        exit()
+        return
 
     print(word_ladder(start, end, word_list))
     

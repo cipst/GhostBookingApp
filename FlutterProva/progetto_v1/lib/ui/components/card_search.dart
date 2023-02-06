@@ -43,6 +43,7 @@ class _CardSearchState extends State<CardSearch> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Styles.greyColor)
         ),
         margin: const EdgeInsets.only(top: 10, bottom: 10, left: 30, right: 25),
         child: Stack(children: [

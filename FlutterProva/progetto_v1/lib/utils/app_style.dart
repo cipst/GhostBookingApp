@@ -4,10 +4,10 @@ class Styles {
   static Color textColor = const Color(0xFF3b3b3b);
   static Color bgColor = const Color(0xFFEEEDF2);
   static Color orangeColor = const Color(0xFFF37B67);
-  static Color blueColor = const Color(0xFF526799);
+  static Color blueColor = const Color(0xFF475789);
   static Color successColor = const Color(0xFF00D23C);
-  static Color errorColor = const Color(0xFFEE296B);
-  static Color greyColor = const Color(0xFF818181);
+  static Color errorColor = const Color(0xFFAF0E4F);
+  static Color greyColor = const Color(0xFF595959);
 
   static TextStyle textStyle = TextStyle(
     fontSize: 16,
@@ -52,6 +52,9 @@ class Styles {
   static ButtonStyle successButtonStyle = ElevatedButton.styleFrom(
     backgroundColor: successColor,
   );
+  static ButtonStyle greyButtonStyle = ElevatedButton.styleFrom(
+    backgroundColor: greyColor,
+  );
   static ButtonStyle blueButtonStyleOutline = ElevatedButton.styleFrom(
     backgroundColor: Colors.white,
     foregroundColor: blueColor,
@@ -80,5 +83,11 @@ class Styles {
         color: successColor
     ),
   );
-
+  static ButtonStyle greyButtonStyleOutline = ElevatedButton.styleFrom(
+    backgroundColor: Colors.white,
+    foregroundColor: greyColor,
+    side: BorderSide(
+        color: greyColor
+    ),
+  );
 }

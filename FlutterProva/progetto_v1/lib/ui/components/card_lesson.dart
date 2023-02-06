@@ -42,6 +42,7 @@ class _CardLessonState extends State<CardLesson> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Styles.greyColor)
           ),
           margin: const EdgeInsets.symmetric(vertical: 10),
           child: Stack(children: [
@@ -341,44 +342,50 @@ class _CardLessonState extends State<CardLesson> {
     Get.bottomSheet(
       SizedBox(
         height: height,
-        child: Column(
-          children: [
-            Container(
-                width: 100,
-                height: 5,
-                margin: const EdgeInsets.symmetric(vertical: 8),
-                decoration: BoxDecoration(
-                    color: Styles.greyColor,
-                    borderRadius: BorderRadius.circular(30))),
+        child: Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(40), topRight: Radius.circular(40))
+          ),
+          child: Column(
+            children: [
+              Container(
+                  width: 100,
+                  height: 5,
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  decoration: BoxDecoration(
+                      color: Styles.greyColor,
+                      borderRadius: BorderRadius.circular(30))),
 
-            (widget.appointment.status == StatusType.active)
-                ? Gap(height/20)
-                : Gap(height/5),
+              (widget.appointment.status == StatusType.active)
+                  ? Gap(height/20)
+                  : Gap(height/5),
 
-            // SHOW IN CATALOG
-            _showInCatalog(),
+              // SHOW IN CATALOG
+              _showInCatalog(),
 
-            (widget.appointment.status == StatusType.active)
-                ? Gap(height/20)
-                : Container(),
+              (widget.appointment.status == StatusType.active)
+                  ? Gap(height/20)
+                  : Container(),
 
-            // COMPLETE
-            (widget.appointment.status == StatusType.active)
-                ? _completeLesson()
-                : Container(),
+              // COMPLETE
+              (widget.appointment.status == StatusType.active)
+                  ? _completeLesson()
+                  : Container(),
 
-            (widget.appointment.status == StatusType.active)
-                ? Gap(height/20)
-                : Container(),
+              (widget.appointment.status == StatusType.active)
+                  ? Gap(height/20)
+                  : Container(),
 
-            // CANCEL
-            (widget.appointment.status == StatusType.active)
-                ? _cancelLesson()
-                : Container(),
-          ],
+              // CANCEL
+              (widget.appointment.status == StatusType.active)
+                  ? _cancelLesson()
+                  : Container(),
+            ],
+          ),
         ),
       ),
-      backgroundColor: Colors.white,
+      // backgroundColor: Colors.white,
     );
   }
 
@@ -387,14 +394,14 @@ class _CardLessonState extends State<CardLesson> {
       _navigationController.currentIndex = Pages.catalog;
       Get.back();
     },
-    style: Styles.blueButtonStyle,
+    style: Styles.blueButtonStyleOutline,
     child: Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         const Gap(6),
         Text(
           "Show in catalog",
-          style: Styles.headLineStyle3.copyWith(color: Colors.white),
+          style: Styles.headLineStyle3.copyWith(color: Styles.blueColor),
         ),
         const Padding(
           padding: EdgeInsets.only(bottom: 1, left: 5),
@@ -445,14 +452,14 @@ class _CardLessonState extends State<CardLesson> {
         );
       }
     },
-    style: Styles.errorButtonStyleOutline,
+    style: Styles.greyButtonStyle,
     child: Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         const Gap(6),
         Text(
           "Cancel lesson",
-          style: Styles.headLineStyle3.copyWith(color: Styles.errorColor),
+          style: Styles.headLineStyle3.copyWith(color: Colors.white),
         ),
         const Padding(
           padding: EdgeInsets.only(bottom: 1),
@@ -460,7 +467,7 @@ class _CardLessonState extends State<CardLesson> {
             Ionicons.close_outline,
           ),
         ),
-        const Gap(10),
+        // const Gap(10),
       ],
     ),
   );
@@ -506,7 +513,7 @@ class _CardLessonState extends State<CardLesson> {
         );
       }
     },
-    style: Styles.orangeButtonStyle,
+    style: Styles.errorButtonStyle,
     child: Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -521,7 +528,7 @@ class _CardLessonState extends State<CardLesson> {
             Ionicons.checkmark,
           ),
         ),
-        const Gap(10),
+        // const Gap(10),
       ],
     ),
   );

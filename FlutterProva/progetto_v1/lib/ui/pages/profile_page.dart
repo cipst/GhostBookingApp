@@ -123,7 +123,10 @@ class _ProfilePageState extends State<ProfilePage> {
             ],
           ),
           ElevatedButton(
-              style: Styles.errorButtonStyleOutline,
+              style: Styles.errorButtonStyleOutline.copyWith(
+                  backgroundColor: MaterialStatePropertyAll(Styles.bgColor),
+                  padding: const MaterialStatePropertyAll(EdgeInsets.symmetric(vertical: 9, horizontal: 20))
+              ),
               onPressed: () {
                 userController.logout();
                 _setPrefString("email", "");
